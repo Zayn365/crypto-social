@@ -1,4 +1,11 @@
-export const FeedIcon = ({ width = 16, height = 16, color, ...props }: any) => {
+interface FeedIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
+export const FeedIcon = ({ width = 16, height = 16, color, ...props }: FeedIconProps) => {
   return (
     <svg
       width={width}

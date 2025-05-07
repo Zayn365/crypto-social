@@ -1,9 +1,16 @@
+interface EarningIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
 export const EarningIcon = ({
   width = 16,
   height = 16,
   color,
   ...props
-}: any) => {
+}: EarningIconProps) => {
   return (
     <svg
       width={width}

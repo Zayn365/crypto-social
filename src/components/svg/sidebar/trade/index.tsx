@@ -1,9 +1,16 @@
+interface TradeIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
 export const TradeIcon = ({
   width = 24,
   height = 24,
   color,
   ...props
-}: any) => {
+}: TradeIconProps) => {
   return (
     <svg
       width={width}

@@ -1,9 +1,16 @@
+interface DiscoverIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
 export const DiscoverIcon = ({
   width = 24,
   height = 24,
   color,
   ...props
-}: any) => {
+}: DiscoverIconProps) => {
   return (
     <svg
       width={width}

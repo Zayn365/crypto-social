@@ -1,9 +1,14 @@
 export const WalletIcon = ({
   width = 16,
   height = 16,
-  color,
+  color = "#5F6C7D",
   ...props
-}: any) => {
+}: {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string;
+}) => {
   return (
     <svg
       width={width}

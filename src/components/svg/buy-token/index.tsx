@@ -1,9 +1,16 @@
+interface BuyTokenIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
 export const BuyTokenIcon = ({
   width = 16,
   height = 16,
   color,
   ...props
-}: any) => {
+}: BuyTokenIconProps) => {
   return (
     <svg
       width={width}

@@ -1,6 +1,7 @@
 "use client";
 import BuyTokenBtn from "@/components/common/buy-token-btn";
 import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn";
+import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
 import { BountiesIcon } from "@/components/svg/sidebar/bounties";
 import { DiscoverIcon } from "@/components/svg/sidebar/discover";
@@ -12,7 +13,6 @@ import { WalletIcon } from "@/components/svg/sidebar/wallet";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -20,16 +20,21 @@ import {
 } from "@/components/ui/sidebar";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import React from "react";
+import Link from "next/link";
+import React, { useState } from "react";
 
 export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
-  console.log("🚀 ~ LeftSidebar ~ theme:", theme);
+  const [walletModal, setWalletModal] = useState<boolean>(false);
+
+  const handleWalletModal = () => {
+    setWalletModal(!walletModal);
+  };
 
   const items = [
     {
       title: "Home",
-      url: "#",
+      url: "/",
       icon: HomeIcon,
     },
     {
@@ -59,7 +64,7 @@ export default function LeftSidebar() {
     },
     {
       title: "Wallet",
-      url: "#",
+      url: "/wallet",
       icon: WalletIcon,
     },
   ];
@@ -87,20 +92,22 @@ export default function LeftSidebar() {
         <SidebarMenu className="gap-1 mt-4">
           {items.map((item, index) => (
             <SidebarMenuItem key={index}>
-              <SidebarMenuButton
-                className={`flex h-[40px] px-5 rounded-3xl cursor-pointer dark:hover:bg-[#13151a] ${
-                  index === 0 ? "dark:bg-[#13151a]" : ""
-                }`}
-              >
-                {item.icon && <item.icon />}
-                <span className="text-[16px] font-[400]">{item.title}</span>
-              </SidebarMenuButton>
+              <Link href={item?.url}>
+                <SidebarMenuButton
+                  className={`flex h-[40px] px-5 rounded-3xl cursor-pointer dark:hover:bg-[#13151a] ${
+                    index === 0 ? "dark:bg-[#13151a]" : ""
+                  }`}
+                >
+                  {item.icon && <item.icon />}
+                  <span className="text-[16px] font-[400]">{item.title}</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
         <div className="mx-4 mt-4 rounded-2xl border dark:bg-[#080A0E] lg:mx-0 lg:ml-4">
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 py-4 px-2">
-            <CreateImportWalletBtn />
+            <CreateImportWalletBtn handleClick={handleWalletModal} />
             <div className="flex flex-wrap justify-center gap-4 flex-col w-auto">
               <BuyTokenBtn>
                 <BuyTokenIcon /> Buy $FOCUS
@@ -110,15 +117,10 @@ export default function LeftSidebar() {
         </div>
       </SidebarContent>
 
-      {/* Sidebar Footer with Log Out Button */}
-      {/* <SidebarFooter className="">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter> */}
+      <CreateImportWalletModal
+        open={walletModal}
+        onClose={() => setWalletModal(false)}
+      />
     </Sidebar>
   );
 }

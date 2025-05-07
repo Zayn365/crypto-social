@@ -1,4 +1,11 @@
-export const HomeIcon = ({ width = 16, height = 16, color, ...props }: any) => {
+interface HomeIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
+export const HomeIcon = ({ width = 16, height = 16, color, ...props }: HomeIconProps) => {
   return (
     <svg
       width={width}

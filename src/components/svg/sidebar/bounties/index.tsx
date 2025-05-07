@@ -1,9 +1,16 @@
+interface BountiesIconProps {
+  width?: number;
+  height?: number;
+  color?: string;
+  key?: string
+}
+
 export const BountiesIcon = ({
   width = 24,
   height = 24,
   color,
   ...props
-}: any) => {
+}: BountiesIconProps) => {
   return (
     <svg
       width={width}

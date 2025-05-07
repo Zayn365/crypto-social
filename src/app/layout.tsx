@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" enableSystem={false}>
-          {children}
+          <div className="dark:bg-[#040609]">{children}</div>
           <Toaster />
         </ThemeProvider>
       </body>
