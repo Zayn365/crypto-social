@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { Modal } from "./modal";
 import CreateImportWalletBtn from "./create-import-wallet-btn";
+import WalletButton from "./WalletButton";
 
 interface CreateImportWalletModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export default function CreateImportWalletModal({ open, onClose }: CreateImportWalletModalProps) {
+export default function CreateImportWalletModal({
+  open,
+  onClose,
+}: CreateImportWalletModalProps) {
   const [agreed, setAgreed] = useState(false);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +75,7 @@ export default function CreateImportWalletModal({ open, onClose }: CreateImportW
           </div>
         </div>
 
-        <CreateImportWalletBtn disabled={!agreed} />
+        <WalletButton />
       </div>
     </Modal>
   );

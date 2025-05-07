@@ -2,6 +2,7 @@
 import BuyTokenBtn from "@/components/common/buy-token-btn";
 import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn";
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
+import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
 import { BountiesIcon } from "@/components/svg/sidebar/bounties";
 import { DiscoverIcon } from "@/components/svg/sidebar/discover";
@@ -18,14 +19,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useWallet } from "@/context/WalletContext";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
   const [walletModal, setWalletModal] = useState<boolean>(false);
+  const { connection } = useWallet();
+  const pathname = usePathname();
 
   const handleWalletModal = () => {
     setWalletModal(!walletModal);
@@ -59,7 +64,7 @@ export default function LeftSidebar() {
     },
     {
       title: "Earnings",
-      url: "#",
+      url: "/earnings",
       icon: EarningIcon,
     },
     {
@@ -80,7 +85,7 @@ export default function LeftSidebar() {
           Focus
           <div
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="border rounded-full p-2"
+            className="border rounded-full p-2 cursor-pointer"
           >
             {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
           </div>
@@ -95,7 +100,7 @@ export default function LeftSidebar() {
               <Link href={item?.url}>
                 <SidebarMenuButton
                   className={`flex h-[40px] px-5 rounded-3xl cursor-pointer dark:hover:bg-[#13151a] ${
-                    index === 0 ? "dark:bg-[#13151a]" : ""
+                    pathname === item.url ? "dark:bg-[#13151a]" : ""
                   }`}
                 >
                   {item.icon && <item.icon />}
@@ -107,7 +112,11 @@ export default function LeftSidebar() {
         </SidebarMenu>
         <div className="mx-4 mt-4 rounded-2xl border dark:bg-[#080A0E] lg:mx-0 lg:ml-4">
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 py-4 px-2">
-            <CreateImportWalletBtn handleClick={handleWalletModal} />
+            {connection.address === null ? (
+              <CreateImportWalletBtn handleClick={handleWalletModal} />
+            ) : (
+              <WalletButton />
+            )}
             <div className="flex flex-wrap justify-center gap-4 flex-col w-auto">
               <BuyTokenBtn>
                 <BuyTokenIcon /> Buy $FOCUS

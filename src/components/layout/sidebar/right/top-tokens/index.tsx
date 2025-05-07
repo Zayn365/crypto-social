@@ -6,7 +6,7 @@ import React from "react";
 
 export default function TopTokens() {
   return (
-    <div className="flex w-full flex-col gap-4 overflow-auto px-4 mt-4">
+    <div className="flex w-full flex-col gap-4 overflow-auto px-4 mt-4 slim-scrollbar">
       <div>
         <div className="z-0 w-full rounded-2xl border border-border-light bg-transparent py-4">
           <div className="mb-1 flex items-center justify-between">

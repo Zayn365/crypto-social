@@ -2,19 +2,22 @@
 import BuyTokenBtn from "@/components/common/buy-token-btn";
 import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn";
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
+import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
+import { useWallet } from "@/context/WalletContext";
 import { RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export default function Market() {
+  const { connection } = useWallet();
   const [walletModal, setWalletModal] = useState<boolean>(false);
 
   const handleWalletModal = () => {
     setWalletModal(!walletModal);
   };
   return (
-    <div className="flex w-full flex-col gap-4 overflow-auto px-4">
+    <div className="flex w-full flex-col gap-4 overflow-auto px-4 slim-scrollbar">
       <div>
         <div className="z-0 w-full rounded-2xl border border-border-light bg-transparent py-4">
           <div className="mb-1 flex items-center justify-between">
@@ -98,7 +101,11 @@ export default function Market() {
           </div>
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 mt-4">
             <div className="w-full gap-4 flex items-center justify-center">
-              <CreateImportWalletBtn handleClick={handleWalletModal} />
+              {connection.address === null ? (
+                <CreateImportWalletBtn handleClick={handleWalletModal} />
+              ) : (
+                <WalletButton />
+              )}
             </div>
             <div className="flex flex-wrap justify-center gap-4 w-full">
               <Link target="_blank" href="https://openfund.com/trade/FOCUS">

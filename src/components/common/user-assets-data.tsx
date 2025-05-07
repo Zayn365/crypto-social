@@ -86,7 +86,7 @@ export default function UserAssetsData() {
     },
   ];
   return (
-    <div className="mt-4 px-4 max-h-[30vh] overflow-y-auto">
+    <div className="mt-4 px-4 max-h-[30vh] overflow-y-auto slim-scrollbar">
       {userData.map((user, index) => (
         <div
           key={index}

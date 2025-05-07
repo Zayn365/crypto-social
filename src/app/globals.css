@@ -128,3 +128,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+.slim-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #0062FF transparent; /* Optional: color for Firefox */
+}
+
+/* WebKit-based browsers (Chrome, Safari, etc.) */
+.slim-scrollbar::-webkit-scrollbar {
+  width: 1px;
+}
+
+.slim-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Optional: track background */
+}
+
+.slim-scrollbar::-webkit-scrollbar-thumb {
+  background: #0062FF; /* Optional: thumb color */
+  border-radius: 1px; /* Optional: rounded thumb */
+}
