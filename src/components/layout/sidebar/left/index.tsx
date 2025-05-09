@@ -77,10 +77,10 @@ export default function LeftSidebar() {
   return (
     <Sidebar
       side="left"
-      className="relative hidden justify-start border-r lg:flex dark:bg-[#040609]"
+      className="hidden justify-start border-r lg:flex dark:bg-[#040609] bg-[#FFFFFF] fixed"
     >
       {/* Sidebar Header with Logo */}
-      <SidebarHeader className="flex py-6 items-start dark:bg-[#040609]">
+      <SidebarHeader className="flex py-6 items-start dark:bg-[#040609] bg-[#FFFFFF]">
         <div className="flex justify-between items-center px-5 w-full">
           Focus
           <div
@@ -93,7 +93,7 @@ export default function LeftSidebar() {
       </SidebarHeader>
 
       {/* Sidebar Content with Navigation Items */}
-      <SidebarContent className="dark:bg-[#040609] px-4">
+      <SidebarContent className="dark:bg-[#040609] bg-[#FFFFFF] px-4">
         <SidebarMenu className="gap-1 mt-4">
           {items.map((item, index) => (
             <SidebarMenuItem key={index}>
