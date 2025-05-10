@@ -61,18 +61,20 @@ export default function PostHeader({ post }: any) {
       </div>
       <div className="flex items-center gap-2">
         <ListTodo
-          className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
+          className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
           size={20}
         />
         <div
-          className={`font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
+          className={`font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
         >
           Follow
         </div>
-        <div className={`font-medium text-xs text-[#59B4FF] hover:underline`}>
+        <div
+          className={`font-medium text-xs text-[#59B4FF] hover:underline cursor-pointer`}
+        >
           Subscribe
         </div>
-        <div className="hover:bg-[#F1F1F1] dark:hover:bg-[#13151A] rounded-full p-2">
+        <div className="hover:bg-[#F1F1F1] dark:hover:bg-[#13151A] rounded-full p-2 cursor-pointer">
           <Ellipsis
             className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
             size={16}
@@ -80,11 +82,11 @@ export default function PostHeader({ post }: any) {
         </div>
         {url.includes("post") && (
           <div className="flex flex-col justify-center items-center gap-1">
-            <ThumbsUp className="text-[#8c9fb7a0]" size={16} />
+            <ThumbsUp className="text-[#8c9fb7a0] cursor-pointer" size={16} />
             <div className="text-[#2f2f2f] dark:text-[#a3adb9] text-sm">
               {post.user.postValue}
             </div>
-            <ThumbsDown className="text-[#8c9fb7a0]" size={16} />
+            <ThumbsDown className="text-[#8c9fb7a0] cursor-pointer" size={16} />
           </div>
         )}
       </div>

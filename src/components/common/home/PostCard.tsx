@@ -37,11 +37,11 @@ export default function PostCard({ posts }: any) {
               <AvatarFallback>{post.user.avatarFallback}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col justify-center items-center gap-1">
-              <ThumbsUp className="text-[#8c9fb7a0]" size={16} />
+              <ThumbsUp className="text-[#8c9fb7a0] cursor-pointer" size={16} />
               <div className="text-[#2f2f2f] dark:text-[#a3adb9] text-sm">
                 {post.user.postValue}
               </div>
-              <ThumbsDown className="text-[#8c9fb7a0]" size={16} />
+              <ThumbsDown className="text-[#8c9fb7a0] cursor-pointer" size={16} />
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full">

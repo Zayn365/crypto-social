@@ -6,6 +6,8 @@ import PostHeader from "../home/PostHeader";
 import { postsData } from "@/components/dummuyData/postsData";
 import ContentCard from "../home/ContentCard";
 import PostEmojis from "../home/PostEmojis";
+import ReactionStats from "./ReactionStats";
+import Comments from "./Comments";
 
 export default function PostDetails() {
   const router = useRouter();
@@ -40,6 +42,8 @@ export default function PostDetails() {
         <ContentCard post={postsToRender} />
         <PostEmojis post={postsToRender} />
       </div>
+      <ReactionStats />
+      <Comments />
     </div>
   );
 }

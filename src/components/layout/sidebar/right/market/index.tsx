@@ -45,7 +45,7 @@ export default function Market() {
                   decoding="async"
                   data-nimg="1"
                   className="rounded-full"
-                  src="/_next/image?url=%2Fassets%2Fcoin-focus.png&amp;w=48&amp;q=75"
+                  src="https://github.com/shadcn.png"
                 />
                 FOCUS
               </span>
@@ -74,7 +74,7 @@ export default function Market() {
                   decoding="async"
                   data-nimg="1"
                   className="rounded-full"
-                  src="/_next/image?url=%2Fassets%2Fcoin-deso.png&amp;w=48&amp;q=75"
+                  src="https://github.com/shadcn.png"
                 />
                 DESO
               </span>
