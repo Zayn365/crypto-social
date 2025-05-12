@@ -44,7 +44,7 @@ export default function LeftSidebar() {
     },
     {
       title: "Discover",
-      url: "#",
+      url: "/discover",
       icon: DiscoverIcon,
     },
     {

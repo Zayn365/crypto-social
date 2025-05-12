@@ -105,6 +105,7 @@ export default function ReactionStats({ post }: any) {
       <div className="border-y p-3 flex items-center justify-around">
         {list.map((item, idx) => (
           <div
+            key={idx}
             className={`text-sm dark:hover:text-[#DDE5EE] hover:text-[#000000] dark:text-[#8C9FB7A0] text-[#999999] font-medium cursor-pointer`}
           >
             {item?.no} {item?.name}
@@ -114,7 +115,10 @@ export default function ReactionStats({ post }: any) {
 
       <div className="p-3 flex items-center justify-around border-b">
         {actionList.map((item, idx) => (
-          <div className="rounded-full p-2 whitespace-nowrap dark:hover:bg-[#13151A] hover:bg-[#F1F1F1] border cursor-pointer">
+          <div
+            key={idx}
+            className="rounded-full p-2 whitespace-nowrap dark:hover:bg-[#13151A] hover:bg-[#F1F1F1] border cursor-pointer"
+          >
             {item?.icon}
           </div>
         ))}

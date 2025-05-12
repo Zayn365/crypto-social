@@ -24,7 +24,9 @@ export const useWalletConnection = () => {
     error: null,
   });
 
-  const connectWallet = async (walletType: "metamask" | "phantom"): Promise<{ address: string; provider: any }> => {
+  const connectWallet = async (
+    walletType: "metamask" | "phantom"
+  ): Promise<{ address: string; provider: any }> => {
     try {
       if (walletType === "metamask") {
         if (!window.ethereum) {
@@ -144,7 +146,7 @@ export const useWalletConnection = () => {
               });
             });
           } catch (error) {
-            // Silent fail for Phantom if not trusted
+            console.log(error);
           }
         }
       } catch (error) {

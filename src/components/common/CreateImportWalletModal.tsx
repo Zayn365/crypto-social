@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Modal } from "./modal";
-import CreateImportWalletBtn from "./create-import-wallet-btn";
 import WalletButton from "./WalletButton";
 
 interface CreateImportWalletModalProps {
