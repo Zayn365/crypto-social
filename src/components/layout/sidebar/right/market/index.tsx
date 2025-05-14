@@ -4,13 +4,15 @@ import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn"
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
 import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
-import { useWallet } from "@/context/WalletContext";
+import { useAppKitAccount } from "@reown/appkit/react";
+// import { useWallet } from "@/context/WalletContext";
 import { RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export default function Market() {
-  const { connection } = useWallet();
+  // const { connection } = useWallet();
+  const { status } = useAppKitAccount();
   const [walletModal, setWalletModal] = useState<boolean>(false);
 
   const handleWalletModal = () => {
@@ -101,7 +103,7 @@ export default function Market() {
           </div>
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 mt-4">
             <div className="w-full gap-4 flex items-center justify-center">
-              {connection.address === null ? (
+              {status !== "connected" ? (
                 <CreateImportWalletBtn handleClick={handleWalletModal} />
               ) : (
                 <WalletButton />

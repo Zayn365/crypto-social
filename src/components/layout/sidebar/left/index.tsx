@@ -19,7 +19,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useWallet } from "@/context/WalletContext";
+import { useAppKitAccount } from "@reown/appkit/react";
+// import { useWallet } from "@/context/WalletContext";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -28,8 +29,9 @@ import React, { useState } from "react";
 
 export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
+  const { status } = useAppKitAccount();
   const [walletModal, setWalletModal] = useState<boolean>(false);
-  const { connection } = useWallet();
+  // const { connection } = useWallet();
   const pathname = usePathname();
 
   const handleWalletModal = () => {
@@ -112,7 +114,7 @@ export default function LeftSidebar() {
         </SidebarMenu>
         <div className="mx-4 mt-4 rounded-2xl border dark:bg-[#080A0E] lg:mx-0 lg:ml-4">
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 py-4 px-2">
-            {connection.address === null ? (
+            {status !== "connected" ? (
               <CreateImportWalletBtn handleClick={handleWalletModal} />
             ) : (
               <WalletButton />

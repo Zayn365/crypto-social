@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
-import { WalletProvider } from "@/context/WalletContext";
+import { AppKitProvider } from "@/context/WalletContext";
+// import { WalletProvider } from "@/context/WalletContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +32,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="class" enableSystem={false}>
-          <WalletProvider>
+          <AppKitProvider>
+            {/* <WalletProvider> */}
             <div className="dark:bg-[#040609]">{children}</div>
             <Toaster />
-          </WalletProvider>
+            {/* </WalletProvider> */}
+          </AppKitProvider>
         </ThemeProvider>
       </body>
     </html>
