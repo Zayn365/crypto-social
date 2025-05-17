@@ -1,7 +1,7 @@
 export const WalletIcon = ({
   width = 16,
   height = 16,
-  color = "#5F6C7D",
+  color = "#32bd91",
   ...props
 }: {
   width?: number;
@@ -13,7 +13,7 @@ export const WalletIcon = ({
     <svg
       width={width}
       height={height}
-      stroke={color ? color : "#5F6C7D"}
+      stroke={color ? color : "#32bd91"}
       fill="none"
       strokeWidth="2"
       viewBox="0 0 24 24"

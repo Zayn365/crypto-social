@@ -83,8 +83,8 @@ export default function LeftSidebar() {
     >
       {/* Sidebar Header with Logo */}
       <SidebarHeader className="flex py-6 items-start dark:bg-[#040609] bg-[#FFFFFF]">
-        <div className="flex justify-between items-center px-5 w-full">
-          Focus
+        <div className="flex justify-between items-center px-5 w-full text-3xl font-extrabold">
+          focus
           <div
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="border rounded-full p-2 cursor-pointer"
@@ -112,15 +112,15 @@ export default function LeftSidebar() {
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
-        <div className="mx-4 mt-4 rounded-2xl border dark:bg-[#080A0E] lg:mx-0 lg:ml-4">
-          <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 py-4 px-2">
+        <div className="mt-4">
+          <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4">
             {status !== "connected" ? (
               <CreateImportWalletBtn handleClick={handleWalletModal} />
             ) : (
               <WalletButton />
             )}
-            <div className="flex flex-wrap justify-center gap-4 flex-col w-auto">
-              <BuyTokenBtn>
+            <div className="flex flex-wrap justify-center gap-4 flex-col w-full">
+              <BuyTokenBtn clasName="min-w-full">
                 <BuyTokenIcon /> Buy $FOCUS
               </BuyTokenBtn>
             </div>

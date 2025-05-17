@@ -136,7 +136,7 @@ export default function UserAssetsData() {
             </div>
           </div>
           <div className="flex flex-col items-end">
-            <div className="text-xs text-shadow-[#17a34a] dark:text-[#00c951] text-[#00c951] font-bold">
+            <div className="text-xs text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-bold">
               {user.amount}
             </div>
             <div className="text-xs dark:text-[#8c9fb7a0] text-[#999999]">

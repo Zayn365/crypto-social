@@ -10,7 +10,7 @@ export const HomeIcon = ({ width = 16, height = 16, color, ...props }: HomeIconP
     <svg
       width={width}
       height={height}
-      stroke={color ? color : "#5F6C7D"}
+      stroke={color ? color : "#32bd91"}
       fill="none"
       strokeWidth="2"
       viewBox="0 0 24 24"

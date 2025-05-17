@@ -12,7 +12,7 @@ export default function CreateImportWalletBtn({
   return (
     <Button
       onClick={handleClick}
-      className="bg-[#0062FF] dark:bg-[#59B4FF] hover:bg-transparent hover:border hover:border-[#0062FF] hover:text-[#0062FF] dark:hover:bg-[#15293A] dark:hover:border-[#59B4FF] dark:hover:text-[#59B4FF] text-sm whitespace-nowrap px-4 py-2 rounded-full cursor-pointer"
+      className="bg-[#32bd91] dark:bg-[#32bd91] hover:bg-transparent hover:border hover:border-[#32bd91] hover:text-[#32bd91] dark:hover:bg-[#15293A] dark:hover:border-[#32bd91] dark:hover:text-[#32bd91] text-sm whitespace-nowrap px-4 py-2 rounded-full cursor-pointer"
       {...props}
     >
       Create or Import Wallet

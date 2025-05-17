@@ -38,6 +38,12 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   --black-100: "#040609";
+
+  --font-jetbrains-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-jetbrains-mono);
 }
 
 .dark {
@@ -131,7 +137,7 @@
 
 .slim-scrollbar {
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #0062FF transparent; /* Optional: color for Firefox */
+  scrollbar-color: #32bd91 transparent; /* Optional: color for Firefox */
 }
 
 /* WebKit-based browsers (Chrome, Safari, etc.) */
@@ -144,6 +150,6 @@
 }
 
 .slim-scrollbar::-webkit-scrollbar-thumb {
-  background: #0062FF; /* Optional: thumb color */
+  background: #32bd91; /* Optional: thumb color */
   border-radius: 1px; /* Optional: rounded thumb */
 }
