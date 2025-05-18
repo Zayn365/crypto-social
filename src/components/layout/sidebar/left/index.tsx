@@ -79,7 +79,7 @@ export default function LeftSidebar() {
   return (
     <Sidebar
       side="left"
-      className="hidden justify-start border-r lg:flex dark:bg-[#040609] bg-[#FFFFFF] fixed"
+      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#040609] bg-[#FFFFFF] h-screen overflow-y-auto"
     >
       {/* Sidebar Header with Logo */}
       <SidebarHeader className="flex py-6 items-start dark:bg-[#040609] bg-[#FFFFFF]">

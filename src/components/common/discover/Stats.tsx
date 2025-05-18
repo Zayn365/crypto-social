@@ -10,10 +10,10 @@ export default function Stats({ data }: any) {
             index > 0 ? "border-l" : ""
           }`}
         >
-          <p className="dark:text-[#8c9fb7a0] text-[#999999] text-sm">
+          <p className="dark:text-[#8c9fb7a0] text-[#999999] text-sm max-md:text-xs">
             {stat.label}
           </p>
-          <p className="dark:text-[#DDE5EE] text-[#000000] font-semibold flex items-center gap-2">
+          <p className="dark:text-[#DDE5EE] text-[#000000] font-semibold flex items-center gap-2 max-md:text-xs">
             {stat.value}
             {stat.whaleCount && (
               <span className="dark:text-[#8c9fb7a0] text-[#999999] text-sm flex items-center justify-center gap-2">

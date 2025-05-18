@@ -30,7 +30,7 @@ export default function ProjectInfoCard({ data }: any) {
       </div>
 
       {/* Profile Section */}
-      <div className="-mt-12 p-6">
+      <div className="-mt-12 p-6 max-md:p-2">
         {/* Profile Picture */}
         <div className="">
           <div className="flex items-center gap-2">
@@ -47,7 +47,7 @@ export default function ProjectInfoCard({ data }: any) {
               <div>
                 <h1
                   onClick={() => router.replace(`/${data.profile.name}`)}
-                  className="text-base hover:underline cursor-pointer dark:text-[#DDE5EE] text-[#000000] font-bold flex items-center gap-2"
+                  className="text-base hover:underline cursor-pointer dark:text-[#DDE5EE] text-[#000000] font-bold flex items-center gap-2 max-md:text-sm"
                 >
                   {data.profile.name}
                   {data.profile.verified && (
@@ -77,7 +77,7 @@ export default function ProjectInfoCard({ data }: any) {
                     </>
                   )}
                 </h1>
-                <p className="text-sm dark:text-[#8c9fb7a0] text-[#999999]">
+                <p className="text-sm dark:text-[#8c9fb7a0] text-[#999999] max-md:text-xs">
                   {data.profile.handle}
                 </p>
               </div>

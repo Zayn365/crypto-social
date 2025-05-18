@@ -7,7 +7,7 @@ import { projectInfoData } from "@/components/dummuyData/projectInfoData";
 export default function DiscoverHeader() {
   return (
     <div>
-      <div className="border-b flex items-center gap-4 justify-start p-4">
+      <div className="border-b flex items-center gap-4 justify-start p-4 overflow-x-auto">
         <BuyTokenBtn clasName="h-11">Top Active Users</BuyTokenBtn>
         <BuyTokenBtn clasName="h-11">Top New Users</BuyTokenBtn>
         <BuyTokenBtn clasName="h-11">Top Earning Users</BuyTokenBtn>

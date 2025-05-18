@@ -24,9 +24,9 @@ export default function PostCard({ posts }: any) {
         <div
           key={index}
           onClick={() => router.replace(`/post/${post?.id}`)}
-          className="flex items-stretch gap-4 cursor-pointer p-6 hover:bg-[#F9F9F9] dark:hover:bg-[#080A0E]"
+          className="flex items-stretch gap-4 cursor-pointer p-6 hover:bg-[#F9F9F9] dark:hover:bg-[#080A0E] max-md:flex-col"
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 max-md:flex-row max-md:justify-between">
             <Avatar className="size-14">
               <AvatarImage
                 width={100}

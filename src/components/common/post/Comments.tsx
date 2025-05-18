@@ -163,7 +163,7 @@ export default function Comments() {
                 {/* Comment Content */}
                 <p className="text-sm mt-1">{comment.content}</p>
                 {/* Interaction Icons */}
-                <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0]">
+                <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
                   <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <ThumbsUp size={14} />
                     <span className="text-xs">{comment.likes}</span>
@@ -251,7 +251,7 @@ export default function Comments() {
                           {/* More options */}
                         </div>
                         <p className="text-sm mt-1">{subComment.content}</p>
-                        <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0]">
+                        <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
                           <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                             <ThumbsUp size={14} />
                             <span className="text-xs">{comment.likes}</span>

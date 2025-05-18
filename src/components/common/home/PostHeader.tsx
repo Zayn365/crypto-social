@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function PostHeader({ post }: any) {
   const url = usePathname();
   return (
-    <div className="flex justify-between items-center gap-4">
+    <div className="flex justify-between items-center gap-4 max-md:flex-col max-md:items-start">
       <div className="flex items-center gap-2">
         {url.includes("post") && (
           <Avatar className="size-14">
@@ -59,7 +59,7 @@ export default function PostHeader({ post }: any) {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 max-md:justify-around max-md:w-full">
         <ListTodo
           className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
           size={20}
