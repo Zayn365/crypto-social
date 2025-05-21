@@ -17,6 +17,24 @@ interface BalanceResponse {
   error?: string;
 }
 
+async function isRpcResponsive(
+  rpcUrl: string,
+  timeoutMs: number = 5000
+): Promise<boolean> {
+  try {
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
+    await Promise.race([
+      provider.getNetwork(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("RPC timeout")), timeoutMs)
+      ),
+    ]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -41,7 +59,14 @@ export async function GET(request: Request) {
     for (const chain of chainsData) {
       try {
         // Select first available HTTPS RPC
-        const rpcUrl = chain.rpc.find((url) => url.startsWith("https"));
+        // const rpcUrl = chain.rpc.find((url) => url.startsWith("https"));
+        let rpcUrl: string | undefined;
+        for (const url of chain.rpc) {
+          if (url.startsWith("https") && (await isRpcResponsive(url))) {
+            rpcUrl = url;
+            break;
+          }
+        }
         if (!rpcUrl) {
           throw new Error("No valid HTTPS RPC found");
         }
@@ -57,23 +82,18 @@ export async function GET(request: Request) {
           balance,
           chain.nativeCurrency.decimals
         );
-
-        balances.push({
-          chainName: chain.name,
-          chainId: chain.chainId,
-          nativeCurrency: chain.nativeCurrency,
-          balance: formattedBalance,
-          balanceWei: balance.toString(),
-          rpcUsed: rpcUrl,
-        });
+        if (parseFloat(formattedBalance) > 0) {
+          balances.push({
+            chainName: chain.name,
+            chainId: chain.chainId,
+            nativeCurrency: chain.nativeCurrency,
+            balance: formattedBalance,
+            balanceWei: balance.toString(),
+            rpcUsed: rpcUrl,
+          });
+        }
       } catch (error) {
         console.error(`Error fetching balance for ${chain.name}:`, error);
-        balances.push({
-          chainName: chain.name,
-          chainId: chain.chainId,
-          nativeCurrency: chain.nativeCurrency,
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
       }
     }
     console.log(balances, "balancesbalances");
