@@ -7,14 +7,8 @@ import axios, {
 } from "axios";
 import { getCookie, deleteCookie } from "cookies-next";
 
-export interface ApiResponse<responseData> {
-  responseCode: number;
-  responseData: responseData;
-  message: string;
-}
-
 const headers: Record<string, string> = {
-  platform: "Web"
+  platform: "Web",
 };
 
 const apiClient: AxiosInstance = axios.create({
@@ -28,7 +22,7 @@ apiClient.interceptors.request.use(
     if (token) {
       const { accessToken } = jsonParse(token);
       config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = `Bearer ${accessToken.token}`;
     }
     return config;
   }
@@ -40,7 +34,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       deleteCookie("token");
       if (typeof window !== "undefined") {
-        window.location.href = "/auth/signin";
+        window.location.href = "/";
       }
     }
     return Promise.reject(error);

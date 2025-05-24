@@ -1,77 +1,64 @@
-import React from "react";
-import { Button } from "../ui/button";
-import { Copy } from "lucide-react";
+import { useAuth } from "@/providers/AuthProvider";
+import { loginWithWallet, register } from "@/services/auth";
+import { useAppKitAccount } from "@reown/appkit/react";
+import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "cookies-next";
+import React, { useEffect } from "react";
 import toast from "react-hot-toast";
-// import { useWallet } from "@/context/WalletContext";
 
 export default function WalletButton() {
-  // const { connection, connectWallet, disconnectWallet } = useWallet();
+  const { address } = useAppKitAccount();
+  const { setUser } = useAuth();
 
-  // const handleConnect = async (walletType: "metamask" | "phantom") => {
-  //   try {
-  //     await connectWallet(walletType);
-  //   } catch (error) {
-  //     console.error("Connection failed:", error);
-  //   }
-  // };
+  const loginWallet = useMutation({
+    mutationFn: loginWithWallet,
+    onSuccess: ({ tokens, user }: any) => {
+      setUser(user);
+      setCookie("token", {
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+      });
+      toast.success(`Login successful`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
 
-  function copyToClipboard(text: string): void {
-    if (!navigator.clipboard) {
-      console.warn("Clipboard API not supported.");
-      return;
-    }
-
-    navigator.clipboard.writeText(text).then(
-      () => {
-        toast.success(`Copied successfully`);
-      },
-      (err) => {
-        console.error("Failed to copy text: ", err);
+  const registerWallet = useMutation({
+    mutationFn: register,
+    onSuccess: ({ tokens }: any) => {
+      setCookie("token", {
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+      });
+      toast.success(`Register successful`);
+    },
+    onError: ({ response }: any) => {
+      if (response.data.message === "This user already exits") {
+        loginWallet.mutate({
+          password: address ?? "",
+          walletAddress: address ?? "",
+        });
       }
-    );
-  }
+    },
+  });
+
+  useEffect(() => {
+    try {
+      registerWallet.mutate({
+        password: address ?? "",
+        roleId: 2,
+        walletAddress: address ?? "",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [address]);
+
   return (
     <>
       <appkit-button balance="hide" />
     </>
-    // <div>
-    //   {connection.address ? (
-    //     <div className="flex flex-col items-center gap-2">
-    //       <p
-    //         className="flex items-center gap-2 bg-[#0062FF] dark:bg-[#59B4FF] hover:bg-transparent hover:border hover:border-[#0062FF] hover:text-[#0062FF] dark:hover:bg-[#15293A] dark:hover:border-[#59B4FF] dark:hover:text-[#59B4FF] text-sm whitespace-nowrap px-4 py-2 rounded-full cursor-pointer"
-    //         onClick={() => copyToClipboard(String(connection.address))}
-    //       >
-    //         {" "}
-    //         {`${connection.address.slice(0, 5)}...${connection.address.slice(
-    //           connection.address.length - 5,
-    //           connection.address.length
-    //         )}`}
-    //         <Copy size={14} />
-    //       </p>
-    //       <Button
-    //         onClick={disconnectWallet}
-    //         className="bg-red-500 text-white hover:bg-red-700 cursor-pointer"
-    //       >
-    //         Disconnect
-    //       </Button>
-    //     </div>
-    //   ) : (
-    //     <div className="flex gap-4 justify-center">
-    //       <Button
-    //         onClick={() => handleConnect("metamask")}
-    //         className="bg-[#0062FF] dark:bg-[#59B4FF] hover:bg-transparent hover:border hover:border-[#0062FF] hover:text-[#0062FF] dark:hover:bg-[#15293A] dark:hover:border-[#59B4FF] dark:hover:text-[#59B4FF] text-sm whitespace-nowrap px-4 py-2 rounded-full cursor-pointer"
-    //       >
-    //         Connect MetaMask
-    //       </Button>
-    //       <Button
-    //         onClick={() => handleConnect("phantom")}
-    //         className="bg-[#0062FF] dark:bg-[#59B4FF] hover:bg-transparent hover:border hover:border-[#0062FF] hover:text-[#0062FF] dark:hover:bg-[#15293A] dark:hover:border-[#59B4FF] dark:hover:text-[#59B4FF] text-sm whitespace-nowrap px-4 py-2 rounded-full cursor-pointer"
-    //       >
-    //         Connect Phantom
-    //       </Button>
-    //     </div>
-    //   )}
-    //   {connection.error && <p>Error: {connection.error}</p>}
-    // </div>
   );
 }

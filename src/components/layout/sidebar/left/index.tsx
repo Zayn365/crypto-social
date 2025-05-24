@@ -9,6 +9,8 @@ import { DiscoverIcon } from "@/components/svg/sidebar/discover";
 import { EarningIcon } from "@/components/svg/sidebar/earning";
 import { FeedIcon } from "@/components/svg/sidebar/feed";
 import { HomeIcon } from "@/components/svg/sidebar/home";
+import { ProfileIcon } from "@/components/svg/sidebar/profile";
+import { SettingsIcon } from "@/components/svg/sidebar/settings";
 import { TradeIcon } from "@/components/svg/sidebar/trade";
 import { WalletIcon } from "@/components/svg/sidebar/wallet";
 import {
@@ -19,8 +21,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/providers/AuthProvider";
 import { useAppKitAccount } from "@reown/appkit/react";
-// import { useWallet } from "@/context/WalletContext";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
@@ -31,8 +33,8 @@ export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
   const { status } = useAppKitAccount();
   const [walletModal, setWalletModal] = useState<boolean>(false);
-  // const { connection } = useWallet();
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const handleWalletModal = () => {
     setWalletModal(!walletModal);
@@ -74,6 +76,24 @@ export default function LeftSidebar() {
       url: "/wallet",
       icon: WalletIcon,
     },
+    ...(user?.username
+      ? [
+          {
+            title: "Profile",
+            url: `/${user?.username}`,
+            icon: ProfileIcon,
+          },
+        ]
+      : []),
+    ...(user
+      ? [
+          {
+            title: "Settings",
+            url: `/settings`,
+            icon: SettingsIcon,
+          },
+        ]
+      : []),
   ];
 
   return (

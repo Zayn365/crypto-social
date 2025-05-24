@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { AppKitProvider } from "@/context/WalletContext";
-// import localFont from "next/font/local";
-// import { WalletProvider } from "@/context/WalletContext";
+import { QueryProvider } from "@/providers/QueryProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Crypto Social",
@@ -26,14 +26,16 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={`${jetBrainsMono.variable} suppressHydrationWarning`}>
-        <ThemeProvider attribute="class" enableSystem={false}>
-          <AppKitProvider>
-            {/* <WalletProvider> */}
-            <div className="dark:bg-[#040609]">{children}</div>
-            <Toaster />
-            {/* </WalletProvider> */}
-          </AppKitProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <ThemeProvider attribute="class" enableSystem={false}>
+              <AppKitProvider>
+                <div className="dark:bg-[#040609]">{children}</div>
+                <Toaster />
+              </AppKitProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

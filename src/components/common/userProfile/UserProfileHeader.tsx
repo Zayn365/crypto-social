@@ -11,7 +11,7 @@ export default function UserProfileHeader({ data }: any) {
     <div className="pb-4">
       <div className="relative w-full">
         <Image
-          src={data.profile.bannerImage}
+          src={data?.profile?.bannerImage}
           alt="Banner"
           className="object-cover w-full min-h-52"
           width={700}
@@ -25,9 +25,9 @@ export default function UserProfileHeader({ data }: any) {
               width={100}
               height={100}
               className="rounded-full border object-cover max-w-[112px]"
-              src={data.profile.profilePicture}
+              src={data?.profile?.profilePicture}
             />
-            <AvatarFallback>{data.profile.profilePicture}</AvatarFallback>
+            <AvatarFallback>{data?.profile?.profilePicture}</AvatarFallback>
           </Avatar>
         </div>
         <div className="h-fit flex items-center gap-2">
@@ -57,8 +57,8 @@ export default function UserProfileHeader({ data }: any) {
 
       <div className="px-6">
         <h1 className="text-lg dark:text-[#DDE5EE] text-[#000000] font-bold flex items-center gap-2">
-          {data.profile.name}
-          {data.profile.verified && (
+          {data?.profile?.name}
+          {data?.profile?.verified && (
             <>
               <img
                 alt="whale"
@@ -74,7 +74,7 @@ export default function UserProfileHeader({ data }: any) {
             </>
           )}
           <p className="text-sm dark:text-[#8c9fb7a0] text-[#999999] font-normal">
-            {data.profile.handle}
+            {data?.profile?.handle}
           </p>
         </h1>
         <FollowersFollowing data={data} />

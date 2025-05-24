@@ -1,11 +1,11 @@
 import { AxiosInstance } from "axios";
-import apiClient, { ApiResponse } from "./config/client";
+import apiClient from "./config/client";
 import { postHandler } from "./config/helper";
 import { POSTS } from "./config/urls/posts";
 
 export const getAllPosts = async (
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.getAllPosts, {});
 };
 
@@ -14,21 +14,21 @@ export const getAllUserPosts = async (
     id: number;
   },
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.getAllUserPosts, payload);
 };
 
 export const createPost = async (
   payload: FormData,
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.createPost, payload);
 };
 
 export const updatePost = async (
   payload: FormData,
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.updatePost, payload);
 };
 
@@ -40,7 +40,7 @@ export const likePost = async (
     emoji: string;
   },
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.likePost, payload);
 };
 
@@ -51,7 +51,7 @@ export const commentPost = async (
     comment: string;
   },
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.commentPost, payload);
 };
 
@@ -60,6 +60,6 @@ export const deletePost = async (
     id: number;
   },
   client: AxiosInstance = apiClient
-): Promise<ApiResponse<any>> => {
+): Promise<Response> => {
   return await postHandler(client, POSTS.deletePost, payload);
 };

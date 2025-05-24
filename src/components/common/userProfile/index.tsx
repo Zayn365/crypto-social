@@ -9,7 +9,7 @@ export default function UserProfileDetails() {
   const { id } = useParams();
 
   const findPostById = (id: string) => {
-    return projectInfoData.find((data) => data.profile.name === id) || null;
+    return projectInfoData.find((data) => data?.profile?.name === id) || null;
   };
 
   const projectToRender = typeof id === "string" ? findPostById(id) : null;

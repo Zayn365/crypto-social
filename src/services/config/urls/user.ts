@@ -1,5 +1,5 @@
 export const USER = {
-  uploadAvatar: `/users/upload-avatar?id=2`,
-  updateUserInfo: `/users/?userId=2`,
+  uploadAvatar: `/users/upload-avatar`,
+  updateUserInfo: `/users`,
   getAllUsers: `/users`,
 };
