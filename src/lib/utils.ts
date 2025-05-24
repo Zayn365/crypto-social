@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import moment from "moment";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,4 +13,22 @@ export function jsonParse(data: string, defaultValue: unknown = null) {
     console.warn(error);
     return defaultValue;
   }
+}
+
+export function sliceMethod(value: string) {
+  try {
+    const val = `${value?.slice(0, 4)}...${value?.slice(
+      value.length - 4,
+      value.length
+    )}`;
+    return val;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function formatDateWithAgo(dateString: string): string {
+  const formatted = moment(dateString).format("MMM-DD-YYYY");
+  const days = moment().diff(moment(dateString), "days");
+  return `${formatted} (${days} day${days !== 1 ? "s" : ""} ago)`;
 }

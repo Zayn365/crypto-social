@@ -7,19 +7,20 @@ import { useAppKitAccount } from "@reown/appkit/react";
 import { useMutation } from "@tanstack/react-query";
 import { updateUserInfo, uploadAvatar } from "@/services/user";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
 import { blobToWebP } from "webp-converter-browser";
+import FillButton from "../FillButton";
+import { formatDateWithAgo } from "@/lib/utils";
 
 interface UserData {
   avatar: string | File | null;
   name: string;
   email: string;
   username: string;
+  created_date_time: string;
 }
 
 export default function EditProfile() {
   const { user, setUser } = useAuth();
-  console.log("🚀 ~ EditProfile ~ user:", user);
   const { address } = useAppKitAccount();
 
   const [userData, setUserData] = useState<UserData>({
@@ -27,14 +28,16 @@ export default function EditProfile() {
     name: user?.name || "",
     email: user?.email || "",
     username: user?.username || "",
+    created_date_time: "",
   });
 
   useEffect(() => {
     setUserData({
-      avatar: user?.avatar || "",
+      avatar: user?.avatar || "/userDefault.webp",
       name: user?.name || "",
       email: user?.email || "",
       username: user?.username || "",
+      created_date_time: user?.created_date_time || "",
     });
   }, [user]);
 
@@ -95,12 +98,16 @@ export default function EditProfile() {
   return (
     <div className="p-4">
       <div className="text-xl font-bold">My Profile</div>
+      <div className="text-sm dark:text-[#A3ADB9] text-[#2f2f2f]">
+        `Your profile was created on $
+        {formatDateWithAgo(user?.created_date_time)}.`
+      </div>
       <div className="mt-4">
         <ProfileUpload
           onChange={(file: File | null) =>
             setUserData((pre) => ({ ...pre, avatar: file }))
           }
-          srcUrl={typeof userData.avatar === "string" ? userData.avatar : ""}
+          srcUrl={typeof userData?.avatar === "string" ? userData?.avatar : ""}
           fallbackText="profile"
         />
         <div className="flex flex-wrap gap-4 mt-4">
@@ -144,12 +151,9 @@ export default function EditProfile() {
             <Input placeholder="wallet" className="" value={address ?? ""} />
           </Label>
         </div>
-        <Button
-          className="bg-[#32bd91] dark:bg-[#32bd91] hover:bg-transparent hover:border hover:border-[#32bd91] hover:text-[#32bd91] dark:hover:bg-[#15293A] dark:hover:border-[#32bd91] dark:hover:text-[#32bd91] text-sm whitespace-nowrap px-4 py-2 rounded-full cursor-pointer w-full mt-8"
-          onClick={handleProfileUpdate}
-        >
+        <FillButton onClick={handleProfileUpdate} className="w-full mt-4">
           Update
-        </Button>
+        </FillButton>
       </div>
     </div>
   );

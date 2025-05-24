@@ -2,6 +2,8 @@
 import BuyTokenBtn from "@/components/common/buy-token-btn";
 import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn";
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
+import FillButton from "@/components/common/FillButton";
+import UserInfoCard from "@/components/common/UserInfoCard";
 import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
 import { BountiesIcon } from "@/components/svg/sidebar/bounties";
@@ -52,17 +54,17 @@ export default function LeftSidebar() {
       icon: DiscoverIcon,
     },
     {
-      title: "Bounties",
+      title: "Bounties (coming soon)",
       url: "#",
       icon: BountiesIcon,
     },
     {
-      title: "Feed Store",
+      title: "Feed Store (coming soon)",
       url: "#",
       icon: FeedIcon,
     },
     {
-      title: "Trade",
+      title: "Trade (coming soon)",
       url: "#",
       icon: TradeIcon,
     },
@@ -99,7 +101,7 @@ export default function LeftSidebar() {
   return (
     <Sidebar
       side="left"
-      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#040609] bg-[#FFFFFF] h-screen overflow-y-auto"
+      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#040609] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
     >
       {/* Sidebar Header with Logo */}
       <SidebarHeader className="flex py-6 items-start dark:bg-[#040609] bg-[#FFFFFF]">
@@ -146,6 +148,16 @@ export default function LeftSidebar() {
             </div>
           </div>
         </div>
+        {user?.username && (
+          <div className="w-full">
+            <FillButton className="w-full">Post</FillButton>
+          </div>
+        )}
+        {user?.username && (
+          <div className="my-4">
+            <UserInfoCard />
+          </div>
+        )}
       </SidebarContent>
 
       <CreateImportWalletModal
