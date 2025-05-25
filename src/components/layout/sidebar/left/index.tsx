@@ -2,6 +2,7 @@
 import BuyTokenBtn from "@/components/common/buy-token-btn";
 import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn";
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
+import CreatePostModal from "@/components/common/CreatePostModal";
 import FillButton from "@/components/common/FillButton";
 import UserInfoCard from "@/components/common/UserInfoCard";
 import WalletButton from "@/components/common/WalletButton";
@@ -35,6 +36,7 @@ export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
   const { status } = useAppKitAccount();
   const [walletModal, setWalletModal] = useState<boolean>(false);
+  const [postModal, setPostModal] = useState<boolean>(false);
   const pathname = usePathname();
   const { user } = useAuth();
 
@@ -150,7 +152,9 @@ export default function LeftSidebar() {
         </div>
         {user?.username && (
           <div className="w-full">
-            <FillButton className="w-full">Post</FillButton>
+            <FillButton className="w-full" onClick={() => setPostModal(true)}>
+              Post
+            </FillButton>
           </div>
         )}
         {user?.username && (
@@ -164,6 +168,7 @@ export default function LeftSidebar() {
         open={walletModal}
         onClose={() => setWalletModal(false)}
       />
+      <CreatePostModal open={postModal} onClose={() => setPostModal(false)} />
     </Sidebar>
   );
 }
