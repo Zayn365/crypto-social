@@ -50,7 +50,7 @@ export default function UserInfoCard() {
                   width={100}
                   height={100}
                   className="rounded-full border object-cover"
-                  src={user.avatar ?? "/userDefault.webp"}
+                  src={user?.avatar ?? "/userDefault.webp"}
                 />
                 <AvatarFallback>{""}</AvatarFallback>
               </Avatar>

@@ -17,7 +17,7 @@ export const postHandler = async (
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error("Error fetching user profile:", axiosError.message);
+    console.error("Error fetching:", axiosError.message);
     throw axiosError; // Propagate the error to the caller
   }
 };
@@ -38,7 +38,7 @@ export const patchHandler = async (
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error("Error fetching user profile:", axiosError.message);
+    console.error("Error fetching:", axiosError.message);
     throw axiosError;
   }
 };
@@ -58,7 +58,7 @@ export const getHandler = async (
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;
-    console.error("Error fetching user profile:", axiosError.message);
+    console.error("Error fetching:", axiosError.message);
     throw axiosError;
   }
 };

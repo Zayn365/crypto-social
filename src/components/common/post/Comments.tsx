@@ -117,7 +117,7 @@ export default function Comments() {
                       width={100}
                       height={100}
                       className="w-9 h-9 object-cover"
-                      src={comment.avatarSrc}
+                      src={comment?.avatarSrc ?? "/userDefault.webp"}
                     />
                     <AvatarFallback>{comment.username}</AvatarFallback>
                   </Avatar>
@@ -205,7 +205,7 @@ export default function Comments() {
                               width={100}
                               height={100}
                               className="w-9 h-9 object-cover"
-                              src={subComment.avatarSrc}
+                              src={subComment?.avatarSrc ?? "/userDefault.webp"}
                             />
                             <AvatarFallback>
                               {subComment.username}

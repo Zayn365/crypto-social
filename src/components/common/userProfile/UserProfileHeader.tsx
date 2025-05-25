@@ -25,7 +25,7 @@ export default function UserProfileHeader({ data }: any) {
               width={100}
               height={100}
               className="rounded-full border object-cover max-w-[112px]"
-              src={data?.profile?.profilePicture}
+              src={data?.profile?.profilePicture ?? "/userDefault.webp"}
             />
             <AvatarFallback>{data?.profile?.profilePicture}</AvatarFallback>
           </Avatar>

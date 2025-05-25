@@ -39,7 +39,7 @@ export default function ProjectInfoCard({ data }: any) {
                 width={100}
                 height={100}
                 className="rounded-full border object-cover"
-                src={data.profile.profilePicture}
+                src={data?.profile?.profilePicture ?? "/userDefault.webp"}
               />
               <AvatarFallback>{""}</AvatarFallback>
             </Avatar>

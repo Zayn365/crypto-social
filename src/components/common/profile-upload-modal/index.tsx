@@ -71,10 +71,7 @@ const ProfileUpload = ({
       <Avatar
         className={cn("border-2 border-[#a3a3a3] size-[85px]", avatarClassName)}
       >
-        <AvatarImage
-          src={image || "/images/default-user.jpg"}
-          alt="Profile picture"
-        />
+        <AvatarImage src={image || "/userDefault.webp"} alt="Profile picture" />
         <AvatarFallback className="text-2xl bg-[#64748b] text-white">
           {fallbackText || "?"}
         </AvatarFallback>

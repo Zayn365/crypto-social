@@ -32,7 +32,7 @@ export default function PostCard({ posts }: any) {
                 width={100}
                 height={100}
                 className="w-14 h-14 object-cover"
-                src={post.user.avatarSrc}
+                src={post?.user?.avatarSrc ?? "/userDefault.webp"}
               />
               <AvatarFallback>{post.user.avatarFallback}</AvatarFallback>
             </Avatar>
