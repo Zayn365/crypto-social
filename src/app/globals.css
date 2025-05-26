@@ -39,7 +39,7 @@
 
   --black-100: "#040609";
 
-  --font-jetbrains-mono: 'JetBrains Mono', monospace;
+  --font-jetbrains-mono: "JetBrains Mono", monospace;
 }
 
 body {
@@ -152,4 +152,250 @@ body {
 .slim-scrollbar::-webkit-scrollbar-thumb {
   background: #32bd91; /* Optional: thumb color */
   border-radius: 1px; /* Optional: rounded thumb */
+}
+
+/* Rich Text Editor Styles */
+.ProseMirror {
+  padding: 1rem;
+  min-height: 200px;
+  outline: none;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Dark mode styles */
+.dark .ProseMirror {
+  color: #e2e8f0;
+}
+
+.dark .ProseMirror p.is-editor-empty:first-child::before {
+  color: #64748b;
+}
+
+/* Basic editor content styles */
+.ProseMirror ul,
+.ProseMirror ol {
+  padding: 0 1rem;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6 {
+  line-height: 1.1;
+}
+
+.ProseMirror h1 {
+  font-size: 2em;
+}
+.ProseMirror h2 {
+  font-size: 1.5em;
+}
+.ProseMirror h3 {
+  font-size: 1.17em;
+}
+.ProseMirror h4 {
+  font-size: 1em;
+}
+.ProseMirror h5 {
+  font-size: 0.83em;
+}
+.ProseMirror h6 {
+  font-size: 0.67em;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ProseMirror img.ProseMirror-selectednode {
+  outline: 3px solid #68cef8;
+}
+
+.ProseMirror blockquote {
+  padding-left: 1rem;
+  border-left: 3px solid #999999;
+}
+
+.dark .ProseMirror blockquote {
+  border-left: 3px solid #cccccc;
+}
+
+.ProseMirror pre {
+  background: #0d0d0d;
+  color: #fff;
+  font-family: "JetBrainsMono", monospace;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.ProseMirror code {
+  color: #ff79c6;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  background-color: rgba(175, 184, 193, 0.2);
+}
+
+.ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+.ProseMirror a {
+  color: #68cef8;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ProseMirror table {
+  border-collapse: collapse;
+  margin: 0;
+  overflow: hidden;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.ProseMirror table td,
+.ProseMirror table th {
+  border: 1px solid #ced4da;
+  box-sizing: border-box;
+  min-width: 1em;
+  padding: 0.3rem 0.5rem;
+  position: relative;
+  vertical-align: top;
+}
+
+.ProseMirror table th {
+  background-color: #f1f3f5;
+  font-weight: bold;
+  text-align: left;
+}
+
+.dark .ProseMirror table th {
+  background-color: #2d3748;
+}
+
+.ProseMirror table .selectedCell:after {
+  background: rgba(200, 200, 255, 0.4);
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.ProseMirror table .column-resize-handle {
+  background-color: #adf;
+  bottom: -2px;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: 0;
+  width: 4px;
+}
+
+.ProseMirror .tableWrapper {
+  overflow-x: auto;
+}
+
+.ProseMirror .task-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.ProseMirror .task-list-item-checkbox {
+  margin-right: 0.5rem;
+}
+
+/* Mention styles */
+.mention {
+  background-color: #e0f2fe;
+  border-radius: 0.25rem;
+  color: #0369a1;
+  padding: 0.1rem 0.3rem;
+  text-decoration: none;
+}
+
+.dark .mention {
+  background-color: #0c4a6e;
+  color: #bae6fd;
+}
+
+.mention-items {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 0.5rem;
+  z-index: 50;
+}
+
+.dark .mention-items {
+  background: #1e293b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25),
+    0 2px 4px -1px rgba(0, 0, 0, 0.15);
+}
+
+.mention-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mention-item {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.mention-item:hover {
+  background-color: #f1f5f9;
+}
+
+.dark .mention-item:hover {
+  background-color: #334155;
+}
+
+.mention-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.mention-username {
+  font-size: 0.875rem;
+}
+
+/* Character count */
+.character-count {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.dark .character-count {
+  color: #94a3b8;
+}
+
+.character-count.limit-exceeded {
+  color: #ef4444;
 }

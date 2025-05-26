@@ -8,7 +8,8 @@ import { DropdownMenuCheckboxes } from "../DropdownMenuCheckboxes";
 export default function UserProfileContent({ data }: any) {
   const { id, slug } = useParams();
   const router = useRouter();
-  const [active, setActive] = useState<string>(String(slug) || "feed");
+  const [active, setActive] = useState<string>(slug ? String(slug) : "feed");
+  console.log("🚀 ~ UserProfileContent ~ active:", active, typeof active);
   return (
     <div>
       <div className="border-y flex items-center gap-4 justify-center py-1.5">

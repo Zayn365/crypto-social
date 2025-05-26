@@ -5,13 +5,15 @@ import Image from "next/image";
 import React from "react";
 import FollowersFollowing from "../discover/FollowersFollowing";
 import Stats from "../discover/Stats";
+import { useParams } from "next/navigation";
 
 export default function UserProfileHeader({ data }: any) {
+  const { id } = useParams();
   return (
     <div className="pb-4">
       <div className="relative w-full">
         <Image
-          src={data?.profile?.bannerImage}
+          src={data?.profile?.bannerImage ?? "/empty-39.webp"}
           alt="Banner"
           className="object-cover w-full min-h-52"
           width={700}
@@ -74,15 +76,17 @@ export default function UserProfileHeader({ data }: any) {
             </>
           )}
           <p className="text-sm dark:text-[#8c9fb7a0] text-[#999999] font-normal">
-            {data?.profile?.handle}
+            {data?.profile?.handle ?? id}
           </p>
         </h1>
         <FollowersFollowing data={data} />
       </div>
 
-      <div className="px-6 mt-4">
-        <Stats data={data} />
-      </div>
+      {data?.stats && (
+        <div className="px-6 mt-4">
+          <Stats data={data} />
+        </div>
+      )}
     </div>
   );
 }

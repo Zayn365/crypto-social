@@ -99,8 +99,8 @@ export default function EditProfile() {
     <div className="p-4">
       <div className="text-xl font-bold">My Profile</div>
       <div className="text-sm dark:text-[#A3ADB9] text-[#2f2f2f]">
-        Your profile was created on
-        {formatDateWithAgo(user?.created_date_time)}.
+        Your profile was created on {formatDateWithAgo(user?.created_date_time)}
+        .
       </div>
       <div className="mt-4">
         <ProfileUpload
@@ -146,7 +146,7 @@ export default function EditProfile() {
               }}
             />
           </Label>
-          <Label className="flex-col items-start ">
+          <Label className="flex-col items-start block">
             Wallet
             <Input placeholder="wallet" className="" value={address ?? ""} />
           </Label>

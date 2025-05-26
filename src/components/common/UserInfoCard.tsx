@@ -43,7 +43,7 @@ export default function UserInfoCard() {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="flex justify-between rounded-md transition-colors border dark:border-[#2a323b7e] bg-transparent dark:text-[#a3adb9] hover:bg-[#F1F1F1] text-[#000] dark:hover:bg-[#13151a] dark:hover:text-white p-2 items-center gap-2 cursor-pointer">
+          <div className="flex rounded-md transition-colors border dark:border-[#2a323b7e] bg-transparent dark:text-[#a3adb9] hover:bg-[#F1F1F1] text-[#000] dark:hover:bg-[#13151a] dark:hover:text-white p-2 items-center gap-2 cursor-pointer">
             <div>
               <Avatar className="size-14">
                 <AvatarImage

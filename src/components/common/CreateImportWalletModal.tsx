@@ -17,7 +17,7 @@ export default function CreateImportWalletModal({
     setAgreed(e.target.checked);
   };
   return (
-    <Modal open={open} onClose={onClose} className="dark:bg-[#040609] w-full">
+    <Modal open={open} onClose={onClose} className="dark:bg-[#040609] w-full max-w-fit">
       <div className="flex flex-col items-center gap-4">
         <div className="font-bold dark:text-[#DDE5EE] text-xl">DeSo</div>
         <div className="font-bold dark:text-[#DDE5EE] text-xl">
