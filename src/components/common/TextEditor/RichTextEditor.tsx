@@ -34,6 +34,7 @@ import { SuggestionOptions } from "@tiptap/suggestion";
 // import { User } from "@/types";
 import EmojiPicker from "emoji-picker-react";
 import { RichTextToolbar } from "./RichTextToolbar";
+import toast from "react-hot-toast";
 
 interface RichTextEditorProps {
   content?: string;
@@ -41,6 +42,7 @@ interface RichTextEditorProps {
   placeholder?: string;
   characterLimit?: number;
   mentionableUsers?: any[];
+  onFileChange?: (files: File[]) => void;
 }
 
 export function RichTextEditor({
@@ -49,6 +51,7 @@ export function RichTextEditor({
   placeholder = "Write something...",
   characterLimit = 5000,
   mentionableUsers = [],
+  onFileChange,
   ...props
 }: RichTextEditorProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -241,32 +244,45 @@ export function RichTextEditor({
     },
   });
 
-  const { mutate: uploadImage } = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      // Replace the following line with your actual upload logic that returns the image URL as a string
-      // Example: return await uploadFile(formData);
-      return ""; // Temporary placeholder to satisfy the type, replace with actual upload logic
-    },
-    onSuccess: (imageUrl) => {
-      if (editor) {
-        editor.chain().focus().setImage({ src: imageUrl }).run();
-      }
-    },
-    onError: (error) => {
-      console.error("Image upload failed:", error);
-    },
-    onSettled: () => {
-      setIsUploading(false);
-    },
-  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setIsUploading(true);
-      uploadImage(file);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !editor) return;
+
+    const validFiles = Array.from(files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+
+    if (validFiles.length === 0) {
+      toast.error("Please select valid image files");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const file = validFiles[0]; // Handle single file for simplicity
+      onFileChange?.([file]); // Update files in parent component
+
+      // Convert image to base64 for immediate display
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result && typeof event.target.result === "string") {
+          editor.chain().focus().setImage({ src: event.target.result }).run();
+        }
+      };
+      reader.readAsDataURL(file);
+
+      // Here you would typically upload the file to your server
+      // const uploadedUrl = await uploadFile(file);
+      // editor.chain().focus().setImage({ src: uploadedUrl }).run();
+    } catch (error) {
+      toast.error("Failed to upload image");
+      console.error("Image upload error:", error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Reset file input
+      }
     }
   };
 

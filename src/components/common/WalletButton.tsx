@@ -27,7 +27,8 @@ export default function WalletButton() {
 
   const registerWallet = useMutation({
     mutationFn: register,
-    onSuccess: ({ tokens }: any) => {
+    onSuccess: ({ tokens, user }: any) => {
+      setUser(user);
       setCookie("token", {
         accessToken: tokens.access,
         refreshToken: tokens.refresh,

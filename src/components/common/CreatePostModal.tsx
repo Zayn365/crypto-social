@@ -5,7 +5,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { BookText, Globe, SquareArrowOutUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { RichTextEditor } from "./TextEditor/RichTextEditor";
 import { Button } from "../ui/button";
@@ -20,10 +20,11 @@ interface ModalProps {
 export default function CreatePostModal({ open, onClose }: ModalProps) {
   const { user } = useAuth();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [content, setContent] = useState("");
-  console.log("🚀 ~ CreatePostModal ~ content:", content)
+  console.log("🚀 ~ CreatePostModal ~ content:", content);
   const [files, setFiles] = useState<File[]>([]);
   const editorRef = useRef<any>(null);
 
@@ -32,7 +33,10 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
       return createPost(formData);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
       toast.success("Post created successfully");
+      setContent("");
+      setFiles([]);
       onClose();
       router.refresh();
     },
@@ -53,12 +57,6 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
     return links;
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFiles(Array.from(e.target.files));
-    }
-  };
-
   const handleSubmit = () => {
     if (!content.trim()) {
       toast.error("Post content cannot be empty");
@@ -67,26 +65,24 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
 
     // Create FormData object
     const formData = new FormData();
-
     formData.append("title", "title");
-
-    // Append description (RichTextEditor content)
     formData.append("description", content);
-
-    // Append userId
-    formData.append("userId", user?.id?.toString());
-
-    // Extract and append links
-    const links = extractLinks(content);
-    formData.append("links", JSON.stringify(links));
-
-    // Append files
+    formData.append("userId", user?.id?.toString() || "");
+    formData.append("links", JSON.stringify(extractLinks(content)));
     files.forEach((file) => {
       formData.append("files", file);
     });
-
-    // Append postInfo (empty for now)
-    formData.append("postInfo", JSON.stringify([]));
+    formData.append(
+      "postInfo",
+      JSON.stringify([
+        {
+          userId: user?.id,
+          emoji: "",
+          comment: "",
+          like: 0,
+        },
+      ])
+    );
 
     submitPost(formData);
   };
@@ -95,7 +91,7 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
       <Modal
         open={open}
         onClose={onClose}
-        className={`dark:bg-[#1d1c34] w-full px-0 ${
+        className={`dark:bg-[#1d1c34] w-full px-0 max-h-screen overflow-y-auto slim-scrollbar ${
           fullScreen
             ? "top-[100%] w-screen min-w-screen max-w-screen h-screen left-[100%] translate-x-[-100%] translate-y-[-100%]"
             : "max-w-fit"
@@ -151,6 +147,7 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
               placeholder="What's on your mind?"
               characterLimit={10000}
               mentionableUsers={[]} // Pass your list of mentionable users here
+              onFileChange={setFiles}
               // ref={editorRef}
             />
           </div>
