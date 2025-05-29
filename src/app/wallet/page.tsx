@@ -1,3 +1,4 @@
+"use client";
 import WalletComp from "@/components/common/wallet";
 import LeftSidebar from "@/components/layout/sidebar/left";
 import SideBarTriggerButton from "@/components/layout/sidebar/trigger-btn";

@@ -1,3 +1,4 @@
+"use client";
 import InputWithIcons from "@/components/common/input-with-icons";
 import UserAssetsData from "@/components/common/user-assets-data";
 import LeftSidebar from "@/components/layout/sidebar/left";

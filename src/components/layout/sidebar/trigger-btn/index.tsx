@@ -1,3 +1,4 @@
+"use client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
 import { useTheme } from "next-themes";

@@ -1,3 +1,4 @@
+"use client";
 import DiscoverHeader from "@/components/common/discover/DiscoverHeader";
 import LeftSidebar from "@/components/layout/sidebar/left";
 import RightSidebar from "@/components/layout/sidebar/right";

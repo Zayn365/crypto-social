@@ -1,3 +1,4 @@
+"use client";
 import UserProfileDetails from "@/components/common/userProfile";
 import LeftSidebar from "@/components/layout/sidebar/left";
 import RightSidebar from "@/components/layout/sidebar/right";

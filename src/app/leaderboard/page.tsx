@@ -1,3 +1,4 @@
+"use client";
 import LeaderboardPage from "@/components/common/leaderboard";
 import LeftSidebar from "@/components/layout/sidebar/left";
 import SideBarTriggerButton from "@/components/layout/sidebar/trigger-btn";
