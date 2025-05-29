@@ -18,7 +18,7 @@ export default function WalletButton() {
         accessToken: tokens.access,
         refreshToken: tokens.refresh,
       });
-      toast.success(`Login successful`);
+      // toast.success(`Login successful`);
     },
     onError: ({ message }) => {
       toast.error(message);
