@@ -6,16 +6,14 @@ interface DiscoverIconProps {
 }
 
 export const DiscoverIcon = ({
-  width = 24,
-  height = 24,
   color,
   ...props
 }: DiscoverIconProps) => {
   return (
     <svg
-      width={width}
-      height={height}
-      stroke={color ? color : "#32bd91"}
+      width={20}
+      height={20}
+      stroke={color ? color : "#77F3AF"}
       fill="none"
       strokeWidth="2"
       viewBox="0 0 24 24"

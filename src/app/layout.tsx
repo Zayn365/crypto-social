@@ -30,7 +30,7 @@ export default function RootLayout({
           <AuthProvider>
             <ThemeProvider attribute="class" enableSystem={false}>
               <AppKitProvider>
-                <div className="dark:bg-[#040609]">{children}</div>
+                <div className="dark:bg-[#1d1c34]">{children}</div>
                 <Toaster />
               </AppKitProvider>
             </ThemeProvider>

@@ -17,7 +17,11 @@ export default function CreateImportWalletModal({
     setAgreed(e.target.checked);
   };
   return (
-    <Modal open={open} onClose={onClose} className="dark:bg-[#040609] w-full max-w-fit">
+    <Modal
+      open={open}
+      onClose={onClose}
+      className="dark:bg-[#1d1c34] w-full max-w-fit"
+    >
       <div className="flex flex-col items-center gap-4">
         <div className="font-bold dark:text-[#DDE5EE] text-xl">DeSo</div>
         <div className="font-bold dark:text-[#DDE5EE] text-xl">
@@ -45,7 +49,7 @@ export default function CreateImportWalletModal({
             <span className="w-full border-t border-border-light"></span>
           </div>
           <div className="relative flex justify-center text-[10px] uppercase tracking-[1px]">
-            <span className="dark:bg-[#040609] px-4 text-[#999999] dark:text-[#8c9fb7a0]">
+            <span className="dark:bg-[#1d1c34] px-4 text-[#999999] dark:text-[#8c9fb7a0]">
               Check to continue
             </span>
           </div>

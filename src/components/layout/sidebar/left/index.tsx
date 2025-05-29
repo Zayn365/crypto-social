@@ -4,6 +4,7 @@ import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn"
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
 import CreatePostModal from "@/components/common/CreatePostModal";
 import FillButton from "@/components/common/FillButton";
+import SocialHandle from "@/components/common/SocialHandle";
 import UserInfoCard from "@/components/common/UserInfoCard";
 import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
@@ -28,6 +29,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -48,7 +50,7 @@ export default function LeftSidebar() {
     {
       title: "Home",
       url: "/",
-      icon: HomeIcon,
+      icon: "/home-icon.svg",
     },
     {
       title: "Discover",
@@ -56,36 +58,46 @@ export default function LeftSidebar() {
       icon: DiscoverIcon,
     },
     {
-      title: "Bounties (coming soon)",
-      url: "#",
-      icon: BountiesIcon,
+      title: "Leaderboard",
+      url: "leaderboard",
+      icon: "leaderboard-icon.svg",
     },
     {
-      title: "Feed Store (coming soon)",
+      title: "Communities (coming soon)",
       url: "#",
-      icon: FeedIcon,
+      icon: "community-icon.svg",
     },
-    {
-      title: "Trade (coming soon)",
-      url: "#",
-      icon: TradeIcon,
-    },
-    {
-      title: "Earnings",
-      url: "/earnings",
-      icon: EarningIcon,
-    },
+    // {
+    //   title: "Bounties (coming soon)",
+    //   url: "#",
+    //   icon: BountiesIcon,
+    // },
+    // {
+    //   title: "Feed Store (coming soon)",
+    //   url: "#",
+    //   icon: FeedIcon,
+    // },
+    // {
+    //   title: "Trade (coming soon)",
+    //   url: "#",
+    //   icon: TradeIcon,
+    // },
+    // {
+    //   title: "Earnings",
+    //   url: "/earnings",
+    //   icon: EarningIcon,
+    // },
     {
       title: "Wallet",
       url: "/wallet",
-      icon: WalletIcon,
+      icon: "/wallet-icon.svg",
     },
     ...(user?.username
       ? [
           {
             title: "Profile",
             url: `/${user?.username}`,
-            icon: ProfileIcon,
+            icon: "/profile-icon.svg",
           },
         ]
       : []),
@@ -100,15 +112,34 @@ export default function LeftSidebar() {
       : []),
   ];
 
+  const renderIcon = (icon: string | React.ComponentType) => {
+    if (typeof icon === "string") {
+      return <Image src={icon} alt="icon" width={20} height={20} />;
+    } else if (icon) {
+      const IconComponent = icon;
+      return <IconComponent />;
+    }
+    return null;
+  };
+
   return (
     <Sidebar
       side="left"
-      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#040609] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
+      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#1d1c34] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
     >
       {/* Sidebar Header with Logo */}
-      <SidebarHeader className="flex py-6 items-start dark:bg-[#040609] bg-[#FFFFFF]">
-        <div className="flex justify-between items-center px-5 w-full text-3xl font-extrabold">
-          focus
+      <SidebarHeader className="flex py-2 items-start dark:bg-[#1d1c34] bg-[#FFFFFF]">
+        <div className="flex justify-between items-center px-5 w-full">
+          <Image
+            src={
+              theme === "dark"
+                ? "blockface-logo white.svg"
+                : "blockface-logo-dark.svg"
+            }
+            alt="logo"
+            width={150}
+            height={100}
+          />
           <div
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="border rounded-full p-2 cursor-pointer"
@@ -119,7 +150,7 @@ export default function LeftSidebar() {
       </SidebarHeader>
 
       {/* Sidebar Content with Navigation Items */}
-      <SidebarContent className="dark:bg-[#040609] bg-[#FFFFFF] px-4">
+      <SidebarContent className="dark:bg-[#1d1c34] bg-[#FFFFFF] px-4">
         <SidebarMenu className="gap-1 mt-4">
           {items.map((item, index) => (
             <SidebarMenuItem key={index}>
@@ -129,7 +160,7 @@ export default function LeftSidebar() {
                     pathname === item.url ? "dark:bg-[#13151a]" : ""
                   }`}
                 >
-                  {item.icon && <item.icon />}
+                  {renderIcon(item.icon)}
                   <span className="text-[16px] font-[400]">{item.title}</span>
                 </SidebarMenuButton>
               </Link>
@@ -145,7 +176,7 @@ export default function LeftSidebar() {
             )}
             <div className="flex flex-wrap justify-center gap-4 flex-col w-full">
               <BuyTokenBtn clasName="min-w-full">
-                <BuyTokenIcon /> Buy $FOCUS
+                <BuyTokenIcon /> Buy $BLOCK
               </BuyTokenBtn>
             </div>
           </div>
@@ -158,10 +189,13 @@ export default function LeftSidebar() {
           </div>
         )}
         {user?.username && (
-          <div className="my-4">
+          <div className="mt-4">
             <UserInfoCard />
           </div>
         )}
+        <div className="w-full flex justify-center items-center my-4">
+          <SocialHandle />
+        </div>
       </SidebarContent>
 
       <CreateImportWalletModal

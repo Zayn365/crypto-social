@@ -1,4 +1,5 @@
 "use client";
+import { getAllPosts, getAllUserPosts } from "@/services/posts";
 import { getAllUsers } from "@/services/user";
 import { useDisconnect } from "@reown/appkit/react";
 import { useQuery } from "@tanstack/react-query";
@@ -12,10 +13,38 @@ import {
   ReactNode,
 } from "react";
 
+export interface Coin {
+  id: string;
+  shortname: string;
+  name: string;
+  native_coin_id: string;
+  chain_identifier: number | null;
+  image: {
+    large?: string;
+    small?: string;
+    thumb?: string;
+  };
+  price: number | null;
+}
+
+interface Balance {
+  chainId: number;
+  chainName: string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+  };
+  balance: string;
+}
+
 // Create the context with default values
 const AuthContext = createContext<any>({
   user: null,
   allUsers: null,
+  coins: null,
+  allPost: null,
+  allUserPost: null,
+  allUsersAssets: null,
   setUser: () => {},
   isAuthenticated: false,
   logout: () => {},
@@ -27,18 +56,120 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { disconnect } = useDisconnect();
   const [user, setUser] = useState<any | null>(null);
   const [allUsers, setAllUsers] = useState<any | null>(null);
+  const [coins, setCoins] = useState<Coin[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allPost, setAllPost] = useState<any[]>([]);
+  const [allUserPost, setAllUserPost] = useState<any[]>([]);
+  const [allUsersAssets, setAllUsersAssets] = useState<any[]>([]);
 
   const router = useRouter();
 
   const {
-    data: userData,
+    data: usersData,
     isLoading,
     error,
-  } = useQuery<Response, Error>({
+  } = useQuery<any, Error>({
     queryKey: ["getAllUsers"],
     queryFn: async () => await getAllUsers(),
   });
+
+  const { data: allPostData } = useQuery<any, Error>({
+    queryKey: ["getAllPosts"],
+    queryFn: async () => await getAllPosts(),
+  });
+
+  const { data: allUserPostData } = useQuery<any, Error>({
+    queryKey: ["getAllUserPosts"],
+    queryFn: async () => await getAllUserPosts({ id: user?.id }),
+  });
+
+  useEffect(() => {
+    if (!allUsers) return;
+
+    const walletAddresses = [
+      "0x559432E18b281731c054cD703D4B49872BE4ed53",
+      "0xa83114A443dA1CecEFC50368531cACE9F37fCCcb",
+      "0xBD4045212C7a51E0F46599F18C02322B1C45f71e",
+      "0xE5b1F760BA4334bc311695e125861Eb5870018aD",
+      "0x0C488193f50fa771c0AA854aFCFc6D05034d7B3D",
+      "0x10cA3e43FFE897a26b6c1b8B9E4a90515EAE62b0",
+    ];
+    // const walletAddresses = allUsers
+    //   .map((user: any) => user?.wallet_address)
+    //   .filter(Boolean);
+
+    console.log(walletAddresses);
+
+    const fetchCoins = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch price data
+        const priceResponse = await fetch(`/api/getPrice`);
+        if (!priceResponse.ok) throw new Error("Failed to fetch price data");
+        const priceData = await priceResponse.json();
+        const coins = priceData.coins;
+        setCoins(coins);
+
+        // Fetch balances and calculate per wallet address
+        const walletSummaries = await Promise.all(
+          walletAddresses.map(async (address) => {
+            const balanceResponse = await fetch(
+              `/api/wallet-balances?address=${address}`
+            );
+            if (!balanceResponse.ok)
+              throw new Error(`Failed to fetch balance for ${address}`);
+            const balances = await balanceResponse.json(); // assume this returns an array of balances
+
+            let totalTokenValue = 0;
+            let totalValueUSD = 0;
+
+            const coinsData = balances
+              .map((balanceItem: any) => {
+                const matchingCoin = coins.find(
+                  (coin: any) => coin.chain_identifier === balanceItem.chainId
+                );
+
+                if (!matchingCoin?.price || !balanceItem.balance) return null;
+
+                const tokenAmount = parseFloat(balanceItem.balance);
+                const usdValue = tokenAmount * matchingCoin.price;
+
+                totalTokenValue += tokenAmount;
+                totalValueUSD += usdValue;
+
+                return {
+                  token: matchingCoin.name, // Coin name (e.g., "BTC", "ETH")
+                  balance: tokenAmount,
+                  valueUSD: usdValue,
+                };
+              })
+              .filter(Boolean); // Remove any nulls from missing coin matches
+
+            return {
+              walletAddress: address,
+              coins: coinsData, // coins, balances, and values
+              totalValues: totalTokenValue, // Total tokens
+              totalBalanceUSD: totalValueUSD, // Total value in USD
+            };
+          })
+        );
+        setAllUsersAssets(walletSummaries);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCoins();
+  }, [allUsers]);
+
+  useEffect(() => {
+    if (allPostData) {
+      setAllPost(allPostData?.result?.rows);
+    }
+  }, [allPostData]);
 
   useEffect(() => {
     try {
@@ -47,7 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      if (error || !userData) {
+      if (error || !usersData) {
         router.replace("/");
         setUser(null);
         setLoading(false);
@@ -56,11 +187,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setLoading(false);
-      setAllUsers(userData);
+      setAllUsers(usersData?.users?.rows);
+      setAllUserPost(allUserPostData?.result?.rows);
     } catch (error) {
       console.log(error);
     }
-  }, [userData, isLoading, error]);
+  }, [usersData, isLoading, error]);
 
   const logout = async () => {
     try {
@@ -75,6 +207,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user,
     allUsers,
     setUser,
+    coins,
+    allPost,
+    allUsersAssets,
+    allUserPost,
     isAuthenticated: !!user,
     logout,
     loading,

@@ -31,12 +31,12 @@ export default function Header() {
         </div>
       </div>
       <div className="border-b flex items-center gap-4 justify-between p-2">
-        <div className="flex gap-2 text-[#999999] dark:text-[#2D343D] text-xs">
+        <div className="flex gap-2 text-[#999999] text-xs">
           <span className="flex gap-1 items-center text-[#999999] dark:text-[#8C9FB7A0] hover:underline cursor-pointer">
             <Wifi className="rotate-45" size={18} />
-            Focus For You Free
+            Block For You Free
           </span>
-          by $FOCUS
+          by $BLOCK
         </div>
         <div className="flex items-center gap-1 cursor-pointer hover:bg-[#F1F1F1] dark:hover:bg-[#13151A] px-4 py-1 border border-[#dadada] text-xs dark:text-[#A3AdA9] dark:hover:text-[#DDE5EE] text-[#000000] rounded-full">
           <RefreshCcw size={12} />

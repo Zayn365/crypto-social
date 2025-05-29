@@ -1,12 +1,12 @@
 import { AxiosInstance } from "axios";
 import apiClient from "./config/client";
-import { postHandler } from "./config/helper";
+import { getHandler, postHandler } from "./config/helper";
 import { POSTS } from "./config/urls/posts";
 
 export const getAllPosts = async (
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, POSTS.getAllPosts, {});
+  return await getHandler(client, POSTS.getAllPosts, {});
 };
 
 export const getAllUserPosts = async (
@@ -15,7 +15,7 @@ export const getAllUserPosts = async (
   },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, POSTS.getAllUserPosts, payload);
+  return await getHandler(client, POSTS.getAllUserPosts, payload);
 };
 
 export const createPost = async (

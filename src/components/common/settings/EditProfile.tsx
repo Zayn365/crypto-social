@@ -30,6 +30,9 @@ export default function EditProfile() {
     username: user?.username || "",
     created_date_time: "",
   });
+  const [previewUrl, setPreviewUrl] = useState<string>(
+    user?.avatar || "/userDefault.webp"
+  );
 
   useEffect(() => {
     setUserData({
@@ -39,7 +42,16 @@ export default function EditProfile() {
       username: user?.username || "",
       created_date_time: user?.created_date_time || "",
     });
+    setPreviewUrl(user?.avatar || "/userDefault.webp");
   }, [user]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof userData.avatar !== "string" && userData.avatar) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl, userData.avatar]);
 
   const handleChange = (name: string, value: string) => {
     setUserData((prevData) => ({
@@ -50,8 +62,10 @@ export default function EditProfile() {
 
   const updateProfilePic = useMutation({
     mutationFn: uploadAvatar,
-    onSuccess: () => {
-      toast.success(`Updated successful`);
+    onSuccess: ({ user }: any) => {
+      setUserData((prev) => ({ ...prev, avatar: user.url || prev.avatar }));
+      setPreviewUrl(user.url);
+      setUser((prev: any) => ({ ...prev, avatar: user.url }));
     },
     onError: ({ message }) => {
       toast.error(message);
@@ -69,8 +83,27 @@ export default function EditProfile() {
     },
   });
 
+  const handleProfileUpload = async () => {
+    try {
+      const webp = await blobToWebP(userData.avatar as File);
+      const webpFile = new File([webp], "avatar.webp", {
+        type: "image/webp",
+        lastModified: Date.now(),
+      });
+      updateProfilePic.mutateAsync({
+        id: user?.id,
+        avatar: webpFile,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleProfileUpdate = () => {
     try {
+      if (userData.avatar as File) {
+        handleProfileUpload();
+      }
       updateProfile.mutate({
         userId: user?.id,
         name: userData?.name,
@@ -83,18 +116,16 @@ export default function EditProfile() {
     }
   };
 
-  const handleProfileUpload = async () => {
-    try {
-      const formData = new FormData();
-      const webp = await blobToWebP(userData.avatar as File);
-      console.log("🚀 ~ handleProfileUpload ~ webp:", webp);
-      formData.append("File", webp);
-      formData.append("id", String(user?.id));
-      updateProfilePic.mutateAsync(formData);
-    } catch (error) {
-      console.log(error);
+  const handleFileChange = (file: File | null) => {
+    setUserData((prev) => ({ ...prev, avatar: file }));
+    if (file) {
+      const tempUrl = URL.createObjectURL(file);
+      setPreviewUrl(tempUrl);
+    } else {
+      setPreviewUrl(user?.avatar || "/userDefault.webp");
     }
   };
+
   return (
     <div className="p-4">
       <div className="text-xl font-bold">My Profile</div>
@@ -104,10 +135,8 @@ export default function EditProfile() {
       </div>
       <div className="mt-4">
         <ProfileUpload
-          onChange={(file: File | null) =>
-            setUserData((pre) => ({ ...pre, avatar: file }))
-          }
-          srcUrl={typeof userData?.avatar === "string" ? userData?.avatar : ""}
+          onChange={handleFileChange}
+          srcUrl={previewUrl}
           fallbackText="profile"
         />
         <div className="flex flex-wrap gap-4 mt-4">

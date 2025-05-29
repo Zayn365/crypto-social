@@ -49,6 +49,7 @@ export function RichTextEditor({
   placeholder = "Write something...",
   characterLimit = 5000,
   mentionableUsers = [],
+  ...props
 }: RichTextEditorProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

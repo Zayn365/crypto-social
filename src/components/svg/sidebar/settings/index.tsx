@@ -1,7 +1,5 @@
 export const SettingsIcon = ({
-  width = 16,
-  height = 16,
-  color = "#32bd91",
+  color = "#77F3AF",
   ...props
 }: {
   width?: number;
@@ -11,15 +9,15 @@ export const SettingsIcon = ({
 }) => {
   return (
     <svg
-      stroke={color ? color : "#32bd91"}
+      width={20}
+      height={20}
+      stroke={color ? color : "#77F3AF"}
       fill="none"
       strokeWidth={2}
       viewBox="0 0 24 24"
       strokeLinecap="round"
       strokeLinejoin="round"
       className="text-xl text-muted"
-      width={width}
-      height={height}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >

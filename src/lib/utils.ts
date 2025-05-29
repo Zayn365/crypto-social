@@ -32,3 +32,13 @@ export function formatDateWithAgo(dateString: string): string {
   const days = moment().diff(moment(dateString), "days");
   return `${formatted} (${days} day${days !== 1 ? "s" : ""} ago)`;
 }
+
+export const formatPrice = (price: number | null) => {
+  if (price === null) return "N/A";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: price < 1 ? 4 : 2,
+    maximumFractionDigits: price < 1 ? 8 : 2,
+  }).format(price);
+};

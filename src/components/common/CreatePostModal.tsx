@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Modal } from "./modal";
 import { useAuth } from "@/providers/AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -9,6 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { RichTextEditor } from "./TextEditor/RichTextEditor";
 import { Button } from "../ui/button";
+import { createPost } from "@/services/posts";
+import FillButton from "./FillButton";
 
 interface ModalProps {
   open: boolean;
@@ -17,14 +19,17 @@ interface ModalProps {
 
 export default function CreatePostModal({ open, onClose }: ModalProps) {
   const { user } = useAuth();
-  const [fullScreen, setFullScreen] = useState(false);
-
-  const [content, setContent] = useState("");
   const router = useRouter();
 
+  const [fullScreen, setFullScreen] = useState(false);
+  const [content, setContent] = useState("");
+  console.log("🚀 ~ CreatePostModal ~ content:", content)
+  const [files, setFiles] = useState<File[]>([]);
+  const editorRef = useRef<any>(null);
+
   const { mutate: submitPost, isPending } = useMutation({
-    mutationFn: async () => {
-      //   return createPost({ content }); // Implement this API call
+    mutationFn: async (formData: FormData) => {
+      return createPost(formData);
     },
     onSuccess: () => {
       toast.success("Post created successfully");
@@ -37,19 +42,60 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
     },
   });
 
+  const extractLinks = (htmlContent: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const links = Array.from(doc.getElementsByTagName("a")).map((link) => ({
+      link: link.href,
+      title: link.textContent || "Link",
+      description: "Link inserted in post", // You can enhance this with metadata if needed
+    }));
+    return links;
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = () => {
     if (!content.trim()) {
       toast.error("Post content cannot be empty");
       return;
     }
-    submitPost();
+
+    // Create FormData object
+    const formData = new FormData();
+
+    formData.append("title", "title");
+
+    // Append description (RichTextEditor content)
+    formData.append("description", content);
+
+    // Append userId
+    formData.append("userId", user?.id?.toString());
+
+    // Extract and append links
+    const links = extractLinks(content);
+    formData.append("links", JSON.stringify(links));
+
+    // Append files
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    // Append postInfo (empty for now)
+    formData.append("postInfo", JSON.stringify([]));
+
+    submitPost(formData);
   };
   return (
     <>
       <Modal
         open={open}
         onClose={onClose}
-        className={`dark:bg-[#040609] w-full px-0 ${
+        className={`dark:bg-[#1d1c34] w-full px-0 ${
           fullScreen
             ? "top-[100%] w-screen min-w-screen max-w-screen h-screen left-[100%] translate-x-[-100%] translate-y-[-100%]"
             : "max-w-fit"
@@ -105,17 +151,18 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
               placeholder="What's on your mind?"
               characterLimit={10000}
               mentionableUsers={[]} // Pass your list of mentionable users here
+              // ref={editorRef}
             />
           </div>
 
           <div className="w-full px-4 pb-4 flex justify-end gap-2">
-            <Button
+            <FillButton
               onClick={handleSubmit}
               disabled={!content.trim() || isPending}
               className="bg-[#32bd91] hover:bg-[#32bd91]/90"
             >
               {isPending ? "Posting..." : "Post"}
-            </Button>
+            </FillButton>
           </div>
         </div>
       </Modal>

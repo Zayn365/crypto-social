@@ -31,7 +31,7 @@ export default function page() {
                 Search Earnings
               </div>
               <div className="text-sm text-[#999999] dark:text-[#8c9fb7a0] text-center">
-                On Focus, everyone can monetize from day one. Creators have
+                On Block, everyone can monetize from day one. Creators have
                 detailed earnings reports to see how their earnings accrue.
               </div>
               <div className="w-full">

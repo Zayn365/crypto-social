@@ -9,9 +9,9 @@ export default function RightSidebar() {
   return (
     <Sidebar
       side="right"
-      className="hidden max-w-[280px] justify-start border-l lg:flex dark:bg-[#040609] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
+      className="hidden max-w-[280px] justify-start border-l lg:flex dark:bg-[#1d1c34] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
     >
-      <SidebarContent className="dark:bg-[#040609] bg-[#FFFFFF]">
+      <SidebarContent className="dark:bg-[#1d1c34] bg-[#FFFFFF]">
         <div>
           <div className="p-4">
             <InputWithIcons

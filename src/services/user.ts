@@ -4,10 +4,19 @@ import { getHandler, patchHandler, postHandler } from "./config/helper";
 import { USER } from "./config/urls/user";
 
 export const uploadAvatar = async (
-  payload: FormData,
+  payload: {
+    avatar: File;
+    id: number;
+  },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, USER.uploadAvatar, payload);
+  const formData = new FormData();
+  formData.append("avatar", payload.avatar);
+
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, USER.uploadAvatar, formData, queryParams);
 };
 
 export const updateUserInfo = async (
