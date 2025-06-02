@@ -1,6 +1,5 @@
 import Header from "@/components/common/home/Header";
 import PostCard from "@/components/common/home/PostCard";
-import { postsData } from "@/components/dummuyData/postsData";
 import LeftSidebar from "@/components/layout/sidebar/left";
 import RightSidebar from "@/components/layout/sidebar/right";
 import SideBarTriggerButton from "@/components/layout/sidebar/trigger-btn";
@@ -15,9 +14,8 @@ export default function Home() {
           <SideBarTriggerButton />
           <div className="flex flex-col w-full overflow-y-auto">
             <Header />
-            <PostCard posts={postsData} />
+            <PostCard />
           </div>
-
           <RightSidebar />
         </div>
       </SidebarProvider>

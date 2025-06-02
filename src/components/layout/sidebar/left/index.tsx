@@ -60,12 +60,12 @@ export default function LeftSidebar() {
     {
       title: "Leaderboard",
       url: "leaderboard",
-      icon: "leaderboard-icon.svg",
+      icon: "/leaderboard-icon.svg",
     },
     {
       title: "Communities (coming soon)",
       url: "#",
-      icon: "community-icon.svg",
+      icon: "/community-icon.svg",
     },
     // {
     //   title: "Bounties (coming soon)",
@@ -133,8 +133,8 @@ export default function LeftSidebar() {
           <Image
             src={
               theme === "dark"
-                ? "blockface-logo white.svg"
-                : "blockface-logo-dark.svg"
+                ? "/blockface-logo white.svg"
+                : "/blockface-logo-dark.svg"
             }
             alt="logo"
             width={150}

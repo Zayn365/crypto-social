@@ -19,8 +19,11 @@ export default function CreateImportWalletModal({
   return (
     <Modal
       open={open}
-      onClose={onClose}
-      className="dark:bg-[#1d1c34] w-full max-w-fit"
+      onClose={() => {
+        onClose();
+        setAgreed(false);
+      }}
+      className="dark:bg-[#1d1c34] w-full max-w-3xl"
     >
       <div className="flex flex-col items-center gap-4">
         <div className="font-bold dark:text-[#DDE5EE] text-xl">DeSo</div>
@@ -55,14 +58,14 @@ export default function CreateImportWalletModal({
           </div>
         </div>
 
-        <div className="flex w-full cursor-pointer flex-col p-2 sm:p-0 rounded-sm sm:rounded-full border border-border mb-0">
-          <div className="border-b-light flex items-start gap-0 border-b pl-2 text-[#8c9fb7a0] first:rounded-t-2xl last:rounded-b-2xl last:border-b-0 hover:bg-card hover:text-[#8c9fb7a0]">
+        <div className="flex w-full flex-col p-2 sm:p-0 rounded-sm sm:rounded-full border border-border mb-0">
+          <div className="border-b-light flex items-start gap-0 border-b pl-2 text-[#8c9fb7a0] rounded-sm sm:rounded-full last:border-b-0 hover:bg-card hover:text-[#8c9fb7a0]">
             <input
               type="radio"
               id="terms"
               checked={agreed}
               onChange={handleCheckboxChange}
-              className="peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground relative top-[10px]"
+              className="peer h-4 w-4 shrink-0 rounded-sm border border-primary shadow-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground relative top-[10px] cursor-pointer"
             />
             <label className="font-medium text-left p-2 pr-4 w-full text-[#8c9fb7a0] hover:text-[#8c9fb7a0] text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
               I have read, understood, and agree to be bound by the{" "}
@@ -78,7 +81,7 @@ export default function CreateImportWalletModal({
           </div>
         </div>
 
-        <WalletButton />
+        {agreed && <WalletButton />}
       </div>
     </Modal>
   );

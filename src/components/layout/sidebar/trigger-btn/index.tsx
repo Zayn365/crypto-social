@@ -15,8 +15,8 @@ export default function SideBarTriggerButton() {
       <Image
         src={
           theme === "dark"
-            ? "blockface-logo white.svg"
-            : "blockface-logo-dark.svg"
+            ? "/blockface-logo white.svg"
+            : "/blockface-logo-dark.svg"
         }
         alt="logo"
         width={150}

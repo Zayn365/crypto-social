@@ -3,21 +3,23 @@ import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import PostHeader from "../home/PostHeader";
-import { postsData } from "@/components/dummuyData/postsData";
 import ContentCard from "../home/ContentCard";
 import PostEmojis from "../home/PostEmojis";
 import ReactionStats from "./ReactionStats";
 import Comments from "./Comments";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function PostDetails() {
   const router = useRouter();
   const { id } = useParams();
+  const { allPost } = useAuth();
 
   const findPostById = (id: string) => {
-    return postsData.find((post) => post.id === id) || null;
+    return allPost.find((post: any) => String(post.id) === String(id)) || null;
   };
 
   const postsToRender = typeof id === "string" ? findPostById(id) : null;
+  console.log("🚀 ~ PostDetails ~ postsToRender:", postsToRender);
 
   return (
     <div>
@@ -34,7 +36,7 @@ export default function PostDetails() {
               className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
             />
           </div>
-          Post by @Moggel
+          Post by @{postsToRender?.userInfo?.username}
         </div>
       </div>
       <div className="p-4 flex flex-col gap-2">
@@ -42,7 +44,7 @@ export default function PostDetails() {
         <ContentCard post={postsToRender} />
         <PostEmojis post={postsToRender} />
       </div>
-      <ReactionStats />
+      <ReactionStats post={postsToRender} />
       <Comments />
     </div>
   );

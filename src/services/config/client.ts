@@ -12,7 +12,8 @@ const headers: Record<string, string> = {
 };
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  // baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: "https://crypto-social-backend.vercel.app/v1",
   headers,
 });
 

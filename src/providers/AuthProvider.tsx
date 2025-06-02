@@ -54,6 +54,7 @@ const AuthContext = createContext<any>({
 // Auth provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { disconnect } = useDisconnect();
+  const router = useRouter();
   const [user, setUser] = useState<any | null>(null);
   const [allUsers, setAllUsers] = useState<any | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
@@ -61,8 +62,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [allPost, setAllPost] = useState<any[]>([]);
   const [allUserPost, setAllUserPost] = useState<any[]>([]);
   const [allUsersAssets, setAllUsersAssets] = useState<any[]>([]);
-
-  const router = useRouter();
 
   const {
     data: usersData,
@@ -97,8 +96,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // const walletAddresses = allUsers
     //   .map((user: any) => user?.wallet_address)
     //   .filter(Boolean);
-
-    console.log(walletAddresses);
 
     const fetchCoins = async () => {
       try {
@@ -167,7 +164,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (allPostData) {
-      setAllPost(allPostData?.result?.rows);
+      const sortedPosts = [...allPostData.result.rows].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setAllPost(sortedPosts);
     }
   }, [allPostData]);
 
@@ -198,6 +199,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       deleteCookie("token");
       setUser(null);
+      router.replace("/");
     } catch (error) {
       console.error("Logout error:", error);
     }

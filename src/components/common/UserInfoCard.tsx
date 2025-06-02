@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAuth } from "@/providers/AuthProvider";
 import {
@@ -13,12 +13,9 @@ import {
 import { sliceMethod } from "@/lib/utils";
 import { CopyIcon } from "lucide-react";
 import toast from "react-hot-toast";
-import { useDisconnect } from "@reown/appkit/react";
-import { deleteCookie } from "cookies-next";
 
 export default function UserInfoCard() {
-  const { user, setUser } = useAuth();
-  const { disconnect } = useDisconnect();
+  const { user, logout } = useAuth();
 
   async function handleCopy(text: string) {
     try {
@@ -28,16 +25,6 @@ export default function UserInfoCard() {
       console.error("Failed to copy: ", err);
     }
   }
-
-  const handleLogout = () => {
-    try {
-      deleteCookie("token");
-      setUser(null);
-      disconnect();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <div>
@@ -81,7 +68,7 @@ export default function UserInfoCard() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+          <DropdownMenuItem className="cursor-pointer" onClick={logout}>
             Log out
           </DropdownMenuItem>
         </DropdownMenuContent>

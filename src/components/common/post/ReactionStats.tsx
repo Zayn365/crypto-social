@@ -7,6 +7,7 @@ import {
   Smile,
   Upload,
 } from "lucide-react";
+import moment from "moment";
 import React from "react";
 
 export default function ReactionStats({ post }: any) {
@@ -89,8 +90,8 @@ export default function ReactionStats({ post }: any) {
     <div>
       <div className="flex items-center justify-between px-6 py-4">
         <div className="text-xs dark:text-[#8C9FB7A0] text-[#999999]">
-          Posted on <span className="underline"> DeSocialWorld</span> • 04/29/25
-          @ 01:56pm
+          Posted on <span className="underline">Block</span> •{" "}
+          {moment(post?.createdAt).format("MMM/DD/YY [@] hh:mma")}
         </div>
         <div>
           {" "}
