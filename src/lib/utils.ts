@@ -42,3 +42,9 @@ export const formatPrice = (price: number | null) => {
     maximumFractionDigits: price < 1 ? 8 : 2,
   }).format(price);
 };
+
+export const getTotalLikes = (postInfo: any[]) =>
+  postInfo?.reduce((sum, item) => sum + (item?.like ?? 0), 0);
+
+export const getTotalComments = (postInfo: any[]) =>
+  postInfo?.filter((item) => item?.comment?.trim() !== "").length;

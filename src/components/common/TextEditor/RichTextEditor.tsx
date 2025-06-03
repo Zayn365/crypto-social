@@ -244,13 +244,13 @@ export function RichTextEditor({
     },
   });
 
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || !editor) return;
 
-    const validFiles = Array.from(files).filter((file) =>
-      file.type.startsWith("image/")
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB
+    const validFiles = Array.from(files).filter(
+      (file) => file.type.startsWith("image/") && file.size <= maxSizeInBytes
     );
 
     if (validFiles.length === 0) {

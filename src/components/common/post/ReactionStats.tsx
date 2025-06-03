@@ -1,3 +1,4 @@
+import { getTotalComments, getTotalLikes } from "@/lib/utils";
 import {
   ChartNoAxesColumn,
   Gem,
@@ -13,7 +14,7 @@ import React from "react";
 export default function ReactionStats({ post }: any) {
   const list = [
     {
-      no: 29,
+      no: getTotalLikes(post?.postInfo),
       name: "Reactions",
     },
     {
@@ -21,7 +22,7 @@ export default function ReactionStats({ post }: any) {
       name: " Reposts",
     },
     {
-      no: 2,
+      no: getTotalComments(post?.postInfo),
       name: " Quotes",
     },
     {

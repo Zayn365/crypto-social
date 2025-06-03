@@ -11,6 +11,7 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getTotalComments } from "@/lib/utils";
 
 const commentsData = [
   {
@@ -83,12 +84,12 @@ const commentsData = [
   },
 ];
 
-export default function Comments() {
+export default function Comments({ post }: any) {
   return (
     <div>
       <div className="flex justify-between items-center p-3 border-b">
         <div className="text-xs dark:text-[#8C9FB7A0] text-[#999999]">
-          Comments (4)
+          Comments ({getTotalComments(post?.postInfo)})
         </div>
         <div>
           <DropdownMenuCheckboxes

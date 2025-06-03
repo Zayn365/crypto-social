@@ -81,7 +81,13 @@ export default function CreateImportWalletModal({
           </div>
         </div>
 
-        {agreed && <WalletButton />}
+        {agreed ? (
+          <WalletButton />
+        ) : (
+          <button className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold disabled cursor-not-allowed">
+            Connect Wallet
+          </button>
+        )}
       </div>
     </Modal>
   );

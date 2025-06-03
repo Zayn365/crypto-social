@@ -8,6 +8,7 @@ import PostEmojis from "../home/PostEmojis";
 import ReactionStats from "./ReactionStats";
 import Comments from "./Comments";
 import { useAuth } from "@/providers/AuthProvider";
+import LinkCard from "../home/LinkCard";
 
 export default function PostDetails() {
   const router = useRouter();
@@ -21,6 +22,30 @@ export default function PostDetails() {
   const postsToRender = typeof id === "string" ? findPostById(id) : null;
   console.log("🚀 ~ PostDetails ~ postsToRender:", postsToRender);
 
+  if (!postsToRender) {
+    return (
+      <div className="p-4">
+        <div className="border-b flex items-center py-2">
+          <div className="flex items-center gap-2 text-base font-medium text-[#999999] dark:text-[#8C9FB7A0] px-2">
+            <div
+              className="rounded-full p-2 whitespace-nowrap dark:hover:bg-[#13151A] hover:bg-[#F1F1F1] border cursor-pointer"
+              onClick={() => router.replace("/")}
+            >
+              <ChevronLeft
+                size={16}
+                className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
+              />
+            </div>
+            Post
+          </div>
+        </div>
+        <div className="text-center text-[#999999] dark:text-[#8C9FB7A0] mt-4">
+          Post not available
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="border-b flex items-center py-2">
@@ -29,7 +54,7 @@ export default function PostDetails() {
         >
           <div
             className="rounded-full p-2 whitespace-nowrap dark:hover:bg-[#13151A] hover:bg-[#F1F1F1] border cursor-pointer"
-            onClick={() => router.back()}
+            onClick={() => router.replace("/")}
           >
             <ChevronLeft
               size={16}
@@ -42,10 +67,11 @@ export default function PostDetails() {
       <div className="p-4 flex flex-col gap-2">
         <PostHeader post={postsToRender} />
         <ContentCard post={postsToRender} />
+        <LinkCard post={postsToRender} />
         <PostEmojis post={postsToRender} />
       </div>
       <ReactionStats post={postsToRender} />
-      <Comments />
+      <Comments post={postsToRender} />
     </div>
   );
 }

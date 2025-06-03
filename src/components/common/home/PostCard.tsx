@@ -16,6 +16,7 @@ import PostHeader from "./PostHeader";
 import { useRouter } from "next/navigation";
 import PostEmojis from "./PostEmojis";
 import { useAuth } from "@/providers/AuthProvider";
+import { getTotalComments, getTotalLikes } from "@/lib/utils";
 
 export default function PostCard() {
   const router = useRouter();
@@ -62,17 +63,18 @@ export default function PostCard() {
                   <span
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
                   >
-                    <MessageSquareMore size={16} /> {post?.postInfo?.comment}
+                    <MessageSquareMore size={16} />{" "}
+                    {getTotalComments(post?.postInfo)}
                   </span>
                   <span
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
                   >
-                    <Smile size={16} /> {post?.postInfo?.like}
+                    <Smile size={16} /> {getTotalLikes(post?.postInfo)}
                   </span>
                   <span
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
                   >
-                    <Repeat2 size={16} /> {post?.postInfo?.shares}
+                    <Repeat2 size={16} />
                   </span>
                   <span
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}

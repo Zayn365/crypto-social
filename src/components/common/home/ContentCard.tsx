@@ -3,7 +3,8 @@ import React, { useState } from "react";
 
 export default function ContentCard({ post }: any) {
   const descriptionHTML = post?.description ?? "";
-  const images = post?.files?.filter((f: any) => f?.image);
+  const images = post?.files?.filter((f: any) => f?.image) || [];
+  const descriptionText = descriptionHTML.replace(/<[^>]+>/g, "").trim();
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -19,36 +20,40 @@ export default function ContentCard({ post }: any) {
   };
 
   return (
-    // <div className="flex flex-col gap-2">
-    //   <div className="text-sm dark:text-[#A3ADB9] text-[#2f2f2f] whitespace-pre-line">
-    //     {post?.content?.text}
-    //   </div>
-    //   <div className="flex items-center gap-2">
-    //     {post?.content?.hashtags?.map((tag: any, idx: any) => (
-    //       <span key={idx} className="text-[#59B4FF]">
-    //         {tag}
-    //       </span>
-    //     ))}
-    //   </div>
-    //   <div className="flex items-center gap-2">
-    //     <img
-    //       src={post?.content?.image?.src}
-    //       alt={post?.content?.image?.alt}
-    //       className="w-full h-auto rounded-md border"
-    //     />
-    //   </div>
-    // </div>
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 relative">
+      {/* Render Title */}
+      {post?.title && (
+        <h2 className="text-xl font-bold text-[#2f2f2f] dark:text-[#A3ADB9] capitalize">
+          {post?.title}
+        </h2>
+      )}
       {/* Render Description as HTML */}
-      {descriptionHTML && (
+      {descriptionText && (
         <div
           className={cn(
-            "prose prose-sm max-w-none dark:prose-invert text-[#2f2f2f] dark:text-[#A3ADB9]",
-            "[&_img]:max-w-[500px] [&_img]:max-h-[500px] [&_img]:w-full [&_img]:h-auto [&_img]:object-cover"
+            "prose prose-sm max-w-none dark:prose-invert text-[#2f2f2f] dark:text-[#A3ADB9]"
+            // "[&_img]:max-w-[500px] [&_img]:max-h-[500px] [&_img]:w-full [&_img]:h-auto [&_img]:object-cover"
           )}
-          dangerouslySetInnerHTML={{ __html: descriptionHTML }}
+          // dangerouslySetInnerHTML={{ __html: descriptionHTML }}
           onClick={handleImageClick}
-        />
+        >
+          {descriptionText}
+        </div>
+      )}
+
+      {/* Render Images */}
+      {images.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 gap-4">
+          {images.map((img: any, idx: number) => (
+            <img
+              key={idx}
+              src={img.image}
+              alt={`post-image-${idx}`}
+              className="rounded-md w-full h-[200px] object-cover border cursor-pointer"
+              onClick={() => setPreviewImage(img.image)}
+            />
+          ))}
+        </div>
       )}
 
       {previewImage && (
@@ -61,27 +66,13 @@ export default function ContentCard({ post }: any) {
             />
             <button
               onClick={closePreview}
-              className="absolute top-2 -right-5 rounded-full bg-gray-800 text-red-500 hover:bg-gray-700 cursor-pointer px-3 py-2"
+              className="fixed top-2 right-5 rounded-full bg-gray-800 text-red-500 hover:bg-gray-700 cursor-pointer px-3 py-2"
             >
               ✕
             </button>
           </div>
         </div>
       )}
-
-      {/* Render Images */}
-      {/* {images?.length > 0 && (
-        <div className="flex flex-wrap gap-4">
-          {images.map((img: any, idx: number) => (
-            <img
-              key={idx}
-              src={img.image}
-              alt={`post-image-${idx}`}
-              className="rounded-md max-w-full max-h-[400px] object-cover border"
-            />
-          ))}
-        </div>
-      )} */}
     </div>
   );
 }
