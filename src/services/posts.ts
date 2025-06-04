@@ -41,7 +41,15 @@ export const likePost = async (
   },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, POSTS.likePost, payload);
+  const bodyData = {
+    like: payload.like,
+    userId: payload.userId,
+    emoji: payload.emoji,
+  };
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, POSTS.likePost, bodyData, queryParams);
 };
 
 export const commentPost = async (
@@ -52,7 +60,14 @@ export const commentPost = async (
   },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, POSTS.commentPost, payload);
+  const bodyData = {
+    userId: payload.userId,
+    comment: payload.comment,
+  };
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, POSTS.commentPost, bodyData, queryParams);
 };
 
 export const deletePost = async (

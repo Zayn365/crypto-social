@@ -1,6 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { commentPost, likePost } from "@/services/posts";
+import toast from "react-hot-toast";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,3 +51,35 @@ export const getTotalLikes = (postInfo: any[]) =>
 
 export const getTotalComments = (postInfo: any[]) =>
   postInfo?.filter((item) => item?.comment?.trim() !== "").length;
+
+export const emojis = ["😊", "😂", "❤️", "👍", "😍", "😢", "😡", "🎉"];
+
+export const usePostLike = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: likePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success(`Liked successful`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+};
+
+export const usePostComment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: commentPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success(`Comment posted`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+};

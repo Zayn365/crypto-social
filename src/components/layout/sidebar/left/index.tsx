@@ -4,19 +4,13 @@ import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn"
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
 import CreatePostModal from "@/components/common/CreatePostModal";
 import FillButton from "@/components/common/FillButton";
+import ShareModal from "@/components/common/ShareModal";
 import SocialHandle from "@/components/common/SocialHandle";
 import UserInfoCard from "@/components/common/UserInfoCard";
 import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
-import { BountiesIcon } from "@/components/svg/sidebar/bounties";
 import { DiscoverIcon } from "@/components/svg/sidebar/discover";
-import { EarningIcon } from "@/components/svg/sidebar/earning";
-import { FeedIcon } from "@/components/svg/sidebar/feed";
-import { HomeIcon } from "@/components/svg/sidebar/home";
-import { ProfileIcon } from "@/components/svg/sidebar/profile";
 import { SettingsIcon } from "@/components/svg/sidebar/settings";
-import { TradeIcon } from "@/components/svg/sidebar/trade";
-import { WalletIcon } from "@/components/svg/sidebar/wallet";
 import {
   Sidebar,
   SidebarContent,
@@ -25,22 +19,24 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import useUrl from "@/hooks/useUrl";
 import { useAuth } from "@/providers/AuthProvider";
 import { useAppKitAccount } from "@reown/appkit/react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Upload } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
   const { status } = useAppKitAccount();
+  const { user } = useAuth();
+  const { host, pathname } = useUrl();
+
   const [walletModal, setWalletModal] = useState<boolean>(false);
   const [postModal, setPostModal] = useState<boolean>(false);
-  const pathname = usePathname();
-  const { user } = useAuth();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleWalletModal = () => {
     setWalletModal(!walletModal);
@@ -178,6 +174,12 @@ export default function LeftSidebar() {
               <BuyTokenBtn clasName="min-w-full">
                 <BuyTokenIcon /> Buy $BLOCK
               </BuyTokenBtn>
+              <BuyTokenBtn
+                clasName="min-w-full"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <Upload /> Share
+              </BuyTokenBtn>
             </div>
           </div>
         </div>
@@ -203,6 +205,13 @@ export default function LeftSidebar() {
         onClose={() => setWalletModal(false)}
       />
       <CreatePostModal open={postModal} onClose={() => setPostModal(false)} />
+      <ShareModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        referralLink={`${host}${pathname}`}
+        currentPageLink={`${host}${pathname}`}
+        postTitle="Check out this awesome post on Block Face!"
+      />
     </Sidebar>
   );
 }

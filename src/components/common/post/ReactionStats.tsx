@@ -1,4 +1,10 @@
-import { getTotalComments, getTotalLikes } from "@/lib/utils";
+import {
+  emojis,
+  getTotalLikes,
+  usePostComment,
+  usePostLike,
+} from "@/lib/utils";
+import { useAuth } from "@/providers/AuthProvider";
 import {
   ChartNoAxesColumn,
   Gem,
@@ -9,24 +15,127 @@ import {
   Upload,
 } from "lucide-react";
 import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import FillButton from "../FillButton";
+import { motion, AnimatePresence } from "framer-motion";
+import ShareModal from "../ShareModal";
+import useUrl from "@/hooks/useUrl";
 
 export default function ReactionStats({ post }: any) {
+  const { user } = useAuth();
+  const { host, pathname } = useUrl();
+  const { mutate } = usePostLike();
+  const postComment = usePostComment();
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const [showCommentBox, setShowCommentBox] = useState<boolean>(false);
+  const [commentValue, setCommentValue] = useState<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const userLike = post?.postInfo?.find(
+    (post: any) => String(post?.userInfo?.id) === String(user?.id)
+  );
+
+  const selectedEmoji = userLike?.emoji || null;
+
+  const handlelike = (selectedEmoji: string) => {
+    try {
+      if (user.id) {
+        mutate({
+          id: post?.id,
+          like: true,
+          userId: user.id,
+          emoji: String(selectedEmoji),
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
+
+  const handleDislike = () => {
+    try {
+      if (user?.id) {
+        mutate({
+          id: post?.id,
+          like: false,
+          userId: user.id,
+          emoji: "",
+        });
+        toast.success("Like removed");
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
+
+  const handleEmojiClick = (emoji: string) => {
+    if (selectedEmoji === emoji) {
+      handleDislike();
+    } else {
+      handlelike(emoji);
+    }
+    setShowEmojiPicker(false);
+  };
+
+  const handleComment = () => {
+    try {
+      if (user.id) {
+        postComment.mutate({
+          id: post?.id,
+          userId: user.id,
+          comment: String(commentValue),
+        });
+        setCommentValue("");
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
+
+  const handleRepost = () => {
+    try {
+      // if (user.id) {
+      //   mutate({
+      //     id: post?.id,
+      //     repost: true,
+      //     userId: user.id,
+      //   });
+      //   toast.success("Post reposted successfully");
+      // } else {
+      //   toast.error("Please Login");
+      // }
+      console.log("repost");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to repost");
+    }
+  };
+
   const list = [
     {
       no: getTotalLikes(post?.postInfo),
       name: "Reactions",
     },
     {
-      no: 9,
+      no: 0,
       name: " Reposts",
     },
     {
-      no: getTotalComments(post?.postInfo),
+      no: 0,
       name: " Quotes",
     },
     {
-      no: 3,
+      no: 0,
       name: "Diamonds ($0.03)",
     },
   ];
@@ -37,16 +146,48 @@ export default function ReactionStats({ post }: any) {
         <MessageCircle
           size={18}
           className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
+          onClick={() => setShowCommentBox(!showCommentBox)}
         />
       ),
       action: "open",
     },
     {
       icon: (
-        <Smile
-          size={18}
-          className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
-        />
+        <div className="relative">
+          {selectedEmoji ? (
+            <span
+              className="text-lg text-[#000] dark:text-[#DDE5EE] cursor-pointer"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
+              {selectedEmoji}
+            </span>
+          ) : (
+            <Smile
+              size={18}
+              className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000] cursor-pointer"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            />
+          )}
+          {showEmojiPicker && (
+            <div className="absolute bottom-7 left-1/2 transform -translate-x-1/2 bg-white dark:bg-[#1a1c22] border border-gray-200 dark:border-gray-700 rounded-lg p-2 shadow-lg z-10">
+              <div className="flex gap-2">
+                {emojis.map((emoji, idx) => (
+                  <button
+                    key={idx}
+                    className={`text-lg hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-1 cursor-pointer ${
+                      selectedEmoji === emoji
+                        ? "bg-gray-200 dark:bg-gray-600"
+                        : ""
+                    }`}
+                    onClick={() => handleEmojiClick(emoji)}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       ),
       action: "open",
     },
@@ -55,6 +196,7 @@ export default function ReactionStats({ post }: any) {
         <Repeat2
           size={18}
           className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
+          onClick={handleRepost}
         />
       ),
       action: "open",
@@ -82,6 +224,7 @@ export default function ReactionStats({ post }: any) {
         <Upload
           size={18}
           className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
+          onClick={() => setIsOpen(!isOpen)}
         />
       ),
       action: "open",
@@ -125,6 +268,37 @@ export default function ReactionStats({ post }: any) {
           </div>
         ))}
       </div>
+
+      <AnimatePresence>
+        {showCommentBox && (
+          <motion.div
+            className="w-full flex flex-col gap-2 border-b py-2"
+            initial={{ opacity: 0, height: 0, y: -10 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: -10 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            <textarea
+              className="w-full p-2 outline-none resize-none slim-scrollbar"
+              rows={4}
+              placeholder="type comment here..."
+              onChange={({ target }) => setCommentValue(target.value)}
+              value={commentValue}
+            ></textarea>
+            <FillButton className="mx-2" onClick={handleComment}>
+              Reply
+            </FillButton>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <ShareModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        referralLink={`${host}${pathname}`}
+        currentPageLink={`${host}${pathname}`}
+        postTitle="Check out this awesome post on Block Face!"
+      />
     </div>
   );
 }

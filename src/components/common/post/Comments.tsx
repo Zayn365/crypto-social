@@ -9,9 +9,19 @@ import {
   Smile,
   ThumbsDown,
   ThumbsUp,
+  Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getTotalComments } from "@/lib/utils";
+import { getTotalComments, usePostComment } from "@/lib/utils";
+import { useAuth } from "@/providers/AuthProvider";
+import toast from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // const commentsData = [
 //   {
@@ -85,19 +95,24 @@ import { getTotalComments } from "@/lib/utils";
 // ];
 
 export default function Comments({ post }: any) {
+  console.log("🚀 ~ Comments ~ post:", post);
+  const { user } = useAuth();
+  const postComment = usePostComment();
+
   const commentsData =
     post?.postInfo
       ?.filter((item: any) => item?.comment?.trim() !== "")
       ?.map((item: any) => {
         const user = item.userId || item.userInfo || {};
         return {
+          id: item?.userId?.id,
           username: user?.username || user?.name || "Unknown",
           handle: user?.wallet_address
             ? `${user.wallet_address.slice(0, 6)}...${user.wallet_address.slice(
                 -4
               )}`
             : "",
-          time: "Just now", // You can replace this with actual timestamps if available
+          // time: "Just now", // You can replace this with actual timestamps if available
           content: item.comment,
           avatarSrc: user.avatar || "/userDefault.webp",
           likes: item.like === true ? 1 : item.like || 0,
@@ -109,6 +124,23 @@ export default function Comments({ post }: any) {
           subComments: [], // Add nested comments if available
         };
       }) || [];
+
+  const handleDeleteComment = () => {
+    try {
+      if (user.id) {
+        postComment.mutate({
+          id: post?.id,
+          userId: user.id,
+          comment: "",
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
 
   return (
     <div>
@@ -181,9 +213,25 @@ export default function Comments({ post }: any) {
                       </span>
                     </div>
                   </div>
-                  <span className="ml-auto text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer">
-                    <Ellipsis size={14} />
-                  </span>{" "}
+                  {String(user?.id) === String(comment.id) && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <span className="ml-auto text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer">
+                          <Ellipsis size={14} />
+                        </span>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            className="text-red-700 hover:text-red-700 cursor-pointer"
+                            onClick={handleDeleteComment}
+                          >
+                            <Trash2 className="text-red-700" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                   {/* More options */}
                 </div>
                 {/* Comment Content */}

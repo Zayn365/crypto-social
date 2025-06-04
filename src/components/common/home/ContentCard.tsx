@@ -43,13 +43,23 @@ export default function ContentCard({ post }: any) {
 
       {/* Render Images */}
       {images.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-3 gap-4">
+        <div
+          className={`${
+            images.length === 1
+              ? "grid-cols-1"
+              : images.length === 2
+              ? "grid-cols-2"
+              : images.length === 3
+              ? "grid-cols-3"
+              : "grid-cols-2 grid-rows-2"
+          } grid gap-4`}
+        >
           {images.map((img: any, idx: number) => (
             <img
               key={idx}
               src={img.image}
               alt={`post-image-${idx}`}
-              className="rounded-md w-full h-[200px] object-cover border cursor-pointer"
+              className="rounded-md w-full max-h-[500px] object-contain border cursor-pointer"
               onClick={() => setPreviewImage(img.image)}
             />
           ))}
