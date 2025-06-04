@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import NoDataFoundScreen from "./NoDataFoundScreen";
 import { useParams, useRouter } from "next/navigation";
 import { DropdownMenuCheckboxes } from "../DropdownMenuCheckboxes";
+import PostCard from "../home/PostCard";
 
 export default function UserProfileContent({ data }: any) {
   const { id, slug } = useParams();
   const router = useRouter();
   const [active, setActive] = useState<string>(slug ? String(slug) : "feed");
-  console.log("🚀 ~ UserProfileContent ~ active:", active, typeof active);
+
   return (
     <div>
       <div className="border-y flex items-center gap-4 justify-center py-1.5">
@@ -55,7 +56,7 @@ export default function UserProfileContent({ data }: any) {
           />
         )}
       </div>
-      <NoDataFoundScreen />
+      {data.length > 0 ? <PostCard allPost={data} /> : <NoDataFoundScreen />}
     </div>
   );
 }

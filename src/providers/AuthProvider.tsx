@@ -1,5 +1,5 @@
 "use client";
-import { getAllPosts, getAllUserPosts } from "@/services/posts";
+import { getAllPosts } from "@/services/posts";
 import { getAllUsers } from "@/services/user";
 import { useDisconnect } from "@reown/appkit/react";
 import { useQuery } from "@tanstack/react-query";
@@ -43,7 +43,6 @@ const AuthContext = createContext<any>({
   allUsers: null,
   coins: null,
   allPost: null,
-  allUserPost: null,
   allUsersAssets: null,
   setUser: () => {},
   isAuthenticated: false,
@@ -60,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [loading, setLoading] = useState(true);
   const [allPost, setAllPost] = useState<any[]>([]);
-  const [allUserPost, setAllUserPost] = useState<any[]>([]);
   const [allUsersAssets, setAllUsersAssets] = useState<any[]>([]);
 
   const {
@@ -75,11 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: allPostData } = useQuery<any, Error>({
     queryKey: ["getAllPosts"],
     queryFn: async () => await getAllPosts(),
-  });
-
-  const { data: allUserPostData } = useQuery<any, Error>({
-    queryKey: ["getAllUserPosts"],
-    queryFn: async () => await getAllUserPosts({ id: user?.id }),
   });
 
   useEffect(() => {
@@ -189,7 +182,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setLoading(false);
       setAllUsers(usersData?.users?.rows);
-      setAllUserPost(allUserPostData?.result?.rows);
     } catch (error) {
       console.log(error);
     }
@@ -212,7 +204,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     coins,
     allPost,
     allUsersAssets,
-    allUserPost,
     isAuthenticated: !!user,
     logout,
     loading,

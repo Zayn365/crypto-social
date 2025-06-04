@@ -60,3 +60,12 @@ export const getAllUsers = async (
 ): Promise<Response> => {
   return await getHandler(client, USER.getAllUsers, {});
 };
+
+export const getUserById = async (
+  payload: {
+    userId?: number;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  return await getHandler(client, USER.getUserById, payload);
+};

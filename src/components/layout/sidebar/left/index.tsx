@@ -92,7 +92,7 @@ export default function LeftSidebar() {
       ? [
           {
             title: "Profile",
-            url: `/${user?.username}`,
+            url: `/${user?.username}?id=${user?.id}`,
             icon: "/profile-icon.svg",
           },
         ]

@@ -5,10 +5,8 @@ import Image from "next/image";
 import React from "react";
 import FollowersFollowing from "../discover/FollowersFollowing";
 import Stats from "../discover/Stats";
-import { useParams } from "next/navigation";
 
 export default function UserProfileHeader({ data }: any) {
-  const { id } = useParams();
   return (
     <div className="pb-4">
       <div className="relative w-full">
@@ -27,9 +25,9 @@ export default function UserProfileHeader({ data }: any) {
               width={100}
               height={100}
               className="rounded-full border object-cover max-w-[112px]"
-              src={data?.profile?.profilePicture ?? "/userDefault.webp"}
+              src={data?.avatar ?? "/userDefault.webp"}
             />
-            <AvatarFallback>{data?.profile?.profilePicture}</AvatarFallback>
+            <AvatarFallback>{data?.profile}</AvatarFallback>
           </Avatar>
         </div>
         <div className="h-fit flex items-center gap-2">
@@ -59,7 +57,7 @@ export default function UserProfileHeader({ data }: any) {
 
       <div className="px-6">
         <h1 className="text-lg dark:text-[#DDE5EE] text-[#000000] font-bold flex items-center gap-2">
-          {data?.profile?.name}
+          {data?.name}
           {data?.profile?.verified && (
             <>
               <img
@@ -76,7 +74,7 @@ export default function UserProfileHeader({ data }: any) {
             </>
           )}
           <p className="text-sm dark:text-[#8c9fb7a0] text-[#999999] font-normal">
-            {data?.profile?.handle ?? id}
+            {data?.profile?.username ?? ""}
           </p>
         </h1>
         <FollowersFollowing data={data} />

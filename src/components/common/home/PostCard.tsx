@@ -15,12 +15,10 @@ import ContentCard from "./ContentCard";
 import PostHeader from "./PostHeader";
 import { useRouter } from "next/navigation";
 import PostEmojis from "./PostEmojis";
-import { useAuth } from "@/providers/AuthProvider";
 import { getTotalComments, getTotalLikes } from "@/lib/utils";
 
-export default function PostCard() {
+export default function PostCard({ allPost }: any) {
   const router = useRouter();
-  const { allPost } = useAuth();
   return (
     <div>
       {allPost?.map((post: any, index: any) => (
