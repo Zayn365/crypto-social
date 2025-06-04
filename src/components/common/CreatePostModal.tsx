@@ -79,7 +79,7 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
           userId: user?.id,
           emoji: "",
           comment: "",
-          like: 0,
+          like: false,
         },
       ])
     );

@@ -44,7 +44,7 @@ export const formatPrice = (price: number | null) => {
 };
 
 export const getTotalLikes = (postInfo: any[]) =>
-  postInfo?.reduce((sum, item) => sum + (item?.like ?? 0), 0);
+  postInfo?.reduce((sum, item) => sum + (item?.like === true ? 1 : 0), 0);
 
 export const getTotalComments = (postInfo: any[]) =>
   postInfo?.filter((item) => item?.comment?.trim() !== "").length;

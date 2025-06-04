@@ -13,78 +13,103 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getTotalComments } from "@/lib/utils";
 
-const commentsData = [
-  {
-    follow: 224,
-    username: "AniMEisLIFE",
-    avatarSrc: "https://github.com/shadcn.png",
-    handle: "@AniMEisLIFE",
-    time: "11d ago",
-    content: "Moggel supporter ARE best",
-    likes: "51K",
-    replies: 1,
-    shares: 0,
-    diamonds: 8,
-    views: 2,
-  },
-  {
-    follow: 224,
-    avatarSrc: "https://github.com/shadcn.png",
-    username: "NimaYas",
-    handle: "@NimaYas",
-    time: "11d ago",
-    content: "I'M not going to the last point 😅",
-    likes: "51K",
-    replies: 1,
-    shares: 0,
-    diamonds: 5,
-    subComments: [
-      {
-        follow: 224,
-        avatarSrc: "https://github.com/shadcn.png",
-        username: "BKP0WER",
-        handle: "@BKP0WER",
-        time: "10d ago",
-        content: "😉",
-        likes: "109",
-        replies: 1,
-        shares: 0,
-        diamonds: 4,
-        views: 2,
-      },
-    ],
-  },
-  {
-    follow: 224,
-    avatarSrc: "https://github.com/shadcn.png",
-    username: "GlowArtAz",
-    handle: "@GlowArtAz",
-    time: "9d ago",
-    content: "On it! See you when you return...",
-    likes: "51K",
-    replies: 1,
-    shares: 0,
-    diamonds: 2,
-    views: 2,
-    subComments: [
-      {
-        follow: 224,
-        avatarSrc: "https://github.com/shadcn.png",
-        username: "Moggel",
-        handle: "@Moggel",
-        time: "9d ago",
-        content: "Thank you ❤️",
-        likes: "",
-        replies: 0,
-        shares: 0,
-        diamonds: 1,
-        views: 2,
-      },
-    ],
-  },
-];
+// const commentsData = [
+//   {
+//     follow: 224,
+//     username: "AniMEisLIFE",
+//     avatarSrc: "https://github.com/shadcn.png",
+//     handle: "@AniMEisLIFE",
+//     time: "11d ago",
+//     content: "Moggel supporter ARE best",
+//     likes: "51K",
+//     replies: 1,
+//     shares: 0,
+//     diamonds: 8,
+//     views: 2,
+//   },
+//   {
+//     follow: 224,
+//     avatarSrc: "https://github.com/shadcn.png",
+//     username: "NimaYas",
+//     handle: "@NimaYas",
+//     time: "11d ago",
+//     content: "I'M not going to the last point 😅",
+//     likes: "51K",
+//     replies: 1,
+//     shares: 0,
+//     diamonds: 5,
+//     subComments: [
+//       {
+//         follow: 224,
+//         avatarSrc: "https://github.com/shadcn.png",
+//         username: "BKP0WER",
+//         handle: "@BKP0WER",
+//         time: "10d ago",
+//         content: "😉",
+//         likes: "109",
+//         replies: 1,
+//         shares: 0,
+//         diamonds: 4,
+//         views: 2,
+//       },
+//     ],
+//   },
+//   {
+//     follow: 224,
+//     avatarSrc: "https://github.com/shadcn.png",
+//     username: "GlowArtAz",
+//     handle: "@GlowArtAz",
+//     time: "9d ago",
+//     content: "On it! See you when you return...",
+//     likes: "51K",
+//     replies: 1,
+//     shares: 0,
+//     diamonds: 2,
+//     views: 2,
+//     subComments: [
+//       {
+//         follow: 224,
+//         avatarSrc: "https://github.com/shadcn.png",
+//         username: "Moggel",
+//         handle: "@Moggel",
+//         time: "9d ago",
+//         content: "Thank you ❤️",
+//         likes: "",
+//         replies: 0,
+//         shares: 0,
+//         diamonds: 1,
+//         views: 2,
+//       },
+//     ],
+//   },
+// ];
 
 export default function Comments({ post }: any) {
+  const commentsData =
+    post?.postInfo
+      ?.filter((item: any) => item?.comment?.trim() !== "")
+      ?.map((item: any) => {
+        const user = item.userId || item.userInfo || {};
+        return {
+          username: user?.username || user?.name || "Unknown",
+          handle: user?.wallet_address
+            ? `${user.wallet_address.slice(0, 6)}...${user.wallet_address.slice(
+                -4
+              )}`
+            : "",
+          time: "Just now", // You can replace this with actual timestamps if available
+          content: item.comment,
+          avatarSrc: user.avatar || "/userDefault.webp",
+          likes: item.like === true ? 1 : item.like || 0,
+          replies: 0, // Add real replies if you have them
+          shares: item.emoji ? 1 : 0, // Just for example
+          diamonds: 0,
+          views: 0,
+          follow: "",
+          subComments: [], // Add nested comments if available
+        };
+      }) || [];
+
   return (
     <div>
       <div className="flex justify-between items-center p-3 border-b">
@@ -107,7 +132,7 @@ export default function Comments({ post }: any) {
 
       {/* Comments Section */}
       <div className="divide-y divide-[#2a323b7e]">
-        {commentsData.map((comment, index) => (
+        {commentsData.map((comment: any, index: number) => (
           <div key={index} className="p-3">
             {/* Comment Header */}
             <div className="flex items-start space-x-3">
@@ -196,92 +221,98 @@ export default function Comments({ post }: any) {
             {/* Sub-Comments (Replies) */}
             {comment.subComments && (
               <div className="ml-12 mt-3 divide-y divide-gray-800">
-                {comment.subComments.map((subComment, subIndex) => (
-                  <div key={subIndex} className="pt-3">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex flex-col gap-2">
-                        <div className="w-fit h-fit">
-                          <Avatar className="size-9">
-                            <AvatarImage
-                              width={100}
-                              height={100}
-                              className="w-9 h-9 object-cover"
-                              src={subComment?.avatarSrc ?? "/userDefault.webp"}
-                            />
-                            <AvatarFallback>
-                              {subComment.username}
-                            </AvatarFallback>
-                          </Avatar>
-                        </div>
-                        <div className="flex flex-col justify-center items-center gap-1">
-                          <ThumbsUp
-                            className="text-[#8c9fb7a0] cursor-pointer"
-                            size={14}
-                          />
-                          <div className="text-[#2f2f2f] dark:text-[#a3adb9] text-xs">
-                            {subComment.follow}
+                {comment.subComments.map(
+                  (subComment: any, subIndex: number) => (
+                    <div key={subIndex} className="pt-3">
+                      <div className="flex items-start space-x-3">
+                        <div className="flex flex-col gap-2">
+                          <div className="w-fit h-fit">
+                            <Avatar className="size-9">
+                              <AvatarImage
+                                width={100}
+                                height={100}
+                                className="w-9 h-9 object-cover"
+                                src={
+                                  subComment?.avatarSrc ?? "/userDefault.webp"
+                                }
+                              />
+                              <AvatarFallback>
+                                {subComment.username}
+                              </AvatarFallback>
+                            </Avatar>
                           </div>
-                          <ThumbsDown
-                            className="text-[#8c9fb7a0] cursor-pointer"
-                            size={14}
-                          />
+                          <div className="flex flex-col justify-center items-center gap-1">
+                            <ThumbsUp
+                              className="text-[#8c9fb7a0] cursor-pointer"
+                              size={14}
+                            />
+                            <div className="text-[#2f2f2f] dark:text-[#a3adb9] text-xs">
+                              {subComment.follow}
+                            </div>
+                            <ThumbsDown
+                              className="text-[#8c9fb7a0] cursor-pointer"
+                              size={14}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      {/* Placeholder for avatar */}
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-1">
-                          <div className="flex flex-col">
-                            <span className="text-xs font-semibold dark:text-[#DDE5EE]">
-                              {subComment.username}
-                            </span>
-                            <div className="flex items-center">
-                              <span className="text-xs text-[#999999] dark:text-[#8c9fb7a0]">
-                                {subComment.handle}
+                        {/* Placeholder for avatar */}
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-1">
+                            <div className="flex flex-col">
+                              <span className="text-xs font-semibold dark:text-[#DDE5EE]">
+                                {subComment.username}
                               </span>
-                              <span className="text-xs text-[#999999] dark:text-[#8c9fb7a0]">
-                                ·
-                              </span>
-                              <span className="text-xs text-[#999999] dark:text-[#8c9fb7a0]">
-                                {subComment.time}
+                              <div className="flex items-center">
+                                <span className="text-xs text-[#999999] dark:text-[#8c9fb7a0]">
+                                  {subComment.handle}
+                                </span>
+                                <span className="text-xs text-[#999999] dark:text-[#8c9fb7a0]">
+                                  ·
+                                </span>
+                                <span className="text-xs text-[#999999] dark:text-[#8c9fb7a0]">
+                                  {subComment.time}
+                                </span>
+                              </div>
+                            </div>
+                            <span className="ml-auto text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer">
+                              <Ellipsis size={14} />
+                            </span>{" "}
+                            {/* More options */}
+                          </div>
+                          <p className="text-sm mt-1">{subComment.content}</p>
+                          <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
+                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                              <ThumbsUp size={14} />
+                              <span className="text-xs">{comment.likes}</span>
+                            </div>
+                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                              <MessagesSquare size={14} />
+                              <span className="text-xs">Reply</span>
+                              <span className="text-xs">{comment.replies}</span>
+                            </div>
+                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                              <Smile size={14} />
+                              <span className="text-xs">{comment.shares}</span>
+                            </div>
+                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                              <Repeat2 size={14} />
+                            </div>
+                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                              <Gem size={14} />
+                              <span className="text-xs">
+                                {comment.diamonds}
                               </span>
                             </div>
-                          </div>
-                          <span className="ml-auto text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer">
-                            <Ellipsis size={14} />
-                          </span>{" "}
-                          {/* More options */}
-                        </div>
-                        <p className="text-sm mt-1">{subComment.content}</p>
-                        <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
-                          <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                            <ThumbsUp size={14} />
-                            <span className="text-xs">{comment.likes}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                            <MessagesSquare size={14} />
-                            <span className="text-xs">Reply</span>
-                            <span className="text-xs">{comment.replies}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                            <Smile size={14} />
-                            <span className="text-xs">{comment.shares}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                            <Repeat2 size={14} />
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                            <Gem size={14} />
-                            <span className="text-xs">{comment.diamonds}</span>
-                          </div>
-                          <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                            <ChartNoAxesColumn size={14} />
-                            <span className="text-xs">{comment?.views}</span>
+                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                              <ChartNoAxesColumn size={14} />
+                              <span className="text-xs">{comment?.views}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             )}
           </div>
