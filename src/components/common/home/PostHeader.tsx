@@ -1,7 +1,7 @@
 import React from "react";
 import ToolTip from "../tool-tip";
 import { Ellipsis, ListTodo, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import moment from "moment";
 import {
@@ -20,6 +20,7 @@ export default function PostHeader({ post }: any) {
   const url = usePathname();
   const { id } = useParams();
   const deletePost = usePostDelete();
+  const router = useRouter();
 
   const handleDeletePost = () => {
     try {
@@ -51,7 +52,10 @@ export default function PostHeader({ post }: any) {
           </Avatar>
         )}
         <div className="flex flex-col gap-1">
-          <div className="hover:underline dark:text-[#DDE5EE] font-semibold flex items-center gap-2">
+          <div
+            className="hover:underline dark:text-[#DDE5EE] font-semibold flex items-center gap-2 cursor-pointer"
+            onClick={() => router.replace(`/${post?.userInfo?.id}`)}
+          >
             {post?.userInfo?.username}{" "}
             {post?.userInfo?.verifiedIcon && (
               <img
