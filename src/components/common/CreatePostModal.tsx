@@ -26,7 +26,6 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
   const [content, setContent] = useState("");
   console.log("🚀 ~ CreatePostModal ~ content:", content);
   const [files, setFiles] = useState<File[]>([]);
-  const editorRef = useRef<any>(null);
 
   const { mutate: submitPost, isPending } = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -52,9 +51,34 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
     const links = Array.from(doc.getElementsByTagName("a")).map((link) => ({
       link: link.href,
       title: link.textContent || "Link",
-      description: "Link inserted in post", // You can enhance this with metadata if needed
+      description: "",
     }));
     return links;
+  };
+
+  const extractTitleAndCleanContent = (html: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Walk and get the first text node
+    const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return node.nodeValue?.trim()
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP;
+      },
+    });
+
+    const firstTextNode = walker.nextNode();
+    const title = firstTextNode?.nodeValue?.trim() || "";
+
+    // Remove the parent element of the first text node
+    if (firstTextNode?.parentElement) {
+      firstTextNode.parentElement.remove();
+    }
+
+    const cleanedHTML = doc.body.innerHTML.trim();
+    return { title, cleanedHTML };
   };
 
   const handleSubmit = () => {
@@ -62,11 +86,12 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
       toast.error("Post content cannot be empty");
       return;
     }
+    const { title, cleanedHTML } = extractTitleAndCleanContent(content);
 
     // Create FormData object
     const formData = new FormData();
-    formData.append("title", "title");
-    formData.append("description", content);
+    formData.append("title", title);
+    formData.append("description", cleanedHTML);
     formData.append("userId", user?.id?.toString() || "");
     formData.append("links", JSON.stringify(extractLinks(content)));
     files.forEach((file) => {

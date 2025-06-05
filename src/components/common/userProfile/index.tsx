@@ -4,7 +4,6 @@ import UserProfileHeader from "./UserProfileHeader";
 import { useParams } from "next/navigation";
 import { projectInfoData } from "@/components/dummuyData/projectInfoData";
 import UserProfileContent from "./UserProfileContent";
-import useUrl from "@/hooks/useUrl";
 import { useAuth } from "@/providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { getUserById } from "@/services/user";
@@ -12,33 +11,59 @@ import { getAllUserPosts } from "@/services/posts";
 
 export default function UserProfileDetails() {
   const { id } = useParams();
-  const { query } = useUrl();
   const { user } = useAuth();
   const [userDetails, setUserDetails] = useState<any>({});
   const [userPosts, setUserPosts] = useState<any>([]);
 
-  const { data: userDataById } = useQuery<any, Error>({
+  const {
+    data: userDataById,
+    isLoading: userLoading,
+    isFetched: userFetched,
+  } = useQuery<any, Error>({
     queryKey: ["getUserById"],
-    queryFn: async () => await getUserById({ userId: Number(query?.id) }),
+    queryFn: async () => await getUserById({ userId: Number(id) }),
   });
 
-  const { data: allUserPostData } = useQuery<any, Error>({
+  const {
+    data: allUserPostData,
+    isLoading: postLoading,
+    isFetched: postFetched,
+  } = useQuery<any, Error>({
     queryKey: ["getAllUserPosts"],
-    queryFn: async () => await getAllUserPosts({ id: Number(query?.id) }),
+    queryFn: async () => await getAllUserPosts({ id: Number(id) }),
   });
 
   useEffect(() => {
-    if (user?.id) {
-      setUserDetails(userDataById?.user);
-      setUserPosts(allUserPostData?.result);
+    if (userFetched && userDataById?.user) {
+      setUserDetails(userDataById.user);
     }
-  }, [user?.id]);
+  }, [userFetched, userDataById]);
+
+  useEffect(() => {
+    if (postFetched && allUserPostData?.result) {
+      const sortedPosts = [...allUserPostData.result].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      setUserPosts(sortedPosts);
+    }
+  }, [postFetched, allUserPostData]);
 
   const findPostById = (id: string) => {
     return projectInfoData.find((data) => data?.profile?.name === id) || null;
   };
 
   const projectToRender = typeof id === "string" ? findPostById(id) : null;
+
+  if (userLoading && postLoading) {
+    return (
+      <div className="h-[100vh] w-full flex justify-center items-center">
+        Loading ...
+      </div>
+    );
+  }
+
   return (
     <div>
       <UserProfileHeader data={userDetails} />

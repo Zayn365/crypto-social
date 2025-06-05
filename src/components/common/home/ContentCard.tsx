@@ -2,9 +2,17 @@ import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 
 export default function ContentCard({ post }: any) {
+  const htmlToPlainText = (html: string) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    return doc.body.textContent?.trim() || "";
+  };
+
   const descriptionHTML = post?.description ?? "";
   const images = post?.files?.filter((f: any) => f?.image) || [];
-  const descriptionText = descriptionHTML.replace(/<[^>]+>/g, "").trim();
+  // const descriptionText = htmlToPlainText(descriptionHTML);
+  const descriptionText = descriptionHTML.replace(/<[^>]+>/g, " ").trim();
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -31,7 +39,7 @@ export default function ContentCard({ post }: any) {
       {descriptionText && (
         <div
           className={cn(
-            "prose prose-sm max-w-none dark:prose-invert text-[#2f2f2f] dark:text-[#A3ADB9]"
+            "prose prose-sm max-w-none dark:prose-invert text-[#2f2f2f] dark:text-[#A3ADB9] break-all"
             // "[&_img]:max-w-[500px] [&_img]:max-h-[500px] [&_img]:w-full [&_img]:h-auto [&_img]:object-cover"
           )}
           // dangerouslySetInnerHTML={{ __html: descriptionHTML }}

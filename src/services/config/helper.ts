@@ -64,3 +64,23 @@ export const getHandler = async (
     throw axiosError;
   }
 };
+
+export const deleteHandler = async (
+  axiosInstance: AxiosInstance,
+  url: string,
+  payload: unknown
+) => {
+  try {
+    const { data } = await axiosInstance.delete(url, {
+      params: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error("Error fetching:", axiosError.message);
+    throw axiosError;
+  }
+};

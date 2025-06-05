@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { commentPost, likePost } from "@/services/posts";
+import { commentPost, deletePost, likePost } from "@/services/posts";
 import toast from "react-hot-toast";
 
 export function cn(...inputs: ClassValue[]) {
@@ -77,6 +77,21 @@ export const usePostComment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
       toast.success(`Comment posted`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+};
+
+export const usePostDelete = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllUserPosts"] });
+      toast.success(`Post Deleted`);
     },
     onError: ({ message }) => {
       toast.error(message);

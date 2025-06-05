@@ -68,7 +68,10 @@ export default function ShareModal({
               title: postTitle,
               url: currentPageLink,
             })
-            .catch((error) => console.error("Share failed:", error));
+            .catch((error) => {
+              toast.error("something went wrong");
+              console.error("Share failed:", error);
+            });
         } else {
           toast.error("System share not supported");
         }

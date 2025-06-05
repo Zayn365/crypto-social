@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import apiClient from "./config/client";
-import { getHandler, postHandler } from "./config/helper";
+import { deleteHandler, getHandler, postHandler } from "./config/helper";
 import { POSTS } from "./config/urls/posts";
 
 export const getAllPosts = async (
@@ -76,5 +76,5 @@ export const deletePost = async (
   },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, POSTS.deletePost, payload);
+  return await deleteHandler(client, POSTS.deletePost, payload);
 };

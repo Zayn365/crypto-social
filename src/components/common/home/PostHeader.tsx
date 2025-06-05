@@ -1,12 +1,41 @@
 import React from "react";
 import ToolTip from "../tool-tip";
-import { Ellipsis, ListTodo, ThumbsDown, ThumbsUp } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { Ellipsis, ListTodo, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import { useParams, usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import moment from "moment";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/providers/AuthProvider";
+import { usePostDelete } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function PostHeader({ post }: any) {
+  const { user } = useAuth();
   const url = usePathname();
+  const { id } = useParams();
+  const deletePost = usePostDelete();
+
+  const handleDeletePost = () => {
+    try {
+      if (user.id) {
+        deletePost.mutate({
+          id: post?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
+
   return (
     <div className="flex justify-between items-center gap-4 max-md:flex-col max-md:items-start">
       <div className="flex items-center gap-2">
@@ -75,12 +104,29 @@ export default function PostHeader({ post }: any) {
         >
           Subscribe
         </div>
-        <div className="hover:bg-[#F1F1F1] dark:hover:bg-[#13151A] rounded-full p-2 cursor-pointer">
-          <Ellipsis
-            className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
-            size={16}
-          />
-        </div>
+        {String(post?.userInfo?.id) === String(id) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="hover:bg-[#F1F1F1] dark:hover:bg-[#13151A] rounded-full p-2 cursor-pointer">
+                <Ellipsis
+                  className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
+                  size={16}
+                />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  className="text-red-700 hover:text-red-700 cursor-pointer"
+                  onClick={handleDeletePost}
+                >
+                  <Trash2 className="text-red-700" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
         {url.includes("post") && (
           <div className="flex flex-col justify-center items-center gap-1">
             <ThumbsUp className="text-[#8c9fb7a0] cursor-pointer" size={16} />

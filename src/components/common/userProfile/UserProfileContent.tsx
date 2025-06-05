@@ -56,7 +56,7 @@ export default function UserProfileContent({ data }: any) {
           />
         )}
       </div>
-      {data.length > 0 ? <PostCard allPost={data} /> : <NoDataFoundScreen />}
+      {data?.length > 0 ? <PostCard allPost={data} /> : <NoDataFoundScreen />}
     </div>
   );
 }
