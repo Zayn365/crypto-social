@@ -6,4 +6,5 @@ export const POSTS = {
   likePost: `/posts/like`,
   commentPost: `/posts/comment`,
   deletePost: `/posts`,
+  commentDelete: "/posts/commentDelete",
 };

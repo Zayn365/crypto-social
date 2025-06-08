@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { cn, defaultUserCover, defaultUserProfile } from "@/lib/utils";
 import { Ellipsis, Gem, ListTodo, Mail } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -11,9 +11,9 @@ export default function UserProfileHeader({ data }: any) {
     <div className="pb-4">
       <div className="relative w-full">
         <Image
-          src={data?.profile?.bannerImage ?? "/empty-39.webp"}
+          src={data?.cover ?? defaultUserCover}
           alt="Banner"
-          className="object-cover w-full min-h-52"
+          className="object-cover w-full min-h-52 max-h-40"
           width={700}
           height={200}
         />
@@ -25,7 +25,7 @@ export default function UserProfileHeader({ data }: any) {
               width={100}
               height={100}
               className="rounded-full border object-cover max-w-[112px]"
-              src={data?.avatar ?? "/userDefault.webp"}
+              src={data?.avatar ?? defaultUserProfile}
             />
             <AvatarFallback>{data?.profile}</AvatarFallback>
           </Avatar>

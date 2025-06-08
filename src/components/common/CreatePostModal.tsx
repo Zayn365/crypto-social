@@ -97,18 +97,6 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
     files.forEach((file) => {
       formData.append("files", file);
     });
-    formData.append(
-      "postInfo",
-      JSON.stringify([
-        {
-          userId: user?.id,
-          emoji: "",
-          comment: "",
-          like: false,
-        },
-      ])
-    );
-
     submitPost(formData);
   };
   return (

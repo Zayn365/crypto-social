@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (allPostData) {
-      const sortedPosts = [...allPostData.result.rows].sort(
+      const sortedPosts = [...allPostData.result].sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );

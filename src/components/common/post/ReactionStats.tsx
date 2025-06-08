@@ -3,6 +3,7 @@ import {
   getTotalLikes,
   usePostComment,
   usePostLike,
+  usePostUnLike,
 } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import {
@@ -26,7 +27,9 @@ export default function ReactionStats({ post }: any) {
   const { user } = useAuth();
   const { host, pathname } = useUrl();
   const { mutate } = usePostLike();
+  const unLike = usePostUnLike();
   const postComment = usePostComment();
+
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [showCommentBox, setShowCommentBox] = useState<boolean>(false);
   const [commentValue, setCommentValue] = useState<string>("");
@@ -59,13 +62,12 @@ export default function ReactionStats({ post }: any) {
   const handleDislike = () => {
     try {
       if (user?.id) {
-        mutate({
+        unLike.mutate({
           id: post?.id,
           like: false,
           userId: user.id,
           emoji: "",
         });
-        toast.success("Like removed");
       } else {
         toast.error("Please Login");
       }
@@ -156,7 +158,7 @@ export default function ReactionStats({ post }: any) {
         <div className="relative">
           {selectedEmoji ? (
             <span
-              className="text-lg text-[#000] dark:text-[#DDE5EE] cursor-pointer"
+              className="text-lg text-[#000] dark:text-[#DDE5EE] cursor-pointer max-w-[18px] max-h-[18px]"
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             >
               {selectedEmoji}

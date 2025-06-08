@@ -68,11 +68,13 @@ export const getHandler = async (
 export const deleteHandler = async (
   axiosInstance: AxiosInstance,
   url: string,
-  payload: unknown
+  payload?: unknown,
+  params?: Record<string, any>
 ) => {
   try {
     const { data } = await axiosInstance.delete(url, {
-      params: payload,
+      data: payload,
+      params,
       headers: {
         "Content-Type": "application/json",
       },

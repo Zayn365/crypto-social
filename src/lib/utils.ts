@@ -4,6 +4,7 @@ import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { commentPost, deletePost, likePost } from "@/services/posts";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -69,6 +70,21 @@ export const usePostLike = () => {
   });
 };
 
+export const usePostUnLike = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: likePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success("Like removed");
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+};
+
 export const usePostComment = () => {
   const queryClient = useQueryClient();
 
@@ -86,12 +102,14 @@ export const usePostComment = () => {
 
 export const usePostDelete = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getAllUserPosts"] });
       toast.success(`Post Deleted`);
+      router.replace("/");
     },
     onError: ({ message }) => {
       toast.error(message);

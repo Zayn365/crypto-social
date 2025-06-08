@@ -12,7 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getTotalComments, usePostComment } from "@/lib/utils";
+import { getTotalComments } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import toast from "react-hot-toast";
 import {
@@ -22,82 +22,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-// const commentsData = [
-//   {
-//     follow: 224,
-//     username: "AniMEisLIFE",
-//     avatarSrc: "https://github.com/shadcn.png",
-//     handle: "@AniMEisLIFE",
-//     time: "11d ago",
-//     content: "Moggel supporter ARE best",
-//     likes: "51K",
-//     replies: 1,
-//     shares: 0,
-//     diamonds: 8,
-//     views: 2,
-//   },
-//   {
-//     follow: 224,
-//     avatarSrc: "https://github.com/shadcn.png",
-//     username: "NimaYas",
-//     handle: "@NimaYas",
-//     time: "11d ago",
-//     content: "I'M not going to the last point 😅",
-//     likes: "51K",
-//     replies: 1,
-//     shares: 0,
-//     diamonds: 5,
-//     subComments: [
-//       {
-//         follow: 224,
-//         avatarSrc: "https://github.com/shadcn.png",
-//         username: "BKP0WER",
-//         handle: "@BKP0WER",
-//         time: "10d ago",
-//         content: "😉",
-//         likes: "109",
-//         replies: 1,
-//         shares: 0,
-//         diamonds: 4,
-//         views: 2,
-//       },
-//     ],
-//   },
-//   {
-//     follow: 224,
-//     avatarSrc: "https://github.com/shadcn.png",
-//     username: "GlowArtAz",
-//     handle: "@GlowArtAz",
-//     time: "9d ago",
-//     content: "On it! See you when you return...",
-//     likes: "51K",
-//     replies: 1,
-//     shares: 0,
-//     diamonds: 2,
-//     views: 2,
-//     subComments: [
-//       {
-//         follow: 224,
-//         avatarSrc: "https://github.com/shadcn.png",
-//         username: "Moggel",
-//         handle: "@Moggel",
-//         time: "9d ago",
-//         content: "Thank you ❤️",
-//         likes: "",
-//         replies: 0,
-//         shares: 0,
-//         diamonds: 1,
-//         views: 2,
-//       },
-//     ],
-//   },
-// ];
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { commentDelete } from "@/services/posts";
 
 export default function Comments({ post }: any) {
-  console.log("🚀 ~ Comments ~ post:", post);
+  const queryClient = useQueryClient();
+
   const { user } = useAuth();
-  const postComment = usePostComment();
 
   const commentsData =
     post?.postInfo
@@ -125,13 +56,24 @@ export default function Comments({ post }: any) {
         };
       }) || [];
 
-  const handleDeleteComment = () => {
+  const deleteComment = useMutation({
+    mutationFn: commentDelete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success(`Comment deleted`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+
+  const handleDeleteComment = (commentId: string) => {
     try {
       if (user.id) {
-        postComment.mutate({
+        deleteComment.mutate({
           id: post?.id,
           userId: user.id,
-          comment: "",
+          commentId,
         });
       } else {
         toast.error("Please Login");
@@ -213,7 +155,7 @@ export default function Comments({ post }: any) {
                       </span>
                     </div>
                   </div>
-                  {String(user?.id) === String(comment.id) && (
+                  {String(user?.id) === String(comment?.userInfo?.id) && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <span className="ml-auto text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer">
@@ -224,7 +166,7 @@ export default function Comments({ post }: any) {
                         <DropdownMenuGroup>
                           <DropdownMenuItem
                             className="text-red-700 hover:text-red-700 cursor-pointer"
-                            onClick={handleDeleteComment}
+                            onClick={() => handleDeleteComment(comment?.id)}
                           >
                             <Trash2 className="text-red-700" /> Delete
                           </DropdownMenuItem>

@@ -76,5 +76,26 @@ export const deletePost = async (
   },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await deleteHandler(client, POSTS.deletePost, payload);
+  const params = {
+    id: payload.id,
+  };
+  return await deleteHandler(client, POSTS.deletePost, params);
+};
+
+export const commentDelete = async (
+  payload: {
+    id: number;
+    userId: number;
+    commentId: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const params = {
+    id: payload.id,
+  };
+  const bodyData = {
+    userId: payload.userId,
+    commentId: payload.commentId,
+  };
+  return await deleteHandler(client, POSTS.commentDelete, bodyData, params);
 };

@@ -1,6 +1,6 @@
 export const postsData = [
   {
-    id: 'a8134586-a8ec-46e3-a4aa-855bfbd6a4bb',
+    id: "a8134586-a8ec-46e3-a4aa-855bfbd6a4bb",
     user: {
       username: "Moggel",
       handle: "@Moggel",
@@ -41,7 +41,7 @@ export const postsData = [
     },
   },
   {
-    id: 'a8134586-a8ec-46e3-a4aa-855bfbd6a4bc',
+    id: "a8134586-a8ec-46e3-a4aa-855bfbd6a4bc",
     user: {
       username: "ArtFan",
       handle: "@ArtFan123",
@@ -82,7 +82,7 @@ export const postsData = [
     },
   },
   {
-    id: 'a8134586-a8ec-46e3-a4aa-855bfbd6a4bd',
+    id: "a8134586-a8ec-46e3-a4aa-855bfbd6a4bd",
     user: {
       username: "MuseumGuru",
       handle: "@MuseumGuru99",
@@ -121,5 +121,76 @@ export const postsData = [
       },
       views: 500,
     },
+  },
+];
+
+export const commentsData = [
+  {
+    follow: 224,
+    username: "AniMEisLIFE",
+    avatarSrc: "https://github.com/shadcn.png",
+    handle: "@AniMEisLIFE",
+    time: "11d ago",
+    content: "Moggel supporter ARE best",
+    likes: "51K",
+    replies: 1,
+    shares: 0,
+    diamonds: 8,
+    views: 2,
+  },
+  {
+    follow: 224,
+    avatarSrc: "https://github.com/shadcn.png",
+    username: "NimaYas",
+    handle: "@NimaYas",
+    time: "11d ago",
+    content: "I'M not going to the last point 😅",
+    likes: "51K",
+    replies: 1,
+    shares: 0,
+    diamonds: 5,
+    subComments: [
+      {
+        follow: 224,
+        avatarSrc: "https://github.com/shadcn.png",
+        username: "BKP0WER",
+        handle: "@BKP0WER",
+        time: "10d ago",
+        content: "😉",
+        likes: "109",
+        replies: 1,
+        shares: 0,
+        diamonds: 4,
+        views: 2,
+      },
+    ],
+  },
+  {
+    follow: 224,
+    avatarSrc: "https://github.com/shadcn.png",
+    username: "GlowArtAz",
+    handle: "@GlowArtAz",
+    time: "9d ago",
+    content: "On it! See you when you return...",
+    likes: "51K",
+    replies: 1,
+    shares: 0,
+    diamonds: 2,
+    views: 2,
+    subComments: [
+      {
+        follow: 224,
+        avatarSrc: "https://github.com/shadcn.png",
+        username: "Moggel",
+        handle: "@Moggel",
+        time: "9d ago",
+        content: "Thank you ❤️",
+        likes: "",
+        replies: 0,
+        shares: 0,
+        diamonds: 1,
+        views: 2,
+      },
+    ],
   },
 ];

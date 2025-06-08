@@ -108,7 +108,7 @@ export default function PostHeader({ post }: any) {
         >
           Subscribe
         </div>
-        {String(post?.userInfo?.id) === String(id) && (
+        {String(post?.userInfo?.id) === String(user?.id) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="hover:bg-[#F1F1F1] dark:hover:bg-[#13151A] rounded-full p-2 cursor-pointer">
