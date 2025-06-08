@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Label from "../label";
 import Input from "../input";
 import { useAuth } from "@/providers/AuthProvider";
 import ProfileUpload from "../profile-upload-modal";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useMutation } from "@tanstack/react-query";
-import { updateUserInfo, uploadAvatar } from "@/services/user";
+import { updateUserInfo, uploadAvatar, uploadCover } from "@/services/user";
 import toast from "react-hot-toast";
 import { blobToWebP } from "webp-converter-browser";
 import FillButton from "../FillButton";
-import { formatDateWithAgo } from "@/lib/utils";
+import {
+  cn,
+  defaultUserCover,
+  defaultUserProfile,
+  formatDateWithAgo,
+  validateImageAspectRatio,
+} from "@/lib/utils";
+import { UploadIcon } from "lucide-react";
+import Image from "next/image";
 
 interface UserData {
   avatar: string | File | null;
+  cover: string | File | null;
   name: string;
   email: string;
   username: string;
@@ -22,27 +31,34 @@ interface UserData {
 export default function EditProfile() {
   const { user, setUser } = useAuth();
   const { address } = useAppKitAccount();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [userData, setUserData] = useState<UserData>({
     avatar: user?.avatar || "",
+    cover: user?.cover || "",
     name: user?.name || "",
     email: user?.email || "",
     username: user?.username || "",
     created_date_time: "",
   });
   const [previewUrl, setPreviewUrl] = useState<string>(
-    user?.avatar || "/userDefault.webp"
+    user?.avatar || defaultUserProfile
+  );
+  const [coverPreviewUrl, setCoverPreviewUrl] = useState<string>(
+    user?.avatar || defaultUserCover
   );
 
   useEffect(() => {
     setUserData({
-      avatar: user?.avatar || "/userDefault.webp",
+      avatar: user?.avatar || defaultUserProfile,
+      cover: user?.cover || "",
       name: user?.name || "",
       email: user?.email || "",
       username: user?.username || "",
       created_date_time: user?.created_date_time || "",
     });
-    setPreviewUrl(user?.avatar || "/userDefault.webp");
+    setPreviewUrl(user?.avatar || defaultUserProfile);
+    setCoverPreviewUrl(user?.cover || defaultUserCover);
   }, [user]);
 
   useEffect(() => {
@@ -50,8 +66,11 @@ export default function EditProfile() {
       if (typeof userData.avatar !== "string" && userData.avatar) {
         URL.revokeObjectURL(previewUrl);
       }
+      if (typeof userData.cover !== "string" && userData.cover) {
+        URL.revokeObjectURL(coverPreviewUrl);
+      }
     };
-  }, [previewUrl, userData.avatar]);
+  }, [previewUrl, userData.avatar, coverPreviewUrl, userData?.cover]);
 
   const handleChange = (name: string, value: string) => {
     setUserData((prevData) => ({
@@ -66,6 +85,18 @@ export default function EditProfile() {
       setUserData((prev) => ({ ...prev, avatar: user.url || prev.avatar }));
       setPreviewUrl(user.url);
       setUser((prev: any) => ({ ...prev, avatar: user.url }));
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+
+  const updateProfileCover = useMutation({
+    mutationFn: uploadCover,
+    onSuccess: ({ user }: any) => {
+      setUserData((prev) => ({ ...prev, cover: user.url || prev.cover }));
+      setCoverPreviewUrl(user.url);
+      setUser((prev: any) => ({ ...prev, cover: user.url }));
     },
     onError: ({ message }) => {
       toast.error(message);
@@ -96,13 +127,34 @@ export default function EditProfile() {
       });
     } catch (error) {
       console.log(error);
+      setPreviewUrl("");
+    }
+  };
+
+  const handleCoverUpload = async () => {
+    try {
+      const webp = await blobToWebP(userData.cover as File);
+      const webpFile = new File([webp], "cover.webp", {
+        type: "image/webp",
+        lastModified: Date.now(),
+      });
+      updateProfileCover.mutateAsync({
+        id: user?.id,
+        cover: webpFile,
+      });
+    } catch (error) {
+      console.log(error);
+      setCoverPreviewUrl("");
     }
   };
 
   const handleProfileUpdate = () => {
     try {
-      if (userData.avatar as File) {
+      if (userData.avatar instanceof File) {
         handleProfileUpload();
+      }
+      if (userData.cover instanceof File) {
+        handleCoverUpload();
       }
       updateProfile.mutate({
         userId: user?.id,
@@ -122,8 +174,27 @@ export default function EditProfile() {
       const tempUrl = URL.createObjectURL(file);
       setPreviewUrl(tempUrl);
     } else {
-      setPreviewUrl(user?.avatar || "/userDefault.webp");
+      setPreviewUrl(user?.avatar || defaultUserProfile);
     }
+  };
+
+  const handleCoverChange = async (file: File | null) => {
+    if (!file) {
+      setUserData((prev) => ({ ...prev, cover: null }));
+      setCoverPreviewUrl(user?.cover || defaultUserCover);
+      return;
+    }
+
+    const isValid = await validateImageAspectRatio(file, 16 / 9);
+
+    if (!isValid) {
+      toast.error("Cover image must have an aspect ratio of 16:9.");
+      return;
+    }
+
+    const tempUrl = URL.createObjectURL(file);
+    setUserData((prev) => ({ ...prev, cover: file }));
+    setCoverPreviewUrl(tempUrl);
   };
 
   return (
@@ -134,6 +205,43 @@ export default function EditProfile() {
         .
       </div>
       <div className="mt-4">
+        <div
+          className={cn(
+            "flex flex-col items-center gap-4 w-fit cursor-pointer my-4"
+          )}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Image
+            src={coverPreviewUrl || defaultUserCover}
+            width={750}
+            height={165}
+            alt="cover"
+            className="w-[750px] h-[165px] object-cover rounded-md"
+          />
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) =>
+              handleCoverChange(
+                e.target.files && e.target.files[0] ? e.target.files[0] : null
+              )
+            }
+            accept="image/jpeg,image/jpg,image/png,image/gif"
+            className="hidden"
+            aria-label="Upload profile picture"
+          />
+          <div className="flex items-center gap-2 w-full">
+            <UploadIcon size={20} className="text-neutral-250" />
+
+            <div
+              className={cn(
+                "text-neutral-250 dark:text-neutral-50 font-[400] text-[15px] leading-5"
+              )}
+            >
+              {"Upload your Profile Cover"}
+            </div>
+          </div>
+        </div>
         <ProfileUpload
           onChange={handleFileChange}
           srcUrl={previewUrl}

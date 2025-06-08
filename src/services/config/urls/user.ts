@@ -3,4 +3,5 @@ export const USER = {
   updateUserInfo: `/users`,
   getAllUsers: `/users`,
   getUserById: "/users/find",
+  uploadCover: "/users/upload-cover",
 };

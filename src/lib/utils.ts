@@ -98,3 +98,33 @@ export const usePostDelete = () => {
     },
   });
 };
+
+export const defaultUserProfile = "/userDefault.webp";
+export const defaultUserCover = "/empty-39.webp";
+
+export const validateImageAspectRatio = (
+  file: File,
+  expectedRatio: number,
+  tolerance: number = 0.1
+): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const actualRatio = img.width / img.height;
+      URL.revokeObjectURL(objectUrl);
+
+      const isValid = Math.abs(actualRatio - expectedRatio) <= tolerance;
+
+      resolve(isValid);
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Failed to load image for aspect ratio check."));
+    };
+
+    img.src = objectUrl;
+  });
+};

@@ -84,13 +84,13 @@ const ProfileUpload = ({
         className="hidden"
         aria-label="Upload profile picture"
       />
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 w-full">
         {!showDownloadIcon && (
           <UploadIcon size={20} className="text-neutral-250" />
         )}
         <div
           className={cn(
-            "text-neutral-250 dark:text-neutral-50 max-w-[94px] font-[400] text-[15px] leading-5",
+            "text-neutral-250 dark:text-neutral-50 font-[400] text-[15px] leading-5",
             textClassName
           )}
         >

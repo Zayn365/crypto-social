@@ -19,6 +19,22 @@ export const uploadAvatar = async (
   return await postHandler(client, USER.uploadAvatar, formData, queryParams);
 };
 
+export const uploadCover = async (
+  payload: {
+    cover: File;
+    id: number;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const formData = new FormData();
+  formData.append("cover", payload.cover);
+
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, USER.uploadCover, formData, queryParams);
+};
+
 export const updateUserInfo = async (
   payload: {
     userId?: number;
