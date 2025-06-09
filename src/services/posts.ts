@@ -1,6 +1,11 @@
 import { AxiosInstance } from "axios";
 import apiClient from "./config/client";
-import { deleteHandler, getHandler, postHandler } from "./config/helper";
+import {
+  deleteHandler,
+  getHandler,
+  patchHandler,
+  postHandler,
+} from "./config/helper";
 import { POSTS } from "./config/urls/posts";
 
 export const getAllPosts = async (
@@ -26,10 +31,21 @@ export const createPost = async (
 };
 
 export const updatePost = async (
-  payload: FormData,
+  payload: {
+    id: number;
+    formData: FormData;
+  },
   client: AxiosInstance = apiClient
 ): Promise<Response> => {
-  return await postHandler(client, POSTS.updatePost, payload);
+  const queryParams = {
+    id: payload.id,
+  };
+  return await patchHandler(
+    client,
+    POSTS.updatePost,
+    payload?.formData,
+    queryParams
+  );
 };
 
 export const likePost = async (

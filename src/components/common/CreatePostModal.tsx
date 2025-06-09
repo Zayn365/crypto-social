@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "./modal";
 import { useAuth } from "@/providers/AuthProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -8,24 +8,42 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { RichTextEditor } from "./TextEditor/RichTextEditor";
-import { Button } from "../ui/button";
-import { createPost } from "@/services/posts";
+import { createPost, updatePost } from "@/services/posts";
 import FillButton from "./FillButton";
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
+  post?: {
+    id: number;
+    title: string;
+    description: string;
+    files: File[];
+    links: { link: string; title: string; description: string }[];
+  };
 }
 
-export default function CreatePostModal({ open, onClose }: ModalProps) {
+export default function CreatePostModal({ open, onClose, post }: ModalProps) {
   const { user } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [fullScreen, setFullScreen] = useState(false);
   const [content, setContent] = useState("");
-  console.log("🚀 ~ CreatePostModal ~ content:", content);
   const [files, setFiles] = useState<File[]>([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  useEffect(() => {
+    if (post) {
+      setIsEditMode(true);
+      setContent(`<p>${post.title}</p>${post.description}`);
+      setFiles(post.files || []);
+    } else {
+      setIsEditMode(false);
+      setContent("");
+      setFiles([]);
+    }
+  }, [post]);
 
   const { mutate: submitPost, isPending } = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -42,6 +60,30 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
     onError: (error) => {
       toast.error("Failed to create post");
       console.error("Error creating post:", error);
+    },
+  });
+
+  const { mutate: postUpdate, isPending: updatePending } = useMutation({
+    mutationFn: async ({
+      id,
+      formData,
+    }: {
+      id: number;
+      formData: FormData;
+    }) => {
+      return updatePost({ id, formData });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success("Post updated successfully");
+      setContent("");
+      setFiles([]);
+      onClose();
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error("Failed to update post");
+      console.error("Error updating post:", error);
     },
   });
 
@@ -97,7 +139,15 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
     files.forEach((file) => {
       formData.append("files", file);
     });
-    submitPost(formData);
+    if (isEditMode) {
+      if (post?.id !== undefined) {
+        postUpdate({ id: post.id, formData });
+      } else {
+        toast.error("Missing post ID for update.");
+      }
+    } else {
+      submitPost(formData);
+    }
   };
   return (
     <>
@@ -112,7 +162,7 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
       >
         <div className={`flex flex-col items-center gap-4`}>
           <div className="font-bold dark:text-[#DDE5EE] text-xl">
-            Add a post
+            {isEditMode ? "Edit Post" : "Add a post"}
           </div>
           <span className="w-full border-t border-border-light"></span>
           <div className="flex items-center justify-between w-full gap-4 px-4">
@@ -161,7 +211,6 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
               characterLimit={10000}
               mentionableUsers={[]} // Pass your list of mentionable users here
               onFileChange={setFiles}
-              // ref={editorRef}
             />
           </div>
 
@@ -171,7 +220,13 @@ export default function CreatePostModal({ open, onClose }: ModalProps) {
               disabled={!content.trim() || isPending}
               className="bg-[#32bd91] hover:bg-[#32bd91]/90"
             >
-              {isPending ? "Posting..." : "Post"}
+              {isPending
+                ? isEditMode
+                  ? "Updating..."
+                  : "Posting..."
+                : isEditMode
+                ? "Update"
+                : "Post"}
             </FillButton>
           </div>
         </div>

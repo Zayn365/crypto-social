@@ -90,7 +90,7 @@ export default function WalletComp() {
     (a, b) => getUSDBalanceValue(b) - getUSDBalanceValue(a)
   );
 
-  console.log(sortedData)
+  console.log(sortedData);
 
   if (loading) {
     return (
@@ -139,10 +139,14 @@ export default function WalletComp() {
           </div>
         </div>
       ))}
-     {sortedData.length >0 ? <div className="mt-4 flex gap-4 items-center justify-between border p-2 rounded-lg">
-        <div>Total Balance:</div>
-        <div>{calculateTotalBalance()}</div>
-      </div> : "NO any Assets"}
+      {sortedData.length > 0 ? (
+        <div className="mt-4 flex gap-4 items-center justify-between border p-2 rounded-lg">
+          <div>Total Balance:</div>
+          <div>{calculateTotalBalance()}</div>
+        </div>
+      ) : (
+        "No Assets found"
+      )}
       <div className="w-full flex justify-center items-center px-4 py-2 mt-4">
         <div className="flex flex-col items-center max-w-[550px] gap-4">
           <img

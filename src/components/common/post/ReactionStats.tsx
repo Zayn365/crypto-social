@@ -282,7 +282,7 @@ export default function ReactionStats({ post }: any) {
           >
             <textarea
               className="w-full p-2 outline-none resize-none slim-scrollbar"
-              rows={4}
+              rows={2}
               placeholder="type comment here..."
               onChange={({ target }) => setCommentValue(target.value)}
               value={commentValue}

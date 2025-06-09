@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import ToolTip from "../tool-tip";
-import { Ellipsis, ListTodo, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import {
+  Edit,
+  Ellipsis,
+  ListTodo,
+  ThumbsDown,
+  ThumbsUp,
+  Trash2,
+} from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import moment from "moment";
@@ -14,6 +21,7 @@ import {
 import { useAuth } from "@/providers/AuthProvider";
 import { usePostDelete } from "@/lib/utils";
 import toast from "react-hot-toast";
+import CreatePostModal from "../CreatePostModal";
 
 export default function PostHeader({ post }: any) {
   const { user } = useAuth();
@@ -21,6 +29,8 @@ export default function PostHeader({ post }: any) {
   const { id } = useParams();
   const deletePost = usePostDelete();
   const router = useRouter();
+
+  const [postModal, setPostModal] = useState<boolean>(false);
 
   const handleDeletePost = () => {
     try {
@@ -121,6 +131,12 @@ export default function PostHeader({ post }: any) {
             <DropdownMenuContent className="w-56">
               <DropdownMenuGroup>
                 <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setPostModal(true)}
+                >
+                  <Edit className="" /> Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   className="text-red-700 hover:text-red-700 cursor-pointer"
                   onClick={handleDeletePost}
                 >
@@ -141,6 +157,11 @@ export default function PostHeader({ post }: any) {
           </div>
         )}
       </div>
+      <CreatePostModal
+        open={postModal}
+        onClose={() => setPostModal(false)}
+        post={post}
+      />
     </div>
   );
 }
