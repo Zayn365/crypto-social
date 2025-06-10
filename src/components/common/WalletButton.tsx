@@ -3,12 +3,14 @@ import { loginWithWallet, register } from "@/services/auth";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function WalletButton() {
   const { address } = useAppKitAccount();
   const { setUser } = useAuth();
+  const router = useRouter();
 
   const loginWallet = useMutation({
     mutationFn: loginWithWallet,
@@ -34,6 +36,7 @@ export default function WalletButton() {
         refreshToken: tokens.refresh,
       });
       toast.success(`Register successful`);
+      router.replace("/settings");
     },
     onError: ({ response }: any) => {
       if (response.data.message === "This user already exits") {

@@ -285,7 +285,11 @@ export default function EditProfile() {
           </Label>
           <Label className="flex-col items-start block">
             Wallet
-            <Input placeholder="wallet" className="" value={address ?? ""} />
+            <Input
+              placeholder="wallet"
+              className=""
+              value={address ?? user?.wallet_address}
+            />
           </Label>
         </div>
         <FillButton onClick={handleProfileUpdate} className="w-full mt-4">

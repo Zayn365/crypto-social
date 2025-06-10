@@ -33,3 +33,15 @@ export const login = async (
 ): Promise<Response> => {
   return await postHandler(client, AUTH.login, payload);
 };
+
+export const registerWithEmail = async (
+  payload: {
+    password: string;
+    roleId: number;
+    walletAddress: string;
+    email: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  return await postHandler(client, AUTH.registerWithEmail, payload);
+};

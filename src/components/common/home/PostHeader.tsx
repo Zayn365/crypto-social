@@ -130,12 +130,12 @@ export default function PostHeader({ post }: any) {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuGroup>
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={() => setPostModal(true)}
                 >
                   <Edit className="" /> Edit
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem
                   className="text-red-700 hover:text-red-700 cursor-pointer"
                   onClick={handleDeletePost}
