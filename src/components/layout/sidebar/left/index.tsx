@@ -49,14 +49,14 @@ export default function LeftSidebar() {
       url: "/",
       icon: "/home-icon.svg",
     },
-    {
-      title: "Discover",
-      url: "/discover",
-      icon: DiscoverIcon,
-    },
+    // {
+    //   title: "Discover",
+    //   url: "/discover",
+    //   icon: DiscoverIcon,
+    // },
     {
       title: "Leaderboard",
-      url: "leaderboard",
+      url: "/leaderboard",
       icon: "/leaderboard-icon.svg",
     },
     {
@@ -122,7 +122,7 @@ export default function LeftSidebar() {
   return (
     <Sidebar
       side="left"
-      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#1d1c34] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
+      className="hidden justify-start max-w-[280px] border-r lg:flex dark:bg-[#1d1c34] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar sticky top-0"
     >
       {/* Sidebar Header with Logo */}
       <SidebarHeader className="flex py-2 items-start dark:bg-[#1d1c34] bg-[#FFFFFF]">

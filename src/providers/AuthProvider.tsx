@@ -124,8 +124,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const fetchCoins = async () => {
       try {
-        setLoading(true);
-
         // Fetch price data
         const priceResponse = await fetch(`/api/getPrice`);
         if (!priceResponse.ok) throw new Error("Failed to fetch price data");
@@ -177,6 +175,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           })
         );
         setAllUsersAssets(walletSummaries);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {

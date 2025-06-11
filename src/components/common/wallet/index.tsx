@@ -102,13 +102,13 @@ export default function WalletComp() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-red-500">{error}</div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="text-xl text-red-500">{error}</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="w-full px-4 py-2">

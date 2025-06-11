@@ -9,7 +9,7 @@ export default function RightSidebar() {
   return (
     <Sidebar
       side="right"
-      className="hidden max-w-[280px] justify-start border-l lg:flex dark:bg-[#1d1c34] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar"
+      className="hidden max-w-[280px] justify-start border-l lg:flex dark:bg-[#1d1c34] bg-[#FFFFFF] h-screen overflow-y-auto slim-scrollbar sticky top-0"
     >
       <SidebarContent className="dark:bg-[#1d1c34] bg-[#FFFFFF]">
         <div>
