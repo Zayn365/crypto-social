@@ -1,9 +1,10 @@
 "use client";
+import { loginWithWallet, register } from "@/services/auth";
 import { getAllPosts } from "@/services/posts";
-import { getAllUsers } from "@/services/user";
-import { useDisconnect } from "@reown/appkit/react";
-import { useQuery } from "@tanstack/react-query";
-import { deleteCookie } from "cookies-next";
+import { getAllUsers, getUserById } from "@/services/user";
+import { useAppKitAccount, useDisconnect } from "@reown/appkit/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -12,6 +13,8 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import toast from "react-hot-toast";
+import { jwtDecode } from "jwt-decode";
 
 export interface Coin {
   id: string;
@@ -25,16 +28,6 @@ export interface Coin {
     thumb?: string;
   };
   price: number | null;
-}
-
-interface Balance {
-  chainId: number;
-  chainName: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-  };
-  balance: string;
 }
 
 // Create the context with default values
@@ -53,13 +46,52 @@ const AuthContext = createContext<any>({
 // Auth provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { disconnect } = useDisconnect();
+  const { address } = useAppKitAccount();
   const router = useRouter();
+
   const [user, setUser] = useState<any | null>(null);
   const [allUsers, setAllUsers] = useState<any | null>(null);
   const [coins, setCoins] = useState<Coin[]>([]);
   const [loading, setLoading] = useState(true);
   const [allPost, setAllPost] = useState<any[]>([]);
   const [allUsersAssets, setAllUsersAssets] = useState<any[]>([]);
+  const [decodedUserId, setDecodedUserId] = useState<number | null>(null);
+
+  const loginWallet = useMutation({
+    mutationFn: loginWithWallet,
+    onSuccess: ({ tokens, user }: any) => {
+      setUser(user);
+      setCookie("token", {
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+      });
+      toast.success(`Login successful`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+
+  const registerWallet = useMutation({
+    mutationFn: register,
+    onSuccess: ({ tokens, user }: any) => {
+      setUser(user);
+      setCookie("token", {
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+      });
+      toast.success(`Register successful`);
+      router.replace("/settings");
+    },
+    onError: ({ response }: any) => {
+      if (response.data.message === "This user already exits") {
+        loginWallet.mutate({
+          password: address ?? "",
+          walletAddress: address ?? "",
+        });
+      }
+    },
+  });
 
   const {
     data: usersData,
@@ -187,10 +219,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [usersData, isLoading, error]);
 
+  useEffect(() => {
+    try {
+      registerWallet.mutate({
+        password: address ?? "",
+        roleId: 2,
+        walletAddress: address ?? "",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [address]);
+
+  useEffect(() => {
+    const token = getCookie("token");
+
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const parsedToken = typeof token === "string" ? JSON.parse(token) : token;
+      const accessToken = parsedToken?.accessToken?.token;
+
+      if (!accessToken) {
+        setLoading(false);
+        return;
+      }
+
+      const decoded: any = jwtDecode(accessToken);
+      if (decoded?.userId) {
+        setDecodedUserId(Number(decoded.userId));
+      } else {
+        deleteCookie("token");
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Failed to decode token", error);
+      deleteCookie("token");
+      setLoading(false);
+    }
+  }, []);
+
+  const {
+    data: userDataById,
+    isSuccess: userSuccess,
+    isError: userError,
+  } = useQuery({
+    queryKey: ["getUserById", decodedUserId],
+    queryFn: () => getUserById({ userId: decodedUserId! }),
+    enabled: !!decodedUserId,
+  });
+
+  useEffect(() => {
+    if (userSuccess && userDataById) {
+      setUser(userDataById?.user);
+      setLoading(false);
+    } else if (userError) {
+      deleteCookie("token");
+      setUser(null);
+      setLoading(false);
+    }
+  }, [userSuccess, userDataById, userError]);
+
   const logout = async () => {
     try {
       deleteCookie("token");
       setUser(null);
+      disconnect();
       router.replace("/");
     } catch (error) {
       console.error("Logout error:", error);

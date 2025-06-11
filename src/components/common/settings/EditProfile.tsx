@@ -161,7 +161,7 @@ export default function EditProfile() {
         name: userData?.name,
         email: userData?.email,
         username: userData?.username,
-        wallet_address: address,
+        wallet_address: address ?? user?.wallet_address,
       });
     } catch (error) {
       console.log(error);

@@ -113,8 +113,6 @@ export default function Comments({ post }: any) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
       toast.success(`Comment deleted`);
-      setCommentValue("");
-      setShowCommentBox(false);
     },
     onError: ({ message }) => {
       toast.error(message);
@@ -126,6 +124,8 @@ export default function Comments({ post }: any) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
       toast.success(`Replied successful`);
+      setCommentValue("");
+      setShowCommentBox(false);
     },
     onError: ({ message }) => {
       toast.error(message);

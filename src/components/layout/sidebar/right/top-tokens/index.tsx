@@ -14,17 +14,14 @@ export default function TopTokens() {
               DISCOVER
             </div>
             <div className="relative top-[-2px]">
-              <button
-                className="justify-center whitespace-nowrap rounded-full font-sans! ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 button-link h-6 px-3 text-xs font-normal flex items-center gap-2 py-0 underline-offset-2 hover:underline text-[#999999] dark:text-[#8c9fb7a0]"
-                type="button"
-              >
+              <div className="justify-center whitespace-nowrap rounded-full font-sans! ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 button-link h-6 px-3 text-xs font-normal flex items-center gap-2 py-0 underline-offset-2 hover:underline text-[#999999] dark:text-[#8c9fb7a0]">
                 <ToolTip
                   content="The DeSo Tokens that have the highest trading volume recently."
                   contentClassName="dark:text-[#A3ADB9] dark:bg-[#13151A] max-w-[200px]"
                 >
                   <MessageCircleWarning size={20} />
                 </ToolTip>
-              </button>
+              </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 border-b border-border-light pb-4">

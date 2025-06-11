@@ -4,14 +4,12 @@ import UserProfileHeader from "./UserProfileHeader";
 import { useParams } from "next/navigation";
 import { projectInfoData } from "@/components/dummuyData/projectInfoData";
 import UserProfileContent from "./UserProfileContent";
-import { useAuth } from "@/providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { getUserById } from "@/services/user";
 import { getAllUserPosts } from "@/services/posts";
 
 export default function UserProfileDetails() {
   const { id } = useParams();
-  const { user } = useAuth();
   const [userDetails, setUserDetails] = useState<any>({});
   const [userPosts, setUserPosts] = useState<any>([]);
 

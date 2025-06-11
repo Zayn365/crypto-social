@@ -20,7 +20,7 @@ type Balance = {
 
 export default function WalletComp() {
   const { address } = useAppKitAccount();
-  const { coins } = useAuth();
+  const { coins, user } = useAuth();
   const [data, setData] = useState<Balance[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +32,9 @@ export default function WalletComp() {
       try {
         setLoading(true);
         const [balanceResponse] = await Promise.all([
-          fetch(`/api/wallet-balances?address=${address}`),
+          fetch(
+            `/api/wallet-balances?address=${address ?? user?.wallet_address}`
+          ),
           // fetch(`/api/getPrice`),
         ]);
 
@@ -54,7 +56,7 @@ export default function WalletComp() {
     };
 
     fetchCoins();
-  }, [address]);
+  }, [address, user?.wallet_address]);
 
   const getUSDBalanceValue = (balanceItem: Balance) => {
     const matchingCoin = coins.find(

@@ -82,6 +82,6 @@ export const getUserById = async (
     userId?: number;
   },
   client: AxiosInstance = apiClient
-): Promise<Response> => {
+): Promise<any> => {
   return await getHandler(client, USER.getUserById, payload);
 };
