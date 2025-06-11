@@ -31,7 +31,7 @@ export default function RootLayout({
             <ThemeProvider attribute="class" enableSystem={false}>
               <AppKitProvider>
                 <div className="dark:bg-[#1d1c34] flex justify-center">
-                  <div className="max-w-[1300px] min-w-full">{children}</div>
+                  <div className="max-w-[1300px] w-full">{children}</div>
                 </div>
                 <Toaster />
               </AppKitProvider>
