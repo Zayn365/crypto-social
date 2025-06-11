@@ -15,7 +15,7 @@ import ContentCard from "./ContentCard";
 import PostHeader from "./PostHeader";
 import { useRouter } from "next/navigation";
 import PostEmojis from "./PostEmojis";
-import { getTotalComments, getTotalLikes } from "@/lib/utils";
+import { getTotalLikes, getTotalMainComments } from "@/lib/utils";
 
 export default function PostCard({ allPost }: any) {
   const router = useRouter();
@@ -62,7 +62,7 @@ export default function PostCard({ allPost }: any) {
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
                   >
                     <MessageSquareMore size={16} />{" "}
-                    {getTotalComments(post?.postInfo)}
+                    {getTotalMainComments(post?.postInfo)}
                   </span>
                   <span
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}

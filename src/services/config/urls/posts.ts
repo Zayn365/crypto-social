@@ -7,4 +7,7 @@ export const POSTS = {
   commentPost: `/posts/comment`,
   deletePost: `/posts`,
   commentDelete: "/posts/commentDelete",
+  commentReply: "/posts/commentReply",
+  commentReplyDelete: "/posts/commentReply",
+  commentUpdate: "/posts/commentUpdate",
 };

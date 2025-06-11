@@ -50,8 +50,21 @@ export const formatPrice = (price: number | null) => {
 export const getTotalLikes = (postInfo: any[]) =>
   postInfo?.reduce((sum, item) => sum + (item?.like === true ? 1 : 0), 0);
 
-export const getTotalComments = (postInfo: any[]) =>
-  postInfo?.filter((item) => item?.comment?.trim() !== "").length;
+export const getTotalMainComments = (postInfo: any[]) =>
+  postInfo?.reduce((total, item) => {
+    const commentCount = item?.comments?.length || 0;
+    return total + commentCount;
+  }, 0) || 0;
+
+export const getTotalReplies = (postInfo: any[]) =>
+  postInfo?.reduce((total, item) => {
+    const replyCount =
+      item?.comments?.reduce(
+        (sum: number, comment: any) => sum + (comment?.reply?.length || 0),
+        0
+      ) || 0;
+    return total + replyCount;
+  }, 0) || 0;
 
 export const emojis = ["😊", "😂", "❤️", "👍", "😍", "😢", "😡", "🎉"];
 

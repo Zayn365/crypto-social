@@ -4,15 +4,16 @@ import CreateImportWalletBtn from "@/components/common/create-import-wallet-btn"
 import CreateImportWalletModal from "@/components/common/CreateImportWalletModal";
 import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
+import { sliceMethod } from "@/lib/utils";
+import { useAuth } from "@/providers/AuthProvider";
 import { useAppKitAccount } from "@reown/appkit/react";
-// import { useWallet } from "@/context/WalletContext";
 import { RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
 export default function Market() {
-  // const { connection } = useWallet();
-  const { status } = useAppKitAccount();
+  const { user } = useAuth();
+  const { address } = useAppKitAccount();
   const [walletModal, setWalletModal] = useState<boolean>(false);
 
   const handleWalletModal = () => {
@@ -103,10 +104,14 @@ export default function Market() {
           </div>
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 mt-4">
             <div className="w-full gap-4 flex items-center justify-center">
-              {status !== "connected" ? (
+              {!address && !user?.wallet_address ? (
                 <CreateImportWalletBtn handleClick={handleWalletModal} />
-              ) : (
+              ) : address ? (
                 <WalletButton />
+              ) : (
+                <div className="rounded-full px-4 py-2 border border-[#FFFFFF1A]">
+                  {sliceMethod(user?.wallet_address)}
+                </div>
               )}
             </div>
             <div className="flex flex-wrap justify-center gap-4 w-full">

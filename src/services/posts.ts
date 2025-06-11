@@ -115,3 +115,67 @@ export const commentDelete = async (
   };
   return await deleteHandler(client, POSTS.commentDelete, bodyData, params);
 };
+
+export const commentReply = async (
+  payload: {
+    id: number;
+    userId: number;
+    comment: string;
+    commentId: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const bodyData = {
+    userId: payload.userId,
+    comment: payload.comment,
+    commentId: payload.commentId,
+  };
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, POSTS.commentReply, bodyData, queryParams);
+};
+
+export const commentReplyDelete = async (
+  payload: {
+    id: number;
+    replyId: string;
+    userId: number;
+    commentId: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const params = {
+    id: payload.id,
+  };
+  const bodyData = {
+    userId: payload.userId,
+    replyId: payload.replyId,
+    commentId: payload.commentId,
+  };
+  return await deleteHandler(
+    client,
+    POSTS.commentReplyDelete,
+    bodyData,
+    params
+  );
+};
+
+export const commentUpdate = async (
+  payload: {
+    id: number;
+    userId: number;
+    comment: string;
+    commentId: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const bodyData = {
+    userId: payload.userId,
+    comment: payload.comment,
+  };
+  const queryParams = {
+    id: payload.id,
+  };
+  return await patchHandler(client, POSTS.commentUpdate, bodyData, queryParams);
+};
