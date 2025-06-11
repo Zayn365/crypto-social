@@ -18,8 +18,9 @@ export default function UserProfileDetails() {
     isLoading: userLoading,
     isFetched: userFetched,
   } = useQuery<any, Error>({
-    queryKey: ["getUserById"],
+    queryKey: ["getUserById", id],
     queryFn: async () => await getUserById({ userId: Number(id) }),
+    enabled: !!id,
   });
 
   const {
@@ -27,8 +28,9 @@ export default function UserProfileDetails() {
     isLoading: postLoading,
     isFetched: postFetched,
   } = useQuery<any, Error>({
-    queryKey: ["getAllUserPosts"],
+    queryKey: ["getAllUserPosts", id],
     queryFn: async () => await getAllUserPosts({ id: Number(id) }),
+    enabled: !!id,
   });
 
   useEffect(() => {
