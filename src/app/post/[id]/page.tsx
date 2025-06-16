@@ -16,7 +16,7 @@ export default function page() {
           <div className="w-full overflow-y-auto">
             <PostDetails />
           </div>
-          <RightSidebar />
+          {/* <RightSidebar /> */}
         </div>
       </SidebarProvider>
     </div>

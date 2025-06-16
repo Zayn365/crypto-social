@@ -22,9 +22,10 @@ export default function SideBarTriggerButton() {
         width={150}
         height={100}
       />
-      <SidebarTrigger side="right">
+      <div></div>
+      {/* <SidebarTrigger side="right">
         <Menu className="h-6 w-6" />
-      </SidebarTrigger>
+      </SidebarTrigger> */}
     </div>
   );
 }

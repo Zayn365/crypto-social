@@ -16,10 +16,10 @@ export default function Home() {
           <LeftSidebar />
           <SideBarTriggerButton />
           <div className="flex flex-col w-full overflow-y-auto">
-            <Header />
+            {/* <Header /> */}
             <PostCard allPost={allPost} />
           </div>
-          <RightSidebar />
+          {/* <RightSidebar /> */}
         </div>
       </SidebarProvider>
     </div>

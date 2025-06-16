@@ -47,7 +47,7 @@ export default function page() {
               </div>
             </div>
           </div>
-          <RightSidebar />
+          {/* <RightSidebar /> */}
         </div>
       </SidebarProvider>
     </div>
