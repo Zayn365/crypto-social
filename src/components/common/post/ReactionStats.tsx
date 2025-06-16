@@ -136,10 +136,10 @@ export default function ReactionStats({ post }: any) {
       no: 0,
       name: " Quotes",
     },
-    {
-      no: 0,
-      name: "Diamonds ($0.03)",
-    },
+    // {
+    //   no: 0,
+    //   name: "Diamonds ($0.03)",
+    // },
   ];
 
   const actionList = [
@@ -212,15 +212,15 @@ export default function ReactionStats({ post }: any) {
       ),
       action: "open",
     },
-    {
-      icon: (
-        <Gem
-          size={18}
-          className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
-        />
-      ),
-      action: "open",
-    },
+    // {
+    //   icon: (
+    //     <Gem
+    //       size={18}
+    //       className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
+    //     />
+    //   ),
+    //   action: "open",
+    // },
     {
       icon: (
         <Upload
@@ -239,14 +239,14 @@ export default function ReactionStats({ post }: any) {
           Posted on <span className="underline">Block</span> •{" "}
           {moment(post?.createdAt).format("MMM/DD/YY [@] hh:mma")}
         </div>
-        <div>
+        {/* <div>
           {" "}
           <span
             className={`flex gap-2 items-center text-xs dark:hover:text-[#DDE5EE] hover:text-[#000000] dark:text-[#8C9FB7A0] text-[#999999]`}
           >
             <ChartNoAxesColumn size={16} /> {post?.interactions?.views}
           </span>
-        </div>
+        </div> */}
       </div>
 
       <div className="border-y p-3 flex items-center justify-around">

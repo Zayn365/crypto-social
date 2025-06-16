@@ -24,7 +24,7 @@ import toast from "react-hot-toast";
 import CreatePostModal from "../CreatePostModal";
 
 export default function PostHeader({ post }: any) {
-  const { user } = useAuth();
+  const { user, totalAssetsValues } = useAuth();
   const url = usePathname();
   const { id } = useParams();
   const deletePost = usePostDelete();
@@ -93,6 +93,9 @@ export default function PostHeader({ post }: any) {
                 src="/cropped-whale-small.webp"
               />
             )}
+            {/* <div className="text-base text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-medium">
+              ${totalAssetsValues}
+            </div> */}
           </div>
           <div className="text-sm dark:text-[#8C9FB7A0] text-[#999999]">
             @{post?.userInfo?.username} .{" "}
@@ -104,7 +107,7 @@ export default function PostHeader({ post }: any) {
         </div>
       </div>
       <div className="flex items-center gap-2 max-md:justify-around max-md:w-full">
-        <ListTodo
+        {/* <ListTodo
           className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
           size={20}
         />
@@ -117,7 +120,7 @@ export default function PostHeader({ post }: any) {
           className={`font-medium text-xs text-[#59B4FF] hover:underline cursor-pointer`}
         >
           Subscribe
-        </div>
+        </div> */}
         {String(post?.userInfo?.id) === String(user?.id) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -147,7 +150,7 @@ export default function PostHeader({ post }: any) {
           </DropdownMenu>
         )}
 
-        {url.includes("post") && (
+        {/* {url.includes("post") && (
           <div className="flex flex-col justify-center items-center gap-1">
             <ThumbsUp className="text-[#8c9fb7a0] cursor-pointer" size={16} />
             <div className="text-[#2f2f2f] dark:text-[#a3adb9] text-sm">
@@ -155,7 +158,7 @@ export default function PostHeader({ post }: any) {
             </div>
             <ThumbsDown className="text-[#8c9fb7a0] cursor-pointer" size={16} />
           </div>
-        )}
+        )} */}
       </div>
       <CreatePostModal
         open={postModal}

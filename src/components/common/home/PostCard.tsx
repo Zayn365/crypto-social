@@ -39,7 +39,7 @@ export default function PostCard({ allPost }: any) {
                 {post?.userInfo?.avatarFallback ?? "img"}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col justify-center items-center gap-1">
+            {/* <div className="flex flex-col justify-center items-center gap-1">
               <ThumbsUp className="text-[#8c9fb7a0] cursor-pointer" size={16} />
               <div className="text-[#2f2f2f] dark:text-[#a3adb9] text-sm">
                 {post?.userInfo?.postValue ?? 0}
@@ -48,7 +48,7 @@ export default function PostCard({ allPost }: any) {
                 className="text-[#8c9fb7a0] cursor-pointer"
                 size={16}
               />
-            </div>
+            </div> */}
           </div>
           <div className="flex flex-col gap-2 w-full">
             <PostHeader post={post} />
@@ -74,18 +74,18 @@ export default function PostCard({ allPost }: any) {
                   >
                     <Repeat2 size={16} />
                   </span>
-                  <span
+                  {/* <span
                     className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
                   >
                     <Gem size={16} /> {post?.postInfo?.gems?.count} (
                     {post?.postInfo?.gems?.value})
-                  </span>
+                  </span> */}
                 </div>
-                <span
+                {/* <span
                   className={`flex gap-2 items-center text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]`}
                 >
                   <ChartNoAxesColumn size={16} /> {post?.postInfo?.views}
-                </span>
+                </span> */}
               </div>
             </div>
           </div>

@@ -240,7 +240,7 @@ export default function Comments({ post }: any) {
                     <AvatarFallback>{comment?.username}</AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="flex flex-col justify-center items-center gap-1">
+                {/* <div className="flex flex-col justify-center items-center gap-1">
                   <ThumbsUp
                     className="text-[#8c9fb7a0] cursor-pointer"
                     size={14}
@@ -252,7 +252,7 @@ export default function Comments({ post }: any) {
                     className="text-[#8c9fb7a0] cursor-pointer"
                     size={14}
                   />
-                </div>
+                </div> */}
               </div>
               <div className="flex-1">
                 <div className="flex items-center space-x-1">
@@ -319,14 +319,14 @@ export default function Comments({ post }: any) {
                   <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Repeat2 size={14} />
                   </div>
-                  <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                  {/* <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Gem size={14} />
                     <span className="text-xs">{comment?.diamonds}</span>
                   </div>
                   <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <ChartNoAxesColumn size={14} />
                     <span className="text-xs">{comment?.views}</span>
-                  </div>
+                  </div> */}
                 </div>
                 <AnimatePresence>
                   {showCommentBox === comment.id && (
@@ -378,7 +378,7 @@ export default function Comments({ post }: any) {
                               </AvatarFallback>
                             </Avatar>
                           </div>
-                          <div className="flex flex-col justify-center items-center gap-1">
+                          {/* <div className="flex flex-col justify-center items-center gap-1">
                             <ThumbsUp
                               className="text-[#8c9fb7a0] cursor-pointer"
                               size={14}
@@ -390,7 +390,7 @@ export default function Comments({ post }: any) {
                               className="text-[#8c9fb7a0] cursor-pointer"
                               size={14}
                             />
-                          </div>
+                          </div> */}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-1">
@@ -460,7 +460,7 @@ export default function Comments({ post }: any) {
                             <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                               <Repeat2 size={14} />
                             </div>
-                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                            {/* <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                               <Gem size={14} />
                               <span className="text-xs">
                                 {subComment?.diamonds}
@@ -471,7 +471,7 @@ export default function Comments({ post }: any) {
                               <span className="text-xs">
                                 {subComment?.views}
                               </span>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>

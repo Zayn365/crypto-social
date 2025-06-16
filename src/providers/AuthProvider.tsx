@@ -41,6 +41,8 @@ const AuthContext = createContext<any>({
   isAuthenticated: false,
   logout: () => {},
   loading: true,
+  totalAssetsValues: null,
+  setTotalAssetsValues: null,
 });
 
 // Auth provider component
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [allPost, setAllPost] = useState<any[]>([]);
   const [allUsersAssets, setAllUsersAssets] = useState<any[]>([]);
   const [decodedUserId, setDecodedUserId] = useState<number | null>(null);
+  const [totalAssetsValues, setTotalAssetsValues] = useState<number>(0);
 
   const loginWallet = useMutation({
     mutationFn: loginWithWallet,
@@ -303,6 +306,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: !!user,
     logout,
     loading,
+    totalAssetsValues,
+    setTotalAssetsValues,
   };
 
   if (isLoading) {
