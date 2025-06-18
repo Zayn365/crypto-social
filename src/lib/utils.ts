@@ -131,7 +131,7 @@ export const usePostDelete = () => {
 };
 
 export const defaultUserProfile = "/userDefault.webp";
-export const defaultUserCover = "/empty-39.webp";
+export const defaultUserCover = "/defaultBanner.png";
 
 export const validateImageAspectRatio = (
   file: File,

@@ -34,9 +34,9 @@ export default function UserProfileHeader({ data }: any) {
           <span className="text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer border">
             <Ellipsis size={16} />
           </span>
-          <span className="text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer border">
+          {/* <span className="text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer border">
             <Gem size={16} />
-          </span>
+          </span> */}
           <span className="text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer border">
             <Mail size={16} />
           </span>

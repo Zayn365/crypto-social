@@ -149,9 +149,9 @@ body {
   background: transparent; /* Optional: track background */
 }
 
-.slim-scrollbar::-webkit-scrollbar-thumb {
-  background: #32bd91; /* Optional: thumb color */
-  border-radius: 1px; /* Optional: rounded thumb */
+* {
+  scrollbar-color: #32bd91 #ffffff1A; /* Optional: thumb color */
+  scrollbar-width: 1px; /* Optional: rounded thumb */
 }
 
 /* Rich Text Editor Styles */
