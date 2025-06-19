@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal } from "./modal";
 import WalletButton from "./WalletButton";
 import SignupLoginModal from "./SignupLoginModal";
+import LoginWithWalletModal from "./LoginWithWalletModal";
 
 interface CreateImportWalletModalProps {
   open: boolean;
@@ -13,7 +14,8 @@ export default function CreateImportWalletModal({
   onClose,
 }: CreateImportWalletModalProps) {
   const [agreed, setAgreed] = useState(false);
-  const [authModal, setAuthModal] = useState<boolean>(false)
+  const [authModal, setAuthModal] = useState<boolean>(false);
+  const [authWalletModal, setAuthWalletModal] = useState<boolean>(false);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAgreed(e.target.checked);
@@ -85,23 +87,41 @@ export default function CreateImportWalletModal({
 
         {agreed ? (
           <div className="flex gap-4 items-center">
-            <WalletButton />
-            <button onClick={() => setAuthModal(true)} className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold cursor-pointer">
+            {/* <WalletButton /> */}
+            <button
+              onClick={() => setAuthWalletModal(true)}
+              className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold cursor-pointer"
+            >
+              Connect Wallet
+            </button>
+            <button
+              onClick={() => setAuthModal(true)}
+              className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold cursor-pointer"
+            >
               Signup / Login
             </button>
           </div>
         ) : (
           <div className="flex gap-4 items-center">
-            <button className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold disabled cursor-not-allowed">
+            <button className="text-white text-sm rounded-full bg-gray-400 px-4 py-2 font-bold disabled cursor-not-allowed">
               Connect Wallet
             </button>
-            <button className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold disabled cursor-not-allowed">
+            <button className="text-white text-sm rounded-full bg-gray-400 px-4 py-2 font-bold disabled cursor-not-allowed">
               Signup / Login
             </button>
           </div>
         )}
       </div>
-      <SignupLoginModal open={authModal} onClose={() => setAuthModal(false)} connectModal={onClose} />
+      <SignupLoginModal
+        open={authModal}
+        onClose={() => setAuthModal(false)}
+        connectModal={onClose}
+      />
+      <LoginWithWalletModal
+        openAuthWalletModal={authWalletModal}
+        onClose={() => setAuthWalletModal(false)}
+        connectModal={onClose}
+      />
     </Modal>
   );
 }

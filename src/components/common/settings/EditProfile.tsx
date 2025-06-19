@@ -160,7 +160,7 @@ export default function EditProfile() {
         userId: user?.id,
         name: userData?.name,
         email: userData?.email,
-        username: userData?.username,
+        // username: userData?.username,
         wallet_address: address ?? user?.wallet_address,
       });
     } catch (error) {
@@ -265,7 +265,8 @@ export default function EditProfile() {
               className=""
               type="email"
               value={userData?.email}
-              onChange={({ target }) => handleChange("email", target.value)}
+              // onChange={({ target }) => handleChange("email", target.value)}
+              readOnly
             />
           </Label>
           <Label className="flex-col items-start block">
@@ -275,12 +276,13 @@ export default function EditProfile() {
               className=""
               type="text"
               value={userData?.username}
-              onChange={({ target }) => {
-                const value = target.value;
-                if (/^[a-zA-Z0-9]*$/.test(value) || value === "") {
-                  handleChange("username", value);
-                }
-              }}
+              // onChange={({ target }) => {
+              //   const value = target.value;
+              //   if (/^[a-zA-Z0-9]*$/.test(value) || value === "") {
+              //     handleChange("username", value);
+              //   }
+              // }}
+              readOnly
             />
           </Label>
           <Label className="flex-col items-start block">
@@ -289,6 +291,7 @@ export default function EditProfile() {
               placeholder="wallet"
               className=""
               value={address ?? user?.wallet_address}
+              readOnly
             />
           </Label>
         </div>

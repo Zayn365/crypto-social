@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "./modal";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Label from "./label";
 import Input from "./input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { useMutation } from "@tanstack/react-query";
-import { login, registerWithEmail } from "@/services/auth";
-import toast from "react-hot-toast";
 import { useAuth } from "@/providers/AuthProvider";
-import { setCookie } from "cookies-next";
 import { isAddress } from "ethers";
+import { useMutation } from "@tanstack/react-query";
+import { loginWithWallet, register } from "@/services/auth";
+import { setCookie } from "cookies-next";
+import toast from "react-hot-toast";
 import { updateUserInfo } from "@/services/user";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 
 interface AuthModalProps {
-  open: boolean;
+  openAuthWalletModal: boolean;
   onClose: () => void;
   connectModal: () => void;
 }
@@ -31,15 +32,18 @@ interface Errors {
   walletAddress?: string;
 }
 
-export default function SignupLoginModal({
-  open,
+export default function LoginWithWalletModal({
+  openAuthWalletModal,
   onClose,
   connectModal,
 }: AuthModalProps) {
+  const { open: openWalletModal } = useAppKit();
+  const { address } = useAppKitAccount();
   const { setUser } = useAuth();
 
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [loading, setLoading] = useState<boolean>(false);
+  console.log("🚀 ~ loading:", loading)
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
@@ -49,6 +53,7 @@ export default function SignupLoginModal({
     confirmPassword: "",
     walletAddress: "",
   });
+
   const [errors, setErrors] = useState<Errors>({});
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [touched, setTouched] = useState<Partial<Record<keyof Data, boolean>>>(
@@ -88,15 +93,15 @@ export default function SignupLoginModal({
   const validateForm = () => {
     const newErrors: Errors = {};
 
-    newErrors.email = validateEmail(data.email);
     newErrors.password = validatePassword(data.password);
+    newErrors.walletAddress = validateWalletAddress(data.walletAddress);
 
     if (activeTab === "signup") {
       newErrors.confirmPassword = validateConfirmPassword(
         data.password,
         data.confirmPassword
       );
-      newErrors.walletAddress = validateWalletAddress(data.walletAddress);
+      newErrors.email = validateEmail(data.email);
     }
 
     setErrors(newErrors);
@@ -108,6 +113,16 @@ export default function SignupLoginModal({
   useEffect(() => {
     validateForm();
   }, [data, touched]);
+
+  useEffect(() => {
+    if (address) {
+      setData((prevData) => ({
+        ...prevData,
+        walletAddress: address,
+      }));
+      setTouched((prev) => ({ ...prev, walletAddress: true }));
+    }
+  }, [address]);
 
   const handleChange = (name: string, value: string) => {
     setData((prevData) => ({
@@ -140,38 +155,12 @@ export default function SignupLoginModal({
     },
     onError: ({ message }) => {
       toast.error(message);
-    },
-  });
-
-  const registerUser = useMutation({
-    mutationFn: registerWithEmail,
-    onSuccess: ({ tokens, user }: any) => {
-      setUser(user);
-      setCookie("token", {
-        accessToken: tokens.access,
-        refreshToken: tokens.refresh,
-      });
-      toast.success(`Registered successful`);
-      updateProfile.mutate({
-        userId: user?.id,
-        name: data?.email.split("@")[0],
-        email: data?.email,
-        // username: data?.email.split("@")[0],
-        wallet_address: data?.walletAddress,
-      });
-      setLoading(false);
-      resetForm();
-      connectModal();
-      onClose();
-    },
-    onError: (error: any) => {
-      toast.error(error.response.data.message || "Registration failed");
       setLoading(false);
     },
   });
 
-  const loginUser = useMutation({
-    mutationFn: login,
+  const loginWallet = useMutation({
+    mutationFn: loginWithWallet,
     onSuccess: ({ tokens, user }: any) => {
       setUser(user);
       setCookie("token", {
@@ -179,13 +168,36 @@ export default function SignupLoginModal({
         refreshToken: tokens.refresh,
       });
       toast.success(`Login successful`);
-      setLoading(false);
-      resetForm();
       connectModal();
       onClose();
     },
-    onError: (error: any) => {
-      toast.error(error.response.data.message || "Login failed");
+    onError: ({ response }: any) => {
+      toast.error(response.data.message);
+      setLoading(false);
+    },
+  });
+
+  const registerWallet = useMutation({
+    mutationFn: register,
+    onSuccess: ({ tokens, user }: any) => {
+      setUser(user);
+      setCookie("token", {
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+      });
+      toast.success(`Register successful`);
+      updateProfile.mutate({
+        userId: user?.id,
+        name: data?.email.split("@")[0],
+        email: data?.email,
+        // username: data?.email.split("@")[0],
+        wallet_address: data?.walletAddress,
+      });
+      connectModal();
+      onClose();
+    },
+    onError: ({ response }: any) => {
+      toast.error(response.data.message);
       setLoading(false);
     },
   });
@@ -198,7 +210,7 @@ export default function SignupLoginModal({
         return;
       }
       setLoading(true);
-      registerUser.mutateAsync({
+      registerWallet.mutate({
         email: data?.email,
         password: data?.password,
         roleId: 2,
@@ -206,6 +218,7 @@ export default function SignupLoginModal({
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -217,18 +230,23 @@ export default function SignupLoginModal({
         return;
       }
       setLoading(true);
-      loginUser.mutateAsync({
-        email: data?.email,
-        password: data?.password,
+      loginWallet.mutate({
+        password: data?.password ?? "",
+        walletAddress: data?.walletAddress ?? "",
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
+  };
+
+  const handleConnectWallet = () => {
+    openWalletModal({ view: "Connect" });
   };
 
   return (
     <Modal
-      open={open}
+      open={openAuthWalletModal}
       onClose={() => {
         onClose();
         resetForm();
@@ -237,25 +255,42 @@ export default function SignupLoginModal({
     >
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="signin">Signin</TabsTrigger>
-          <TabsTrigger value="signup">Signup</TabsTrigger>
+          <TabsTrigger value="signin">Signin Wallet</TabsTrigger>
+          <TabsTrigger value="signup">Signup Wallet</TabsTrigger>
         </TabsList>
         <TabsContent value="signin">
           {" "}
           <div className="flex flex-col gap-4">
             <Label className="flex-col items-start block">
-              Email
-              <Input
-                placeholder="Enter email"
-                type="email"
-                value={data?.email}
-                onChange={({ target }) => handleChange("email", target.value)}
-                onBlur={() => handleBlur("email")}
-                aria-describedby={errors.email ? "email-error" : undefined}
-              />
-              {errors.email && (
-                <span id="email-error" className="text-red-500 text-xs mt-1">
-                  {errors.email}
+              Wallet Address
+              <div className="relative">
+                <Input
+                  placeholder="Connect your wallet"
+                  type={"text"}
+                  value={data?.walletAddress}
+                  //   onChange={({ target }) =>
+                  //     handleChange("password", target.value)
+                  //   }
+                  readOnly
+                  onBlur={() => handleBlur("walletAddress")}
+                  aria-describedby={
+                    errors.walletAddress ? "walletAddress-error" : undefined
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={handleConnectWallet}
+                  className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
+                >
+                  Connect
+                </button>
+              </div>
+              {errors.walletAddress && (
+                <span
+                  id="walletAddress-error"
+                  className="text-red-500 text-xs mt-1"
+                >
+                  {errors.walletAddress}
                 </span>
               )}
             </Label>
@@ -311,18 +346,28 @@ export default function SignupLoginModal({
             </Label>
             <Label className="flex-col items-start block">
               Wallet Address
-              <Input
-                placeholder="Enter wallet address 0x12345678"
-                type="text"
-                value={data?.walletAddress}
-                onChange={({ target }) =>
-                  handleChange("walletAddress", target.value)
-                }
-                onBlur={() => handleBlur("walletAddress")}
-                aria-describedby={
-                  errors.walletAddress ? "walletAddress-error" : undefined
-                }
-              />
+              <div className="relative">
+                <Input
+                  placeholder="Connect your wallet"
+                  type={"text"}
+                  value={data?.walletAddress}
+                  readOnly
+                  //   onChange={({ target }) =>
+                  //     handleChange("password", target.value)
+                  //   }
+                  onBlur={() => handleBlur("walletAddress")}
+                  aria-describedby={
+                    errors.walletAddress ? "walletAddress-error" : undefined
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={handleConnectWallet}
+                  className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
+                >
+                  Connect
+                </button>
+              </div>
               {errors.walletAddress && (
                 <span
                   id="walletAddress-error"

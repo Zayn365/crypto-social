@@ -5,6 +5,7 @@ import { AUTH } from "./config/urls/auth";
 
 export const register = async (
   payload: {
+    email: string;
     password: string;
     roleId: number;
     walletAddress: string;

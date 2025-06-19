@@ -22,7 +22,6 @@ import {
 import useUrl from "@/hooks/useUrl";
 import { sliceMethod } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
-import { useAppKitAccount } from "@reown/appkit/react";
 import { Moon, Sun, Upload } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -31,7 +30,6 @@ import React, { useState } from "react";
 
 export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
-  const { address } = useAppKitAccount();
   const { user } = useAuth();
   const { host, pathname } = useUrl();
 
@@ -166,10 +164,8 @@ export default function LeftSidebar() {
         </SidebarMenu>
         <div className="mt-4">
           <div className="flex w-full flex-col flex-wrap items-center gap-4 py-4">
-            {!address && !user?.wallet_address ? (
+            {!user?.wallet_address ? (
               <CreateImportWalletBtn handleClick={handleWalletModal} />
-            ) : address ? (
-              <WalletButton />
             ) : (
               <div className="rounded-full px-4 py-2 border border-[#FFFFFF1A]">
                 {sliceMethod(user?.wallet_address)}

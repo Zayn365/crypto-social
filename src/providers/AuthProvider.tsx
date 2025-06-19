@@ -1,10 +1,9 @@
 "use client";
-import { loginWithWallet, register } from "@/services/auth";
 import { getAllPosts } from "@/services/posts";
 import { getAllUsers, getUserById } from "@/services/user";
 import { useAppKitAccount, useDisconnect } from "@reown/appkit/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { useQuery } from "@tanstack/react-query";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -59,42 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [allUsersAssets, setAllUsersAssets] = useState<any[]>([]);
   const [decodedUserId, setDecodedUserId] = useState<number | null>(null);
   const [totalAssetsValues, setTotalAssetsValues] = useState<number>(0);
-
-  const loginWallet = useMutation({
-    mutationFn: loginWithWallet,
-    onSuccess: ({ tokens, user }: any) => {
-      setUser(user);
-      setCookie("token", {
-        accessToken: tokens.access,
-        refreshToken: tokens.refresh,
-      });
-      toast.success(`Login successful`);
-    },
-    onError: ({ message }) => {
-      toast.error(message);
-    },
-  });
-
-  const registerWallet = useMutation({
-    mutationFn: register,
-    onSuccess: ({ tokens, user }: any) => {
-      setUser(user);
-      setCookie("token", {
-        accessToken: tokens.access,
-        refreshToken: tokens.refresh,
-      });
-      toast.success(`Register successful`);
-      router.replace("/settings");
-    },
-    onError: ({ response }: any) => {
-      if (response.data.message === "This user already exits") {
-        loginWallet.mutate({
-          password: address ?? "",
-          walletAddress: address ?? "",
-        });
-      }
-    },
-  });
 
   const {
     data: usersData,
@@ -220,18 +183,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log(error);
     }
   }, [usersData, isLoading, error]);
-
-  useEffect(() => {
-    try {
-      registerWallet.mutate({
-        password: address ?? "",
-        roleId: 2,
-        walletAddress: address ?? "",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, [address]);
 
   useEffect(() => {
     const token = getCookie("token");
