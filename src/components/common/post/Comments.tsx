@@ -213,7 +213,7 @@ export default function Comments({ post }: any) {
             btnTitle={"Sort:"}
             btnTitleClassName="bg-transparent dark:text-[#A3ADB9] justify-start text-xs"
             contentClassName="w-fit"
-            items={[{ name: `Most Valuable` }, { name: `Latest` }]}
+            items={[{ name: `Popular` }, { name: `Latest` }]}
           />
         </div>
       </div>

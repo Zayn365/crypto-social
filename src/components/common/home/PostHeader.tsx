@@ -108,7 +108,7 @@ export default function PostHeader({ post }: any) {
       </div>
       <div className="flex items-center gap-2 max-md:justify-around max-md:w-full">
         <div
-          className={`font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
+          className={`dark:bg-[#FFFFFF] dark:text-black bg-black text-white px-4 py-2 rounded-full font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] cursor-pointer`}
         >
           Follow
         </div>

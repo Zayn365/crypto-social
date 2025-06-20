@@ -17,7 +17,7 @@ export default function PostDetails() {
 
   if (!allPost || allPost.length === 0) {
     return (
-      <div className="p-4 flex flex-col items-center justify-center min-h-[100vh]">
+      <div className="p-4 flex gap-2 items-center justify-center min-h-[100vh]">
         <Loader2
           className="animate-spin text-[#999999] dark:text-[#8C9FB7A0]"
           size={32}

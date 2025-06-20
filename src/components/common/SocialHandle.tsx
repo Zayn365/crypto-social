@@ -7,7 +7,7 @@ export default function SocialHandle() {
   const { theme } = useTheme();
   const socialData = [
     {
-      img: "/telegram.png",
+      img: theme === "dark" ? "/telegram-white.png" : "/telegram-black.png",
       link: "#",
     },
     {
@@ -19,7 +19,7 @@ export default function SocialHandle() {
       link: "#",
     },
     {
-      img: theme === "dark" ? "/twitter-white.png" : "/twitter.png",
+      img: theme === "dark" ? "/twitter-white.png" : "/twitter-black.png",
       link: "#",
     },
   ];
