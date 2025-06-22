@@ -327,7 +327,7 @@ export function RichTextEditor({
         className="hidden"
       />
 
-      {editor && (
+      {/* {editor && (
         <>
           <BubbleMenu
             editor={editor}
@@ -435,7 +435,7 @@ export function RichTextEditor({
             </button>
           </FloatingMenu>
         </>
-      )}
+      )} */}
 
       <RichTextToolbar
         editor={editor}
@@ -445,17 +445,15 @@ export function RichTextEditor({
         isUploading={isUploading}
       />
 
-      <div className="relative">
-        <EditorContent
-          editor={editor}
-          className="min-h-[200px] w-full border rounded-b-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {showEmojiPicker && (
-          <div className="absolute right-0 z-10 mt-2">
-            <EmojiPicker onEmojiClick={addEmoji} width={300} height={400} />
-          </div>
-        )}
-      </div>
+      <EditorContent
+        editor={editor}
+        className="min-h-[200px] w-full border rounded-b-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      {showEmojiPicker && (
+        <div className="absolute right-0 top-0 z-10">
+          <EmojiPicker onEmojiClick={addEmoji} width={300} height={380} />
+        </div>
+      )}
 
       <div className="flex justify-between items-center mt-2 text-sm text-muted-foreground">
         <div>

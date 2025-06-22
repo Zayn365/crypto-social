@@ -1,5 +1,5 @@
 "use client";
-import { Gem, Globe, RefreshCcw, Wifi } from "lucide-react";
+import { Gem, Globe, RefreshCcw, Users, Wifi } from "lucide-react";
 import React, { useState } from "react";
 
 export default function Header() {
@@ -20,6 +20,17 @@ export default function Header() {
         </div>
         <div
           className={`flex items-center gap-2 text-sm cursor-pointer ${
+            active === "following"
+              ? "text-[#000000] dark:text-[#DDE5EE]"
+              : "text-[#999999] dark:text-[#8C9FB7A0]"
+          }`}
+          onClick={() => setActive("following")}
+        >
+          <Users size={16} />
+          Following
+        </div>
+        {/* <div
+          className={`flex items-center gap-2 text-sm cursor-pointer ${
             active === "launchpad"
               ? "text-[#000000] dark:text-[#DDE5EE]"
               : "text-[#999999] dark:text-[#8C9FB7A0]"
@@ -28,7 +39,7 @@ export default function Header() {
         >
           <Gem size={16} />
           Launchpad
-        </div>
+        </div> */}
       </div>
       <div className="border-b flex items-center gap-4 justify-between p-2">
         <div className="flex gap-2 text-[#999999] text-xs">

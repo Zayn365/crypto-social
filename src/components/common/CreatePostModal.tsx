@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { RichTextEditor } from "./TextEditor/RichTextEditor";
 import { createPost, updatePost } from "@/services/posts";
 import FillButton from "./FillButton";
+import CreatePostCompo from "./CreatePostCompo";
 
 interface ModalProps {
   open: boolean;
@@ -24,131 +25,131 @@ interface ModalProps {
 }
 
 export default function CreatePostModal({ open, onClose, post }: ModalProps) {
-  const { user } = useAuth();
-  const router = useRouter();
-  const queryClient = useQueryClient();
+  // const { user } = useAuth();
+  // const router = useRouter();
+  // const queryClient = useQueryClient();
 
   const [fullScreen, setFullScreen] = useState(false);
-  const [content, setContent] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
-  const [isEditMode, setIsEditMode] = useState(false);
+  // const [content, setContent] = useState("");
+  // const [files, setFiles] = useState<File[]>([]);
+  // const [isEditMode, setIsEditMode] = useState(false);
 
-  useEffect(() => {
-    if (post) {
-      setIsEditMode(true);
-      setContent(`<p>${post.title}</p>${post.description}`);
-      setFiles(post.files || []);
-    } else {
-      setIsEditMode(false);
-      setContent("");
-      setFiles([]);
-    }
-  }, [post]);
+  // useEffect(() => {
+  //   if (post) {
+  //     setIsEditMode(true);
+  //     setContent(`<p>${post.title}</p>${post.description}`);
+  //     setFiles(post.files || []);
+  //   } else {
+  //     setIsEditMode(false);
+  //     setContent("");
+  //     setFiles([]);
+  //   }
+  // }, [post]);
 
-  const { mutate: submitPost, isPending } = useMutation({
-    mutationFn: async (formData: FormData) => {
-      return createPost(formData);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
-      toast.success("Post created successfully");
-      setContent("");
-      setFiles([]);
-      onClose();
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error("Failed to create post");
-      console.error("Error creating post:", error);
-    },
-  });
+  // const { mutate: submitPost, isPending } = useMutation({
+  //   mutationFn: async (formData: FormData) => {
+  //     return createPost(formData);
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+  //     toast.success("Post created successfully");
+  //     setContent("");
+  //     setFiles([]);
+  //     onClose();
+  //     router.refresh();
+  //   },
+  //   onError: (error) => {
+  //     toast.error("Failed to create post");
+  //     console.error("Error creating post:", error);
+  //   },
+  // });
 
-  const { mutate: postUpdate, isPending: updatePending } = useMutation({
-    mutationFn: async ({
-      id,
-      formData,
-    }: {
-      id: number;
-      formData: FormData;
-    }) => {
-      return updatePost({ id, formData });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
-      toast.success("Post updated successfully");
-      setContent("");
-      setFiles([]);
-      onClose();
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error("Failed to update post");
-      console.error("Error updating post:", error);
-    },
-  });
+  // const { mutate: postUpdate, isPending: updatePending } = useMutation({
+  //   mutationFn: async ({
+  //     id,
+  //     formData,
+  //   }: {
+  //     id: number;
+  //     formData: FormData;
+  //   }) => {
+  //     return updatePost({ id, formData });
+  //   },
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+  //     toast.success("Post updated successfully");
+  //     setContent("");
+  //     setFiles([]);
+  //     onClose();
+  //     router.refresh();
+  //   },
+  //   onError: (error) => {
+  //     toast.error("Failed to update post");
+  //     console.error("Error updating post:", error);
+  //   },
+  // });
 
-  const extractLinks = (htmlContent: string) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlContent, "text/html");
-    const links = Array.from(doc.getElementsByTagName("a")).map((link) => ({
-      link: link.href,
-      title: link.textContent || "Link",
-      description: "",
-    }));
-    return links;
-  };
+  // const extractLinks = (htmlContent: string) => {
+  //   const parser = new DOMParser();
+  //   const doc = parser.parseFromString(htmlContent, "text/html");
+  //   const links = Array.from(doc.getElementsByTagName("a")).map((link) => ({
+  //     link: link.href,
+  //     title: link.textContent || "Link",
+  //     description: "",
+  //   }));
+  //   return links;
+  // };
 
-  const extractTitleAndCleanContent = (html: string) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
+  // const extractTitleAndCleanContent = (html: string) => {
+  //   const parser = new DOMParser();
+  //   const doc = parser.parseFromString(html, "text/html");
 
-    // Walk and get the first text node
-    const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, {
-      acceptNode(node) {
-        return node.nodeValue?.trim()
-          ? NodeFilter.FILTER_ACCEPT
-          : NodeFilter.FILTER_SKIP;
-      },
-    });
+  //   // Walk and get the first text node
+  //   const walker = document.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, {
+  //     acceptNode(node) {
+  //       return node.nodeValue?.trim()
+  //         ? NodeFilter.FILTER_ACCEPT
+  //         : NodeFilter.FILTER_SKIP;
+  //     },
+  //   });
 
-    const firstTextNode = walker.nextNode();
-    const title = firstTextNode?.nodeValue?.trim() || "";
+  //   const firstTextNode = walker.nextNode();
+  //   const title = firstTextNode?.nodeValue?.trim() || "";
 
-    // Remove the parent element of the first text node
-    if (firstTextNode?.parentElement) {
-      firstTextNode.parentElement.remove();
-    }
+  //   // Remove the parent element of the first text node
+  //   if (firstTextNode?.parentElement) {
+  //     firstTextNode.parentElement.remove();
+  //   }
 
-    const cleanedHTML = doc.body.innerHTML.trim();
-    return { title, cleanedHTML };
-  };
+  //   const cleanedHTML = doc.body.innerHTML.trim();
+  //   return { title, cleanedHTML };
+  // };
 
-  const handleSubmit = () => {
-    if (!content.trim()) {
-      toast.error("Post content cannot be empty");
-      return;
-    }
-    const { title, cleanedHTML } = extractTitleAndCleanContent(content);
+  // const handleSubmit = () => {
+  //   if (!content.trim()) {
+  //     toast.error("Post content cannot be empty");
+  //     return;
+  //   }
+  //   const { title, cleanedHTML } = extractTitleAndCleanContent(content);
 
-    // Create FormData object
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", cleanedHTML);
-    formData.append("userId", user?.id?.toString() || "");
-    formData.append("links", JSON.stringify(extractLinks(content)));
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
-    if (isEditMode) {
-      if (post?.id !== undefined) {
-        postUpdate({ id: post.id, formData });
-      } else {
-        toast.error("Missing post ID for update.");
-      }
-    } else {
-      submitPost(formData);
-    }
-  };
+  //   // Create FormData object
+  //   const formData = new FormData();
+  //   formData.append("title", title);
+  //   formData.append("description", cleanedHTML);
+  //   formData.append("userId", user?.id?.toString() || "");
+  //   formData.append("links", JSON.stringify(extractLinks(content)));
+  //   files.forEach((file) => {
+  //     formData.append("files", file);
+  //   });
+  //   if (isEditMode) {
+  //     if (post?.id !== undefined) {
+  //       postUpdate({ id: post.id, formData });
+  //     } else {
+  //       toast.error("Missing post ID for update.");
+  //     }
+  //   } else {
+  //     submitPost(formData);
+  //   }
+  // };
   return (
     <>
       <Modal
@@ -157,10 +158,10 @@ export default function CreatePostModal({ open, onClose, post }: ModalProps) {
         className={`dark:bg-[#1d1c34] w-full px-0 max-h-screen overflow-y-auto slim-scrollbar ${
           fullScreen
             ? "top-[100%] w-screen min-w-screen max-w-screen h-screen left-[100%] translate-x-[-100%] translate-y-[-100%]"
-            : "max-w-fit"
+            : "max-w-fit min-w-[90%]"
         }`}
       >
-        <div className={`flex flex-col items-center gap-4`}>
+        {/* <div className={`flex flex-col items-center gap-4`}>
           <div className="font-bold dark:text-[#DDE5EE] text-xl">
             {isEditMode ? "Edit Post" : "Add a post"}
           </div>
@@ -196,7 +197,9 @@ export default function CreatePostModal({ open, onClose, post }: ModalProps) {
                 size={18}
               />
               <SquareArrowOutUpRight
-                className="hover:text-[#32bd91] dark:hover:text-[#32bd91] cursor-pointer"
+                className={`hover:text-[#32bd91] dark:hover:text-[#32bd91] cursor-pointer ${
+                  fullScreen ? "rotate-180" : ""
+                }`}
                 size={18}
                 onClick={() => setFullScreen(!fullScreen)}
               />
@@ -207,7 +210,7 @@ export default function CreatePostModal({ open, onClose, post }: ModalProps) {
             <RichTextEditor
               content={content}
               onChange={setContent}
-              placeholder="What's on your mind?"
+              placeholder="What's on your blockchain mind?"
               characterLimit={10000}
               mentionableUsers={[]} // Pass your list of mentionable users here
               onFileChange={setFiles}
@@ -229,7 +232,14 @@ export default function CreatePostModal({ open, onClose, post }: ModalProps) {
                 : "Post"}
             </FillButton>
           </div>
-        </div>
+        </div> */}
+        <CreatePostCompo
+          open={open}
+          post={post}
+          onClose={onClose}
+          fullScreen={fullScreen}
+          setFullScreen={setFullScreen}
+        />
       </Modal>
     </>
   );

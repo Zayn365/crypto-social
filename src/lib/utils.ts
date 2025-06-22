@@ -120,6 +120,7 @@ export const usePostDelete = () => {
   return useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
       queryClient.invalidateQueries({ queryKey: ["getAllUserPosts"] });
       toast.success(`Post Deleted`);
       router.replace("/");

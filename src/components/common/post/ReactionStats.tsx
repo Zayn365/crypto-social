@@ -1,6 +1,7 @@
 import {
   emojis,
   getTotalLikes,
+  getTotalMainComments,
   usePostComment,
   usePostLike,
   usePostUnLike,
@@ -10,6 +11,7 @@ import {
   ChartNoAxesColumn,
   Gem,
   MessageCircle,
+  MessageSquareMore,
   Quote,
   Repeat2,
   Smile,
@@ -145,12 +147,13 @@ export default function ReactionStats({ post }: any) {
   const actionList = [
     {
       icon: (
-        <MessageCircle
+        <MessageSquareMore
           size={18}
           className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
           onClick={() => setShowCommentBox(!showCommentBox)}
         />
       ),
+      count: getTotalMainComments(post?.postInfo),
       action: "open",
     },
     {
@@ -191,6 +194,7 @@ export default function ReactionStats({ post }: any) {
           )}
         </div>
       ),
+      count: getTotalLikes(post?.postInfo),
       action: "open",
     },
     {
@@ -201,6 +205,7 @@ export default function ReactionStats({ post }: any) {
           onClick={handleRepost}
         />
       ),
+      count: 0,
       action: "open",
     },
     // {
@@ -229,6 +234,7 @@ export default function ReactionStats({ post }: any) {
           onClick={() => setIsOpen(!isOpen)}
         />
       ),
+      count: "",
       action: "open",
     },
   ];
@@ -262,11 +268,11 @@ export default function ReactionStats({ post }: any) {
 
       <div className="p-3 flex items-center justify-around border-y">
         {actionList.map((item, idx) => (
-          <div
-            key={idx}
-            className="rounded-full p-2 whitespace-nowrap dark:hover:bg-[#13151A] hover:bg-[#F1F1F1] border cursor-pointer"
-          >
-            {item?.icon}
+          <div key={idx} className="flex items-center gap-2 text-sm">
+            <div className="rounded-full p-2 whitespace-nowrap dark:hover:bg-[#13151A] hover:bg-[#F1F1F1] border cursor-pointer">
+              {item?.icon}
+            </div>
+            {item?.count}
           </div>
         ))}
       </div>

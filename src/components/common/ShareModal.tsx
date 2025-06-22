@@ -128,7 +128,7 @@ export default function ShareModal({
             Share this page
           </div>
           <span className="w-full border-t border-border-light"></span>
-          <div className="w-full">
+          {/* <div className="w-full">
             <div className="text-sm dark:text-[#DDE5EE] text-[#999999] mb-2">
               Your referral link
             </div>
@@ -146,14 +146,14 @@ export default function ShareModal({
                 Copy
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Referral Benefits */}
-          <div className="w-full text-sm dark:text-[#8C9FB7A0] text-[#999999]">
+          {/* <div className="w-full text-sm dark:text-[#8C9FB7A0] text-[#999999]">
             <span className="text-blue-500">Unlimited referrals!</span> You earn
             10% of the joining bonus for every referral PLUS half of all fee
             revenue they generate (including on coin trading fees)!
-          </div>
+          </div> */}
 
           {/* Current Page Link Section */}
           <div className="w-full">
@@ -180,7 +180,7 @@ export default function ShareModal({
             <div className="text-sm dark:text-[#DDE5EE] text-[#999999] mb-4 text-center">
               Or share on social media
             </div>
-            <div className="flex justify-around items-center gap-4">
+            <div className="flex flex-wrap justify-around items-center gap-4">
               {socialPlatforms?.map(
                 ({ icon: Icon, label, platform }, idx: number) => (
                   <button

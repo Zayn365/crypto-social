@@ -48,7 +48,7 @@ export default function PostHeader({ post }: any) {
   };
 
   return (
-    <div className="flex justify-between items-center gap-4 max-md:flex-col max-md:items-start">
+    <div className="flex justify-between items-center gap-4 flex-wrap">
       <div className="flex items-center gap-2">
         {url.includes("post") && (
           <Avatar className="size-14">
@@ -106,7 +106,7 @@ export default function PostHeader({ post }: any) {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-2 max-md:justify-around max-md:w-full">
+      <div className="flex items-center gap-2 justify-between">
         <div
           className={`dark:bg-[#FFFFFF] dark:text-black bg-black text-white px-4 py-2 rounded-full font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] cursor-pointer`}
         >

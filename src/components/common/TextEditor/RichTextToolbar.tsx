@@ -83,7 +83,7 @@ export function RichTextToolbar({
   return (
     <div className="flex flex-wrap items-center gap-1 border border-b-0 rounded-t-lg p-2 bg-background">
       {/* Text formatting */}
-      <Button
+      {/* <Button
         type="button"
         variant="ghost"
         size="sm"
@@ -142,21 +142,10 @@ export function RichTextToolbar({
         className={editor.isActive("highlight") ? "bg-accent" : ""}
       >
         <Highlighter className="h-4 w-4" />
-      </Button>
-
-      {/* Link */}
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={setLink}
-        className={editor.isActive("link") ? "bg-accent" : ""}
-      >
-        <Link className="h-4 w-4" />
-      </Button>
+      </Button> */}
 
       {/* Text align */}
-      <Button
+      {/* <Button
         type="button"
         variant="ghost"
         size="sm"
@@ -191,10 +180,10 @@ export function RichTextToolbar({
         className={editor.isActive({ textAlign: "justify" }) ? "bg-accent" : ""}
       >
         <AlignJustify className="h-4 w-4" />
-      </Button>
+      </Button> */}
 
       {/* Color picker */}
-      <Popover>
+      {/* <Popover>
         <PopoverTrigger asChild>
           <Button
             type="button"
@@ -211,10 +200,10 @@ export function RichTextToolbar({
             currentColor={editor.getAttributes("textStyle").color}
           />
         </PopoverContent>
-      </Popover>
+      </Popover> */}
 
       {/* Lists */}
-      <Button
+      {/* <Button
         type="button"
         variant="ghost"
         size="sm"
@@ -240,10 +229,10 @@ export function RichTextToolbar({
         className={editor.isActive("taskList") ? "bg-accent" : ""}
       >
         <CheckSquare className="h-4 w-4" />
-      </Button>
+      </Button> */}
 
       {/* Blocks */}
-      <Button
+      {/* <Button
         type="button"
         variant="ghost"
         size="sm"
@@ -260,7 +249,7 @@ export function RichTextToolbar({
         className={editor.isActive("table") ? "bg-accent" : ""}
       >
         <Table className="h-4 w-4" />
-      </Button>
+      </Button> */}
 
       {/* Media */}
       <Button
@@ -291,8 +280,19 @@ export function RichTextToolbar({
         <Smile className="h-4 w-4" />
       </Button>
 
-      {/* Undo/Redo */}
+      {/* Link */}
       <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={setLink}
+        className={editor.isActive("link") ? "bg-accent" : ""}
+      >
+        <Link className="h-4 w-4" />
+      </Button>
+
+      {/* Undo/Redo */}
+      {/* <Button
         type="button"
         variant="ghost"
         size="sm"
@@ -309,7 +309,7 @@ export function RichTextToolbar({
         disabled={!editor.can().redo()}
       >
         <Redo2 className="h-4 w-4" />
-      </Button>
+      </Button> */}
     </div>
   );
 }

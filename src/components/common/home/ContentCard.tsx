@@ -1,20 +1,41 @@
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 
 export default function ContentCard({ post }: any) {
-  const htmlToPlainText = (html: string) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    return doc.body.textContent?.trim() || "";
-  };
-
   const descriptionHTML = post?.description ?? "";
-  const images = post?.files?.filter((f: any) => f?.image) || [];
-  // const descriptionText = htmlToPlainText(descriptionHTML);
-  const descriptionText = descriptionHTML.replace(/<[^>]+>/g, " ").trim();
-
+  const [videos, setVideos] = useState<string[]>([]);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const processDescription = async () => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(post?.description ?? "", "text/html");
+
+      // Extract iframe src for videos
+      const iframes = doc.querySelectorAll("iframe");
+      const videoSources = Array.from(iframes)
+        .map((iframe) => iframe.getAttribute("src") || "")
+        .filter((src) => src);
+
+      // Remove iframes from description for sanitization
+      iframes.forEach((iframe) => iframe.remove());
+
+      if (isMounted) {
+        setVideos(videoSources);
+      }
+    };
+
+    processDescription();
+    return () => {
+      isMounted = false;
+    };
+  }, [post?.description]);
+
+  const images = post?.files?.filter((f: any) => f?.image) || [];
+  const descriptionText = descriptionHTML.replace(/<[^>]+>/g, " ").trim();
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLImageElement;
@@ -31,10 +52,11 @@ export default function ContentCard({ post }: any) {
     <div className="flex flex-col gap-4 relative">
       {/* Render Title */}
       {post?.title && (
-        <h2 className="text-xl font-bold text-[#2f2f2f] dark:text-[#A3ADB9] capitalize">
+        <h2 className="text-base text-[#2f2f2f] dark:text-[#A3ADB9] capitalize">
           {post?.title}
         </h2>
       )}
+
       {/* Render Description as HTML */}
       {descriptionText && (
         <div
@@ -69,6 +91,21 @@ export default function ContentCard({ post }: any) {
               alt={`post-image-${idx}`}
               className="rounded-md w-full max-h-[500px] object-contain border cursor-pointer"
               onClick={() => setPreviewImage(img.image)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Render Video */}
+      {videos.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {videos.map((src, idx) => (
+            <iframe
+              key={idx}
+              src={src}
+              className="w-full aspect-video rounded-md border"
+              allowFullScreen
+              title={`Video ${idx + 1}`}
             />
           ))}
         </div>

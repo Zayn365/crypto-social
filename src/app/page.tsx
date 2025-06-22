@@ -1,4 +1,6 @@
 "use client";
+import BuyBlockComp from "@/components/common/BuyBlockComp";
+import CreatePostCompo from "@/components/common/CreatePostCompo";
 import Header from "@/components/common/home/Header";
 import PostCard from "@/components/common/home/PostCard";
 import LeftSidebar from "@/components/layout/sidebar/left";
@@ -8,7 +10,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/providers/AuthProvider";
 
 export default function Home() {
-  const { allPost } = useAuth();
+  const { allPost, user } = useAuth();
   return (
     <div>
       <SidebarProvider>
@@ -16,7 +18,9 @@ export default function Home() {
           <LeftSidebar />
           <SideBarTriggerButton />
           <div className="flex flex-col w-full overflow-y-auto">
-            {/* <Header /> */}
+            <BuyBlockComp />
+            {user?.id && <CreatePostCompo />}
+            <Header />
             <PostCard allPost={allPost} />
           </div>
           {/* <RightSidebar /> */}

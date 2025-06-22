@@ -95,7 +95,7 @@ export const deletePost = async (
   const params = {
     id: payload.id,
   };
-  return await deleteHandler(client, POSTS.deletePost, params);
+  return await deleteHandler(client, POSTS.deletePost, {}, params);
 };
 
 export const commentDelete = async (
