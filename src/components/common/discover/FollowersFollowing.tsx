@@ -18,6 +18,9 @@ export default function FollowersFollowing({ data }: any) {
         </span>
         Following
       </div>
+      <div className="text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-normal max-md:text-xs">
+        ${data?.assets?.totalBalanceUSD || 0}
+      </div>
     </div>
   );
 }

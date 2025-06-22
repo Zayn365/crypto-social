@@ -74,17 +74,17 @@ export default function UserProfileHeader({ data }: any) {
             </>
           )}
           <p className="text-sm dark:text-[#8c9fb7a0] text-[#999999] font-normal">
-            {data?.profile?.username ?? ""}
+            @{data?.username ?? ""}{" "}
           </p>
         </h1>
         <FollowersFollowing data={data} />
       </div>
 
-      {data?.stats && (
+      {/* {data?.assets && (
         <div className="px-6 mt-4">
           <Stats data={data} />
         </div>
-      )}
+      )} */}
     </div>
   );
 }

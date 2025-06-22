@@ -12,7 +12,6 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import toast from "react-hot-toast";
 import { jwtDecode } from "jwt-decode";
 
 export interface Coin {
@@ -27,6 +26,19 @@ export interface Coin {
     thumb?: string;
   };
   price: number | null;
+}
+
+interface CoinData {
+  token: string;
+  balance: number;
+  valueUSD: number;
+}
+
+interface WalletSummary {
+  walletAddress: string;
+  coins: CoinData[];
+  totalValues: number;
+  totalBalanceUSD: number;
 }
 
 // Create the context with default values
@@ -74,83 +86,150 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (!allUsers) return;
+    if (!allUsers || allUsers.length === 0) {
+      setLoading(false);
+      return;
+    }
 
-    const walletAddresses = [
-      "0x559432E18b281731c054cD703D4B49872BE4ed53",
-      "0xa83114A443dA1CecEFC50368531cACE9F37fCCcb",
-      "0xBD4045212C7a51E0F46599F18C02322B1C45f71e",
-      "0xE5b1F760BA4334bc311695e125861Eb5870018aD",
-      "0x0C488193f50fa771c0AA854aFCFc6D05034d7B3D",
-      "0x10cA3e43FFE897a26b6c1b8B9E4a90515EAE62b0",
-    ];
-    // const walletAddresses = allUsers
-    //   .map((user: any) => user?.wallet_address)
-    //   .filter(Boolean);
+    // Extract wallet addresses, filtering out falsy values
+    const walletAddresses = allUsers
+      .map((user: any) => user.wallet_address)
+      .filter((address: any): address is string => !!address);
+
+    if (walletAddresses.length === 0) {
+      setLoading(false);
+      return;
+    }
 
     const fetchCoins = async () => {
       try {
+        setLoading(true);
+
         // Fetch price data
         const priceResponse = await fetch(`/api/getPrice`);
         if (!priceResponse.ok) throw new Error("Failed to fetch price data");
         const priceData = await priceResponse.json();
-        const coins = priceData.coins;
-        setCoins(coins);
+        const fetchedCoins = priceData.coins as Coin[];
+        setCoins(fetchedCoins);
 
-        // Fetch balances and calculate per wallet address
+        // Fetch balances and calculate per wallet address, handling individual errors
         const walletSummaries = await Promise.all(
-          walletAddresses.map(async (address) => {
-            const balanceResponse = await fetch(
-              `/api/wallet-balances?address=${address}`
-            );
-            if (!balanceResponse.ok)
-              throw new Error(`Failed to fetch balance for ${address}`);
-            const balances = await balanceResponse.json(); // assume this returns an array of balances
+          walletAddresses.map(async (address: any) => {
+            try {
+              const balanceResponse = await fetch(
+                `/api/wallet-balances?address=${address}`
+              );
+              if (!balanceResponse.ok) {
+                console.error(`Failed to fetch balance for ${address}`);
+              }
+              const balances = (await balanceResponse.json()) as any[];
 
-            let totalTokenValue = 0;
-            let totalValueUSD = 0;
+              let totalTokenValue = 0;
+              let totalValueUSD = 0;
 
-            const coinsData = balances
-              .map((balanceItem: any) => {
-                const matchingCoin = coins.find(
-                  (coin: any) => coin.chain_identifier === balanceItem.chainId
-                );
+              const coinsData = balances
+                .map((balanceItem) => {
+                  const matchingCoin = fetchedCoins.find(
+                    (coin) => coin.chain_identifier === balanceItem.chainId
+                  );
 
-                if (!matchingCoin?.price || !balanceItem.balance) return null;
+                  if (!matchingCoin?.price || !balanceItem.balance) return null;
 
-                const tokenAmount = parseFloat(balanceItem.balance);
-                const usdValue = tokenAmount * matchingCoin.price;
+                  const tokenAmount = parseFloat(balanceItem.balance);
+                  const usdValue = tokenAmount * matchingCoin.price;
 
-                totalTokenValue += tokenAmount;
-                totalValueUSD += usdValue;
+                  totalTokenValue += tokenAmount;
+                  totalValueUSD += usdValue;
 
-                return {
-                  token: matchingCoin.name, // Coin name (e.g., "BTC", "ETH")
-                  balance: tokenAmount,
-                  valueUSD: usdValue,
-                };
-              })
-              .filter(Boolean); // Remove any nulls from missing coin matches
+                  return {
+                    token: matchingCoin.name,
+                    balance: tokenAmount,
+                    valueUSD: usdValue,
+                  };
+                })
+                .filter((item): item is any => !!item);
+
+              return {
+                walletAddress: address,
+                coins: coinsData,
+                totalValues: totalTokenValue,
+                totalBalanceUSD: totalValueUSD,
+              };
+            } catch (err) {
+              console.error(`Error fetching balance for ${address}:`, err);
+              return null; // Return null for failed addresses
+            }
+          })
+        );
+
+        // Filter out null results (failed fetches)
+        const validSummaries = walletSummaries.filter(
+          (summary): summary is WalletSummary => !!summary
+        );
+
+        // Update allUsers with assets for successful fetches
+        setAllUsers((prevUsers: any) =>
+          prevUsers.map((user: any) => ({
+            ...user,
+            assets: validSummaries?.find(
+              (summary) =>
+                summary.walletAddress?.toLowerCase() ===
+                user?.wallet_address?.toLowerCase()
+            ),
+          }))
+        );
+
+        setAllPost((prevData: any) =>
+          prevData.map((post: any) => {
+            const updatedUserInfo = {
+              ...post.userInfo,
+              assets: validSummaries?.find(
+                (summary) =>
+                  summary?.walletAddress?.toLowerCase() ===
+                  post?.userInfo?.wallet_address?.toLowerCase()
+              ),
+            };
+
+            const updatedPostInfo = Array.isArray(post.postInfo)
+              ? post.postInfo.map((info: any) => {
+                  const userWallet = info?.userInfo?.wallet_address;
+                  const matchingSummary = validSummaries.find(
+                    (summary) =>
+                      summary?.walletAddress?.toLowerCase() ===
+                      userWallet?.toLowerCase()
+                  );
+
+                  return {
+                    ...info,
+                    userInfo: info?.userInfo
+                      ? {
+                          ...info?.userInfo,
+                          assets: matchingSummary,
+                        }
+                      : null,
+                  };
+                })
+              : [];
 
             return {
-              walletAddress: address,
-              coins: coinsData, // coins, balances, and values
-              totalValues: totalTokenValue, // Total tokens
-              totalBalanceUSD: totalValueUSD, // Total value in USD
+              ...post,
+              userInfo: updatedUserInfo,
+              postInfo: updatedPostInfo,
             };
           })
         );
-        setAllUsersAssets(walletSummaries);
-        setLoading(false);
+
+        // Update allUsersAssets with successful summaries
+        setAllUsersAssets(validSummaries);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching price data:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCoins();
-  }, [allUsers]);
+  }, [allUsers, allPost]);
 
   useEffect(() => {
     if (allPostData) {
@@ -180,6 +259,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       setAllUsers(usersData?.users?.rows);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   }, [usersData, isLoading, error]);
@@ -264,7 +344,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center">
-        Loading ...
+        Loading...
       </div>
     );
   }

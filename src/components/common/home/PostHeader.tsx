@@ -24,7 +24,7 @@ import toast from "react-hot-toast";
 import CreatePostModal from "../CreatePostModal";
 
 export default function PostHeader({ post }: any) {
-  const { user, totalAssetsValues } = useAuth();
+  const { user } = useAuth();
   const url = usePathname();
   const { id } = useParams();
   const deletePost = usePostDelete();
@@ -93,9 +93,9 @@ export default function PostHeader({ post }: any) {
                 src="/cropped-whale-small.webp"
               />
             )}
-            {/* <div className="text-base text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-medium">
-              ${totalAssetsValues}
-            </div> */}
+            <div className="text-sm text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-normal">
+              ${post?.userInfo?.assets?.totalBalanceUSD || 0}
+            </div>
           </div>
           <div className="text-sm dark:text-[#8C9FB7A0] text-[#999999]">
             @{post?.userInfo?.username} .{" "}
