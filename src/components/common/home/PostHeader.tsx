@@ -50,7 +50,7 @@ export default function PostHeader({ post }: any) {
   return (
     <div className="flex justify-between items-center gap-4 flex-wrap">
       <div className="flex items-center gap-2">
-        {url.includes("post") && (
+        {/* {url.includes("post") && ( */}
           <Avatar className="size-14">
             <AvatarImage
               width={100}
@@ -60,7 +60,7 @@ export default function PostHeader({ post }: any) {
             />
             <AvatarFallback>{post?.userInfo?.name ?? "img"}</AvatarFallback>
           </Avatar>
-        )}
+        {/* )}  */}
         <div className="flex flex-col gap-1">
           <div
             className="hover:underline dark:text-[#DDE5EE] font-semibold flex items-center gap-2 cursor-pointer"

@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { AppKitProvider } from "@/context/WalletContext";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
+import Footer from "@/components/common/Footer";
 
 export const metadata: Metadata = {
   title: "Crypto Social",
@@ -31,7 +32,10 @@ export default function RootLayout({
             <ThemeProvider attribute="class" enableSystem={false}>
               <AppKitProvider>
                 <div className="dark:bg-[#1d1c34] flex justify-center">
-                  <div className="max-w-[1300px] w-full">{children}</div>
+                  <div className="max-w-[1300px] w-full">
+                    {children}
+                    <Footer />
+                  </div>
                 </div>
                 <Toaster />
               </AppKitProvider>
