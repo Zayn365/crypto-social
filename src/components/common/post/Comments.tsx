@@ -38,7 +38,6 @@ import FillButton from "../FillButton";
 import moment from "moment";
 
 export default function Comments({ post }: any) {
-  console.log("🚀 ~ Comments ~ post:", post);
   const queryClient = useQueryClient();
   const { user } = useAuth();
 

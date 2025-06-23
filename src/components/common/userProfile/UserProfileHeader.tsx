@@ -40,7 +40,7 @@ export default function UserProfileHeader({ data }: any) {
           <span className="text-[#999999] dark:text-[#8c9fb7a0] dark:hover:bg-[#13151a] hover:bg-[#F1F1F1] p-2 rounded-full h-fit w-fit cursor-pointer border">
             <Mail size={16} />
           </span>
-          <div
+          {/* <div
             className={cn(
               "justify-center whitespace-nowrap rounded-full font-sans! text-sm font-medium transition-colors border dark:border-[#2a323b7e] bg-transparent hover:bg-[#F1F1F1] dark:hover:bg-[#13151a] px-3 flex items-center gap-2 py-2 cursor-pointer"
             )}
@@ -51,6 +51,11 @@ export default function UserProfileHeader({ data }: any) {
             <span className="dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999]">
               Follow
             </span>
+          </div> */}
+          <div
+            className={`dark:bg-[#FFFFFF] dark:text-black bg-black text-white px-4 py-2 rounded-full font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] cursor-pointer`}
+          >
+            Follow
           </div>
         </div>
       </div>
