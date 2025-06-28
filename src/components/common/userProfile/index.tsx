@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserById } from "@/services/user";
 import { getAllUserPosts } from "@/services/posts";
 import { useAuth } from "@/providers/AuthProvider";
+import SpinLoader from "../SpinLoader";
 
 export default function UserProfileDetails() {
   const { allUsers } = useAuth();
@@ -103,7 +104,7 @@ export default function UserProfileDetails() {
   if (userLoading && postLoading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center">
-        Loading...
+        <SpinLoader text="Loading..." />
       </div>
     );
   }

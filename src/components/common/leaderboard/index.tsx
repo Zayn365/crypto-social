@@ -1,32 +1,116 @@
 "use client";
-import { sliceMethod } from "@/lib/utils";
+import { defaultUserProfile, sliceMethod } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import React from "react";
+import FollowBtn from "../FollowBtn";
+import Image from "next/image";
+import SpinLoader from "../SpinLoader";
+import { AnimatePresence, motion } from "framer-motion";
+import WalletCard from "./WalletCard";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+
+import { Navigation, Autoplay } from "swiper/modules";
 
 export default function LeaderboardPage() {
-  const { allUsersAssets } = useAuth();
+  const { allUsers } = useAuth();
+
+  if (!allUsers || allUsers.length === 0) {
+    return <SpinLoader text="Loading Assets..." />;
+  }
+
+  const sortedUsers = [...allUsers].sort((a: any, b: any) => {
+    const balanceA = Number(a?.assets?.totalBalanceUSD || 0);
+    const balanceB = Number(b?.assets?.totalBalanceUSD || 0);
+    return balanceB - balanceA;
+  });
+
   return (
-    <div className="w-full px-4 py-2">
+    <div className="w-full px-4 py-4">
       <h1 className="text-2xl font-bold">Leaderboard</h1>
-      {allUsersAssets.map((item: any, idx: number) => (
-        <div className="flex justify-between mt-4" key={idx}>
-          <div className="flex items-center gap-2">
-            <div>
-              <h2 className="flex items-center gap-2">
-                {sliceMethod(item?.walletAddress)}{" "}
-              </h2>
-            </div>
-          </div>
-          <div>
-            <h1 className="text-xs text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-bold">
-              ${Number(item?.totalBalanceUSD).toFixed(3)}
-            </h1>
-            <div className="text-xs text-end dark:text-[#8c9fb7a0] text-[#999999]">
-              Assets
-            </div>
-          </div>
-        </div>
-      ))}
+      <div className="max-h-[50vh] overflow-y-auto border-b p-4 hide-scrollbar">
+        <AnimatePresence>
+          {sortedUsers.map((item: any, idx: number) => (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="flex gap-4 justify-between mt-4"
+              key={item.wallet_address || idx}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`text-2xl font-black w-[45px] ${
+                      idx + 1 === 1
+                        ? "text-[#E0DA20]"
+                        : "text-[#000000] dark:text-[#FFFFFF]"
+                    } `}
+                  >
+                    #{idx + 1}
+                  </div>
+                  <div>
+                    <Image
+                      alt=""
+                      src={item?.avatar || defaultUserProfile}
+                      width={30}
+                      height={30}
+                      className="rounded-full object-cover w-[30px] h-[30px]"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-[#000000] dark:text-[#FFFFFF] text-xl font-bold truncate w-[100px]">
+                      {item?.name}
+                    </div>
+                    <span className="text-xs dark:text-[#8c9fb7a0] text-[#999999]">
+                      {sliceMethod(item?.wallet_address)}
+                    </span>
+                  </div>
+                </div>
+                <FollowBtn
+                  handleSubmit={() => {
+                    console.log("first");
+                  }}
+                />
+              </div>
+              {item?.assets?.totalBalanceUSD !== undefined &&
+              typeof item?.assets?.totalBalanceUSD === "number" ? (
+                <div className="text-[#44FF00] text-xl font-black">
+                  ${item?.assets?.totalBalanceUSD?.toFixed(3)}
+                </div>
+              ) : (
+                <SpinLoader />
+              )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+      <h1 className="text-3xl font-bold text-center mt-6">Top Wallets</h1>
+      <div className="max-w-[1020px] lg:max-w-[750px] xl:max-w-[980px] mt-4 mx-auto">
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          navigation
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          spaceBetween={16}
+          slidesPerView={"auto"}
+          loop={true}
+          style={{ width: "100%" }}
+        >
+          {sortedUsers.map((item, idx) => (
+            <SwiperSlide key={idx} style={{ width: "auto" }}>
+              <div className="p-4 w-fit">
+                <WalletCard item={item} idx={idx} />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </div>
   );
 }

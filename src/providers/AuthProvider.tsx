@@ -13,6 +13,7 @@ import {
   ReactNode,
 } from "react";
 import { jwtDecode } from "jwt-decode";
+import SpinLoader from "@/components/common/SpinLoader";
 
 export interface Coin {
   id: string;
@@ -344,7 +345,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center">
-        Loading...
+        <SpinLoader text="Loading..." />
       </div>
     );
   }

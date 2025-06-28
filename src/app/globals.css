@@ -150,8 +150,17 @@ body {
 }
 
 * {
-  scrollbar-color: #32bd91 #ffffff1A; /* Optional: thumb color */
+  scrollbar-color: #32bd91 #ffffff1a; /* Optional: thumb color */
   scrollbar-width: 1px; /* Optional: rounded thumb */
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
 }
 
 /* Rich Text Editor Styles */

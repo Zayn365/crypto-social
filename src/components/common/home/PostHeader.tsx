@@ -22,6 +22,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { usePostDelete } from "@/lib/utils";
 import toast from "react-hot-toast";
 import CreatePostModal from "../CreatePostModal";
+import FollowBtn from "../FollowBtn";
 
 export default function PostHeader({ post }: any) {
   const { user } = useAuth();
@@ -51,15 +52,15 @@ export default function PostHeader({ post }: any) {
     <div className="flex justify-between items-center gap-4 flex-wrap">
       <div className="flex items-center gap-2">
         {/* {url.includes("post") && ( */}
-          <Avatar className="size-14">
-            <AvatarImage
-              width={100}
-              height={100}
-              className="w-14 h-14 object-cover"
-              src={post?.userInfo?.avatar ?? "/userDefault.webp"}
-            />
-            <AvatarFallback>{post?.userInfo?.name ?? "img"}</AvatarFallback>
-          </Avatar>
+        <Avatar className="size-14">
+          <AvatarImage
+            width={100}
+            height={100}
+            className="w-14 h-14 object-cover"
+            src={post?.userInfo?.avatar ?? "/userDefault.webp"}
+          />
+          <AvatarFallback>{post?.userInfo?.name ?? "img"}</AvatarFallback>
+        </Avatar>
         {/* )}  */}
         <div className="flex flex-col gap-1">
           <div
@@ -94,7 +95,10 @@ export default function PostHeader({ post }: any) {
               />
             )}
             <div className="text-sm text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-normal">
-              ${post?.userInfo?.assets?.totalBalanceUSD || 0}
+              $
+              {post?.userInfo?.assets?.totalBalanceUSD
+                ? Number(post?.userInfo?.assets?.totalBalanceUSD).toFixed(2)
+                : 0}
             </div>
           </div>
           <div className="text-sm dark:text-[#8C9FB7A0] text-[#999999]">
@@ -107,11 +111,11 @@ export default function PostHeader({ post }: any) {
         </div>
       </div>
       <div className="flex items-center gap-2 justify-between">
-        <div
-          className={`dark:bg-[#FFFFFF] dark:text-black bg-black text-white px-4 py-2 rounded-full font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] cursor-pointer`}
-        >
-          Follow
-        </div>
+        <FollowBtn
+          handleSubmit={() => {
+            console.log("follow");
+          }}
+        />
         {/* <ListTodo
           className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
           size={20}

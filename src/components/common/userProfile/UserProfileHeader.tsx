@@ -5,6 +5,7 @@ import Image from "next/image";
 import React from "react";
 import FollowersFollowing from "../discover/FollowersFollowing";
 import Stats from "../discover/Stats";
+import FollowBtn from "../FollowBtn";
 
 export default function UserProfileHeader({ data }: any) {
   return (
@@ -52,11 +53,11 @@ export default function UserProfileHeader({ data }: any) {
               Follow
             </span>
           </div> */}
-          <div
-            className={`dark:bg-[#FFFFFF] dark:text-black bg-black text-white px-4 py-2 rounded-full font-medium text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] cursor-pointer`}
-          >
-            Follow
-          </div>
+          <FollowBtn
+            handleSubmit={() => {
+              console.log("follow");
+            }}
+          />
         </div>
       </div>
 

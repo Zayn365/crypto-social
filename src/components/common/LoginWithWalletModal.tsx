@@ -43,7 +43,6 @@ export default function LoginWithWalletModal({
 
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [loading, setLoading] = useState<boolean>(false);
-  console.log("🚀 ~ loading:", loading)
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);

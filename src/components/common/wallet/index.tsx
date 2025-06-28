@@ -1,12 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import InputWithIcons from "../input-with-icons";
-import { Search } from "lucide-react";
+import { Activity, Search, Upload, User } from "lucide-react";
 import UserAssetsData from "../user-assets-data";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { Coin, useAuth } from "@/providers/AuthProvider";
 import { formatPrice } from "@/lib/utils";
 import CoinsList from "../CoinsList";
+import WalletHeader from "./WalletHeader";
+import BuyTokenBtn from "../buy-token-btn";
+import ShareModal from "../ShareModal";
+import useUrl from "@/hooks/useUrl";
+import WalletBalanceCard from "./WalletBalanceCard";
+import { ChartPieLegend } from "./PieChart";
+import CoreAssets from "./CoreAssets";
 
 type Balance = {
   chainId: number;
@@ -19,11 +26,13 @@ type Balance = {
 };
 
 export default function WalletComp() {
-  const { address } = useAppKitAccount();
+  // const { address } = useAppKitAccount();
   const { coins, user } = useAuth();
+  const { host, pathname } = useUrl();
   const [data, setData] = useState<Balance[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   // const address = "0x559432E18b281731c054cD703D4B49872BE4ed53";
 
@@ -32,9 +41,7 @@ export default function WalletComp() {
       try {
         setLoading(true);
         const [balanceResponse] = await Promise.all([
-          fetch(
-            `/api/wallet-balances?address=${address ?? user?.wallet_address}`
-          ),
+          fetch(`/api/wallet-balances?address=${user?.wallet_address}`),
           // fetch(`/api/getPrice`),
         ]);
 
@@ -56,7 +63,7 @@ export default function WalletComp() {
     };
 
     fetchCoins();
-  }, [address, user?.wallet_address]);
+  }, [user?.wallet_address]);
 
   const getUSDBalanceValue = (balanceItem: Balance) => {
     const matchingCoin = coins.find(
@@ -102,19 +109,54 @@ export default function WalletComp() {
     );
   }
 
-  // if (error) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="text-xl text-red-500">{error}</div>
-  //     </div>
-  //   );
-  // }
-
   return (
-    <div className="w-full px-4 py-2">
-      <div className="py-8">
-        <CoinsList />
+    <div className="w-full py-2 border-r">
+      <WalletHeader />
+      <div className="flex items-center gap-4 p-4 border-y">
+        <BuyTokenBtn clasName="w-fit" onClick={() => setIsOpen(!isOpen)}>
+          <Activity /> Activity
+        </BuyTokenBtn>
+        <BuyTokenBtn clasName="w-fit" onClick={() => setIsOpen(!isOpen)}>
+          <User /> Profile
+        </BuyTokenBtn>
+        <BuyTokenBtn clasName="w-fit" onClick={() => setIsOpen(!isOpen)}>
+          <Upload /> Share
+        </BuyTokenBtn>
       </div>
+      <div className="flex gap-4 max-2xl:flex-col-reverse border-b w-full justify-between">
+        <div className="p-4 w-full">
+          <WalletBalanceCard value={calculateTotalBalance} />
+        </div>
+        <div className="p-4 flex justify-between gap-4 w-full">
+          <div className="flex flex-col gap-4 w-full">
+            <div className="flex flex-col border p-4 rounded-lg gap-2">
+              <div className="text-xs text-[#000000] dark:text-[#DDE5EE]">
+                Tokens Owned
+              </div>
+              <div className="text-2xl text-[#000000] dark:text-[#DDE5EE]">
+                0
+              </div>
+            </div>
+            <div className="flex flex-col border p-4 rounded-lg gap-2">
+              <div className="text-xs text-[#000000] dark:text-[#DDE5EE]">
+                Total Portfolio Value
+              </div>
+              <div className="text-2xl text-[#000000] dark:text-[#DDE5EE]">
+                $0.00
+              </div>
+            </div>
+          </div>
+          <div className="w-full">
+            <ChartPieLegend />
+          </div>
+        </div>
+      </div>
+      <div className="p-4">
+        <CoreAssets />
+      </div>
+      {/* <div className="py-8">
+        <CoinsList />
+      </div> */}
       <h1 className="text-2xl font-bold">Assets</h1>
       {sortedData.map((item: Balance, idx: number) => (
         <div className="flex justify-between mt-4" key={idx}>
@@ -149,7 +191,7 @@ export default function WalletComp() {
       ) : (
         "No Assets found"
       )}
-      <div className="w-full flex justify-center items-center px-4 py-2 mt-4">
+      {/* <div className="w-full flex justify-center items-center px-4 py-2 mt-4">
         <div className="flex flex-col items-center max-w-[550px] gap-4">
           <img
             alt="whale"
@@ -180,7 +222,14 @@ export default function WalletComp() {
             <UserAssetsData />
           </div>
         </div>
-      </div>
+      </div> */}
+      <ShareModal
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        referralLink={`${host}${pathname}`}
+        currentPageLink={`${host}${pathname}/${user?.username}`}
+        postTitle="Check out this awesome post on Block Face!"
+      />
     </div>
   );
 }

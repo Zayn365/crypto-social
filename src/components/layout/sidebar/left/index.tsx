@@ -82,11 +82,15 @@ export default function LeftSidebar() {
     //   url: "/earnings",
     //   icon: EarningIcon,
     // },
-    {
-      title: "Wallet",
-      url: "/wallet",
-      icon: "/wallet-icon.svg",
-    },
+    ...(user
+      ? [
+          {
+            title: "Wallet",
+            url: "/wallet",
+            icon: "/wallet-icon.svg",
+          },
+        ]
+      : []),
     ...(user?.username
       ? [
           {

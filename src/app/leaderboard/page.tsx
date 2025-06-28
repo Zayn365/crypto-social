@@ -9,7 +9,7 @@ export default function page() {
   return (
     <div>
       <SidebarProvider>
-        <div className="flex lg:flex-row flex-col min-h-screen w-full">
+        <div className="flex lg:flex-row flex-col min-h-screen w-full overflow-x-hidden">
           <LeftSidebar />
           <SideBarTriggerButton />
           <LeaderboardPage />
