@@ -40,7 +40,7 @@ export default function WalletCard({ item, idx }: any) {
           src={item?.avatar || defaultUserProfile}
           width={258}
           height={143}
-          className="object-cover min-h-[143px] max-h-[143px]"
+          className="object-contain min-h-[143px] max-h-[143px]"
         />
         <div className="flex justify-center py-1 px-2 font-bold text-[#44FF00] text-xl bg-transparent shadow-lg shadow-[#2FA15D]">
           {item?.assets ? (

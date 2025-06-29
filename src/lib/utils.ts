@@ -160,3 +160,22 @@ export const validateImageAspectRatio = (
     img.src = objectUrl;
   });
 };
+
+export function formatCurrencyShort(value: number): string {
+  if (isNaN(value)) return "$0";
+
+  const absValue = Math.abs(value);
+  let formatted: string;
+
+  if (absValue >= 1.0e9) {
+    formatted = (value / 1.0e9).toFixed(1) + "B";
+  } else if (absValue >= 1.0e6) {
+    formatted = (value / 1.0e6).toFixed(1) + "M";
+  } else if (absValue >= 1.0e3) {
+    formatted = (value / 1.0e3).toFixed(1) + "K";
+  } else {
+    formatted = value.toFixed(2);
+  }
+
+  return `$${formatted}`;
+}

@@ -30,18 +30,18 @@ export default function CreateImportWalletModal({
       className="dark:bg-[#1d1c34] w-full max-w-3xl"
     >
       <div className="flex flex-col items-center gap-4">
-        <div className="font-bold dark:text-[#DDE5EE] text-xl">DeSo</div>
+        <div className="font-bold dark:text-[#DDE5EE] text-xl">Block</div>
         <div className="font-bold dark:text-[#DDE5EE] text-xl">
-          Create or Import DeSo Wallet
+          Create or Import Wallet
         </div>
         <div className="text-base dark:text-[#A3ADB9] text-center">
           The first step is to create a{" "}
           <span className="dark:text-[#59B4FF] text-[#59B4FF]">
-            Decentralized Social (DeSo) wallet.
+            Decentralized Social wallet.
           </span>
         </div>
         <div className="text-base dark:text-[#A3ADB9] text-center">
-          Your DeSo wallet can{" "}
+          Your wallet can{" "}
           <span className="dark:text-[#59B4FF] text-[#59B4FF]">
             send and receive money instantly
           </span>{" "}

@@ -97,7 +97,7 @@ export default function UserAssetsData() {
             <div className="flex flex-col">
               <div className="text-xs dark:text-[#DDE5EE] font-bold flex items-center gap-2">
                 <ToolTip
-                  content="The DeSo Tokens that have the highest trading volume recently."
+                  content="The Block Tokens that have the highest trading volume recently."
                   contentClassName="dark:text-[#A3ADB9] dark:bg-[#13151A]"
                   triggerClassName="flex items-center gap-2"
                 >

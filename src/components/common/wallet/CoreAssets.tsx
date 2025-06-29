@@ -1,62 +1,60 @@
 import Image from "next/image";
 import React from "react";
 
-export default function CoreAssets() {
+export default function CoreAssets({ data }: any) {
   const tokenData = [
     {
-      name: "DeSo",
-      symbol: "$DESO",
-      image: "/coinImg/coin-deso.webp",
-      balance: "0.00005",
-      usdValue: "~$0.01 USD",
+      token: "Block",
+      symbol: "block",
+      logo: "/coinImg/coin-deso.webp",
+      balance: "0.00",
+      valueUSD: "0.0 USD",
     },
     {
-      name: "USDC-DESO",
-      symbol: "$USDC",
-      image: "/coinImg/coin-usdc.webp",
-      balance: "0.00005",
-      usdValue: "~$0.01 USD",
-    },
-    {
-      name: "DeSo",
-      symbol: "$DESO",
-      image: "/coinImg/coin-deso.webp",
-      balance: "0.00005",
-      usdValue: "~$0.01 USD",
+      token: "USDC",
+      symbol: "USDC",
+      logo: "/coinImg/coin-usdc.webp",
+      balance: "0.00",
+      valueUSD: "0.0 USD",
     },
   ];
+  const coinData = data?.assets?.coins || [];
+  const allData = [...tokenData, ...coinData];
+
+  const totalBalanceUSD = data?.assets?.totalBalanceUSD || 0;
+
   return (
     <div>
       <div className="text-[#999999] dark:text-[#8c9fb7a0] text-base">
-        Core Assets
+        Assets
       </div>
       <div className="flex flex-col border rounded-lg">
-        {tokenData.map((item, idx) => (
+        {allData?.map((item, idx) => (
           <div className="border-b" key={idx}>
             <div className="flex items-center justify-between gap-4 p-2">
               <div className="flex items-center gap-2">
                 <Image
                   alt=""
-                  src={item?.image}
+                  src={item?.logo}
                   width={30}
                   height={30}
                   className="rounded-full"
                 />
                 <div>
                   <div className="dark:text-[#a3adb9] text-[#000] text-sm">
-                    {item?.name}
+                    {item?.token}
                   </div>
                   <div className="text-[#999999] dark:text-[#8c9fb7a0] text-xs">
-                    {item?.symbol}
+                    ${item?.symbol}
                   </div>
                 </div>
               </div>
-              <div>
-                <div className="dark:text-[#a3adb9] text-[#000] text-sm">
+              <div className="flex flex-col items-end">
+                <div className="dark:text-[#a3adb9] text-[#000] text-sm text-end">
                   {item?.balance} {item?.symbol}
                 </div>
                 <div className="text-[#999999] dark:text-[#8c9fb7a0] flex text-xs justify-end">
-                  {item?.usdValue}
+                  ~${item?.valueUSD}
                 </div>
               </div>
             </div>
@@ -67,7 +65,7 @@ export default function CoreAssets() {
             Total Spendable Balance
           </div>
           <div className="text-sm text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00]">
-            ~0.01 USd
+            ~{Number(totalBalanceUSD).toFixed(2)} USD
           </div>
         </div>
       </div>

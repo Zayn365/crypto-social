@@ -1,5 +1,4 @@
 import { sliceMethod } from "@/lib/utils";
-import { useAuth } from "@/providers/AuthProvider";
 import { CopyIcon } from "lucide-react";
 import moment from "moment";
 import { useTheme } from "next-themes";
@@ -7,9 +6,8 @@ import Image from "next/image";
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function WalletBalanceCard({ value }: any) {
+export default function WalletBalanceCard({ data }: any) {
   const { theme } = useTheme();
-  const { user } = useAuth();
 
   async function handleCopy(text: string) {
     try {
@@ -28,7 +26,11 @@ export default function WalletBalanceCard({ value }: any) {
             Spendable Balance
           </div>
           <div className="text-lg text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00]">
-            ~ {value()} USD
+            ~{" "}
+            {data?.assets?.totalBalanceUSD
+              ? Number(data?.assets?.totalBalanceUSD).toFixed(2)
+              : 0}{" "}
+            USD
           </div>
         </div>
         <div>
@@ -45,10 +47,11 @@ export default function WalletBalanceCard({ value }: any) {
         </div>
       </div>
       <div
-        className="flex gap-2 items-center cursor-pointer"
-        onClick={() => handleCopy(user?.wallet_address)}
+        className="flex gap-2 items-center cursor-pointer w-fit"
+        onClick={() => handleCopy(data?.wallet_address)}
       >
-        <CopyIcon size={16} /> {sliceMethod(user?.wallet_address)}
+        <CopyIcon size={16} />{" "}
+        {data?.wallet_address && sliceMethod(data?.wallet_address)}
       </div>
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -56,9 +59,9 @@ export default function WalletBalanceCard({ value }: any) {
             Account
           </div>
           <div className="text-sm dark:text-[#FFFFFF] text-[#000]">
-            {user?.name}{" "}
+            {data?.name}{" "}
             <span className="text-[#999999] dark:text-[#8c9fb7a0]">
-              @{user?.username}
+              @{data?.username}
             </span>
           </div>
         </div>
@@ -67,7 +70,8 @@ export default function WalletBalanceCard({ value }: any) {
             Joined
           </div>
           <div className="text-sm dark:text-[#FFFFFF] text-[#000]">
-            {moment(user?.created_date_time).format("MMM/DD")}
+            {data?.created_date_time &&
+              moment(data?.created_date_time).format("MMM/DD")}
           </div>
         </div>
       </div>

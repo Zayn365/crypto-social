@@ -1,7 +1,7 @@
 "use client";
 import { defaultUserProfile, sliceMethod } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FollowBtn from "../FollowBtn";
 import Image from "next/image";
 import SpinLoader from "../SpinLoader";
@@ -15,21 +15,39 @@ import { Navigation, Autoplay } from "swiper/modules";
 
 export default function LeaderboardPage() {
   const { allUsers } = useAuth();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  if (!allUsers || allUsers.length === 0) {
-    return <SpinLoader text="Loading Assets..." />;
+  useEffect(() => {
+    if (allUsers && allUsers.length > 0) {
+      const validUsers = allUsers.filter(
+        (user: any) => user?.assets !== undefined
+      );
+      setIsLoading(validUsers.length === 0);
+    } else {
+      setIsLoading(true);
+    }
+  }, [allUsers]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <SpinLoader text="Please wait..." />
+      </div>
+    );
   }
 
-  const sortedUsers = [...allUsers].sort((a: any, b: any) => {
-    const balanceA = Number(a?.assets?.totalBalanceUSD || 0);
-    const balanceB = Number(b?.assets?.totalBalanceUSD || 0);
-    return balanceB - balanceA;
-  });
+  const sortedUsers = [...allUsers]
+    .filter((user: any) => user?.assets !== undefined)
+    .sort((a: any, b: any) => {
+      const balanceA = Number(a?.assets?.totalBalanceUSD || 0);
+      const balanceB = Number(b?.assets?.totalBalanceUSD || 0);
+      return balanceB - balanceA;
+    });
 
   return (
     <div className="w-full px-4 py-4">
       <h1 className="text-2xl font-bold">Leaderboard</h1>
-      <div className="max-h-[50vh] overflow-y-auto border-b p-4 hide-scrollbar">
+      <div className="max-h-[50vh] overflow-y-auto border-b p-4 max-sm:p-1 hide-scrollbar">
         <AnimatePresence>
           {sortedUsers.map((item: any, idx: number) => (
             <motion.div
@@ -38,13 +56,13 @@ export default function LeaderboardPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.3 }}
-              className="flex gap-4 justify-between mt-4"
+              className="flex gap-4 justify-between mt-4 max-sm:flex-col max-sm:border-b"
               key={item.wallet_address || idx}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <div
-                    className={`text-2xl font-black w-[45px] ${
+                    className={`text-2xl max-sm:text-xs max-md:text-base font-black w-[45px] max-sm:w-6 ${
                       idx + 1 === 1
                         ? "text-[#E0DA20]"
                         : "text-[#000000] dark:text-[#FFFFFF]"
@@ -56,13 +74,13 @@ export default function LeaderboardPage() {
                     <Image
                       alt=""
                       src={item?.avatar || defaultUserProfile}
-                      width={30}
-                      height={30}
-                      className="rounded-full object-cover w-[30px] h-[30px]"
+                      width={32}
+                      height={32}
+                      className="rounded-full object-cover min-w-8 h-8"
                     />
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="text-[#000000] dark:text-[#FFFFFF] text-xl font-bold truncate w-[100px]">
+                    <div className="text-[#000000] dark:text-[#FFFFFF] text-xl max-sm:text-xs max-md:text-base font-bold truncate w-[100px] max-sm:w-[50px]">
                       {item?.name}
                     </div>
                     <span className="text-xs dark:text-[#8c9fb7a0] text-[#999999]">
@@ -74,11 +92,12 @@ export default function LeaderboardPage() {
                   handleSubmit={() => {
                     console.log("first");
                   }}
+                  className="max-sm:px-2"
                 />
               </div>
               {item?.assets?.totalBalanceUSD !== undefined &&
               typeof item?.assets?.totalBalanceUSD === "number" ? (
-                <div className="text-[#44FF00] text-xl font-black">
+                <div className="text-[#44FF00] text-xl max-sm:text-xs max-md:text-base font-black max-sm:self-end">
                   ${item?.assets?.totalBalanceUSD?.toFixed(3)}
                 </div>
               ) : (

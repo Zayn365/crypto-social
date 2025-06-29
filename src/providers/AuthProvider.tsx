@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Extract wallet addresses, filtering out falsy values
     const walletAddresses = allUsers
-      .map((user: any) => user.wallet_address)
+      .map((user: any) => user?.wallet_address)
       .filter((address: any): address is string => !!address);
 
     if (walletAddresses.length === 0) {
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const priceResponse = await fetch(`/api/getPrice`);
         if (!priceResponse.ok) throw new Error("Failed to fetch price data");
         const priceData = await priceResponse.json();
-        const fetchedCoins = priceData.coins as Coin[];
+        const fetchedCoins = priceData?.coins as Coin[];
         setCoins(fetchedCoins);
 
         // Fetch balances and calculate per wallet address, handling individual errors
@@ -130,22 +130,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
               const coinsData = balances
                 .map((balanceItem) => {
-                  const matchingCoin = fetchedCoins.find(
-                    (coin) => coin.chain_identifier === balanceItem.chainId
+                  const matchingCoin = fetchedCoins?.find(
+                    (coin) => coin?.chain_identifier === balanceItem?.chainId
                   );
 
-                  if (!matchingCoin?.price || !balanceItem.balance) return null;
+                  if (!matchingCoin?.price || !balanceItem?.balance) return null;
 
-                  const tokenAmount = parseFloat(balanceItem.balance);
-                  const usdValue = tokenAmount * matchingCoin.price;
+                  const tokenAmount = parseFloat(balanceItem?.balance);
+                  const usdValue = tokenAmount * matchingCoin?.price;
 
                   totalTokenValue += tokenAmount;
                   totalValueUSD += usdValue;
 
                   return {
-                    token: matchingCoin.name,
+                    token: matchingCoin?.name,
                     balance: tokenAmount,
                     valueUSD: usdValue,
+                    price: matchingCoin?.price,
+                    symbol: matchingCoin?.shortname,
+                    logo: matchingCoin?.image?.large,
                   };
                 })
                 .filter((item): item is any => !!item);
@@ -183,7 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setAllPost((prevData: any) =>
           prevData.map((post: any) => {
             const updatedUserInfo = {
-              ...post.userInfo,
+              ...post?.userInfo,
               assets: validSummaries?.find(
                 (summary) =>
                   summary?.walletAddress?.toLowerCase() ===
@@ -191,10 +194,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ),
             };
 
-            const updatedPostInfo = Array.isArray(post.postInfo)
+            const updatedPostInfo = Array.isArray(post?.postInfo)
               ? post.postInfo.map((info: any) => {
                   const userWallet = info?.userInfo?.wallet_address;
-                  const matchingSummary = validSummaries.find(
+                  const matchingSummary = validSummaries?.find(
                     (summary) =>
                       summary?.walletAddress?.toLowerCase() ===
                       userWallet?.toLowerCase()
@@ -345,7 +348,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center">
-        <SpinLoader text="Loading..." />
+        <SpinLoader text="Please wait..." />
       </div>
     );
   }

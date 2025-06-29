@@ -50,7 +50,7 @@ export default function Market() {
                   className="rounded-full"
                   src="https://github.com/shadcn.png"
                 />
-                FOCUS
+                Block
               </span>
               <div className="w-2/5 text-end font-mono text-xs text-muted-foreground">
                 <div
@@ -67,7 +67,7 @@ export default function Market() {
                 </div>
               </div>
             </div>
-            <div className="flex w-full items-center justify-between px-4">
+            {/* <div className="flex w-full items-center justify-between px-4">
               <span className="flex w-3/5 items-center justify-start gap-2 text-xs text-foreground">
                 <img
                   alt="DESO"
@@ -92,14 +92,14 @@ export default function Market() {
                   ~$6.04
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="mt-2 flex items-center justify-center gap-2 px-4">
               <BuyTokenBtn clasName="!h-fit py-1 text-xs !min-w-fit">
                 Buy $BLOCK
               </BuyTokenBtn>
-              <BuyTokenBtn clasName="!h-fit py-1 text-xs !min-w-fit">
+              {/* <BuyTokenBtn clasName="!h-fit py-1 text-xs !min-w-fit">
                 Buy $DESO
-              </BuyTokenBtn>
+              </BuyTokenBtn> */}
             </div>
           </div>
           <div className="m-auto flex w-full flex-col flex-wrap items-center gap-4 mt-4">

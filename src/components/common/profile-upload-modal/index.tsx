@@ -35,11 +35,11 @@ const ProfileUpload = ({
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     if (file) {
-      const validTypes = ["image/jpeg", "image/png", "image/gif"];
+      const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
       const maxSize = 5 * 1024 * 1024;
 
       if (!validTypes.includes(file.type)) {
-        toast.error("Please upload a valid image file (JPEG, PNG, or GIF)");
+        toast.error("Please upload a valid image file (JPEG, PNG, or GIF, WEBP)");
         return;
       }
 

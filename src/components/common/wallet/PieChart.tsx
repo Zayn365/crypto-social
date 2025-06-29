@@ -1,76 +1,132 @@
 "use client";
-
-import { Pie, PieChart } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+  ResponsiveContainer,
+} from "recharts";
+import { formatCurrencyShort } from "@/lib/utils";
 
-export const description = "A pie chart with a legend";
+export function ChartPieLegend({ data }: any) {
+  const staticData = [
+    { token: "usdc", balance: "0", valueUSD: "0" },
+    { token: "block", balance: "0", valueUSD: "0" },
+  ];
 
-const chartData = [
-  { browser: "usdc", visitors: 275, fill: "var(--color-usdc)" },
-  { browser: "block", visitors: 200, fill: "var(--color-block)" },
-  { browser: "ethereum", visitors: 187, fill: "var(--color-ethereum)" },
-  { browser: "base", visitors: 173, fill: "var(--color-base)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
+  const coinData = data?.assets?.coins || [];
+  const allData = [...staticData, ...coinData];
 
-const chartConfig = {
-  usdc: {
-    label: "USDC",
-    color: "var(--chart-1)",
-  },
-  block: {
-    label: "Block",
-    color: "var(--chart-2)",
-  },
-  ethereum: {
-    label: "Ethereum",
-    color: "var(--chart-3)",
-  },
-  base: {
-    label: "Base",
-    color: "var(--chart-4)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--chart-5)",
-  },
-} satisfies ChartConfig;
+  const chartData = allData?.map((item: any, index: number) => ({
+    browser: item?.token
+      ? item?.token?.toLowerCase()?.replace(/\s+/g, "-")
+      : `token-${index}`,
+    balance: parseFloat(item?.balance || 0),
+    valueUSD: parseFloat(item?.valueUSD || 0),
+    fill: `var(--chart-${(index % 5) + 1})`,
+  }));
 
-export function ChartPieLegend() {
+  const chartConfig = allData.reduce(
+    (config: any, item: any, index: number) => {
+      const key = item?.token
+        ? item?.token?.toLowerCase()?.replace(/\s+/g, "-")
+        : `token-${index}`;
+      config[key] = {
+        label: item?.token || item?.token || `Token ${index + 1}`,
+        color: `var(--chart-${(index % 5) + 1})`,
+      };
+      return config;
+    },
+    {} as ChartConfig
+  );
+
+  const totalBalanceUSD = data?.assets?.totalBalanceUSD || 0;
+
   return (
     <Card className="flex flex-col bg-transparent border-0 shadow-none py-0">
-      <CardContent className="flex-1 pb-0 px-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[300px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie data={chartData} dataKey="visitors" />
-            <ChartLegend
-              content={
-                <ChartLegendContent nameKey="browser" payload={chartData} />
-              }
-              className="-translate-y-2 flex-wrap gap-2 *:basis-1/4 *:justify-center"
-            />
-          </PieChart>
+      <CardContent className="flex justify-center pb-0">
+        <ChartContainer config={chartConfig} className="w-full h-full max-w-xl">
+          <ResponsiveContainer width="100%" aspect={1.4}>
+            <RadialBarChart
+              data={chartData}
+              startAngle={0}
+              endAngle={360}
+              innerRadius="60%"
+              outerRadius="90%"
+            >
+              <PolarGrid
+                gridType="circle"
+                radialLines={false}
+                stroke="none"
+                polarRadius={[86, 74]}
+              />
+              <RadialBar
+                dataKey="balance"
+                stackId="a"
+                background
+                cornerRadius={10}
+              />
+              <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+                <Label
+                  content={({ viewBox }) => {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      return (
+                        <text
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-xl font-bold"
+                          >
+                            {formatCurrencyShort(totalBalanceUSD)}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground text-sm"
+                          >
+                            Total Balance
+                          </tspan>
+                        </text>
+                      );
+                    }
+                  }}
+                />
+              </PolarRadiusAxis>
+              <ChartTooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const { browser, balance, valueUSD } = payload[0]?.payload;
+                    return (
+                      <div className="p-2 bg-background rounded shadow">
+                        <span>
+                          {browser}:{balance} {formatCurrencyShort(valueUSD)}
+                        </span>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <ChartLegend
+                content={<ChartLegendContent nameKey="browser" />}
+                className="flex flex-wrap gap-2"
+              />
+            </RadialBarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
     </Card>
