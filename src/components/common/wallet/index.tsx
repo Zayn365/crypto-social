@@ -29,12 +29,12 @@ export default function WalletComp() {
   };
 
   const currentUser =
-    selectedUser ||
-    allUsers?.find(
-      (item: { wallet_address: string }) =>
-        String(item?.wallet_address) === String(user?.wallet_address)
-    );
-
+  selectedUser ||
+  allUsers?.find(
+    (item: { wallet_address: string }) =>
+      String(item?.wallet_address) === String(user?.wallet_address)
+  );
+  
   useEffect(() => {
     if (currentUser?.assets) {
       setIsLoading(false);
@@ -45,8 +45,8 @@ export default function WalletComp() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <SpinLoader text="Please wait" />
+      <div className="flex justify-center items-center h-screen w-full">
+        <SpinLoader text="Please wait..." />
       </div>
     );
   }
