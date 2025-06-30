@@ -1,8 +1,9 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { UploadIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, defaultUserProfile } from "@/lib/utils";
 import toast from "react-hot-toast";
+import DotsLoader from "../DotsLoader";
 
 interface ProfilePictureUploadProps {
   srcUrl: string;
@@ -39,7 +40,9 @@ const ProfileUpload = ({
       const maxSize = 5 * 1024 * 1024;
 
       if (!validTypes.includes(file.type)) {
-        toast.error("Please upload a valid image file (JPEG, PNG, or GIF, WEBP)");
+        toast.error(
+          "Please upload a valid image file (JPEG, PNG, or GIF, WEBP)"
+        );
         return;
       }
 
@@ -71,9 +74,9 @@ const ProfileUpload = ({
       <Avatar
         className={cn("border-2 border-[#a3a3a3] size-[85px]", avatarClassName)}
       >
-        <AvatarImage src={image || "/userDefault.webp"} alt="Profile picture" />
+        <AvatarImage src={image || defaultUserProfile} alt="Profile picture" />
         <AvatarFallback className="text-2xl bg-[#64748b] text-white">
-          {fallbackText || "?"}
+          <DotsLoader size="w-2 h-2" />
         </AvatarFallback>
       </Avatar>
       <input

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import FollowersFollowing from "./FollowersFollowing";
 import Stats from "./Stats";
+import { defaultUserProfile } from "@/lib/utils";
+import DotsLoader from "../DotsLoader";
 
 export default function ProjectInfoCard({ data }: any) {
   const router = useRouter();
@@ -39,9 +41,11 @@ export default function ProjectInfoCard({ data }: any) {
                 width={100}
                 height={100}
                 className="rounded-full border object-cover"
-                src={data?.profile?.profilePicture ?? "/userDefault.webp"}
+                src={data?.profile?.profilePicture ?? defaultUserProfile}
               />
-              <AvatarFallback>{""}</AvatarFallback>
+              <AvatarFallback>
+                <DotsLoader size="w-2 h-2" />
+              </AvatarFallback>
             </Avatar>
             <div className="relative z-10 flex justify-between items-center">
               <div>

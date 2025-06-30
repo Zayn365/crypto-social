@@ -10,9 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { sliceMethod } from "@/lib/utils";
+import { defaultUserProfile, sliceMethod } from "@/lib/utils";
 import { CopyIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import DotsLoader from "./DotsLoader";
 
 export default function UserInfoCard() {
   const { user, logout } = useAuth();
@@ -37,9 +38,11 @@ export default function UserInfoCard() {
                   width={100}
                   height={100}
                   className="rounded-full border object-cover"
-                  src={user?.avatar ?? "/userDefault.webp"}
+                  src={user?.avatar ?? defaultUserProfile}
                 />
-                <AvatarFallback>{""}</AvatarFallback>
+                <AvatarFallback>
+                  <DotsLoader size="w-2 h-2" />
+                </AvatarFallback>
               </Avatar>
             </div>
             <div>

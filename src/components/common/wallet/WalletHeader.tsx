@@ -2,8 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React, { useState } from "react";
 import InputWithIcons from "../input-with-icons";
 import { Search } from "lucide-react";
-import Image from "next/image";
 import { defaultUserProfile, sliceMethod } from "@/lib/utils";
+import DotsLoader from "../DotsLoader";
 
 export default function WalletHeader({
   search,
@@ -37,9 +37,11 @@ export default function WalletHeader({
               width={100}
               height={100}
               className="rounded-full border object-cover"
-              src={data?.avatar ?? "/userDefault.webp"}
+              src={data?.avatar ?? defaultUserProfile}
             />
-            <AvatarFallback>{""}</AvatarFallback>
+            <AvatarFallback>
+              <DotsLoader size="w-2 h-2" />
+            </AvatarFallback>
           </Avatar>
         </div>
         <div>
@@ -73,13 +75,17 @@ export default function WalletHeader({
                 }}
               >
                 <div className="flex gap-2 items-center">
-                  <Image
-                    alt=""
-                    src={item?.avatar || defaultUserProfile}
-                    width={32}
-                    height={32}
-                    className="rounded-full object-cover w-8 h-8"
-                  />
+                  <Avatar className="size-8">
+                    <AvatarImage
+                      width={100}
+                      height={100}
+                      className="rounded-full border object-cover w-8 h-8"
+                      src={item?.avatar ?? defaultUserProfile}
+                    />
+                    <AvatarFallback>
+                      <DotsLoader size="w-2 h-2" />
+                    </AvatarFallback>
+                  </Avatar>
                   <div>
                     <div className="text-sm font-medium">{item?.name}</div>
                     <div className="text-sm text-gray-500">

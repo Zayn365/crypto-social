@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost } from "@/services/posts";
 import toast from "react-hot-toast";
+import { defaultUserProfile } from "@/lib/utils";
+import DotsLoader from "./DotsLoader";
 
 export default function CreatePostCompo({
   post,
@@ -161,9 +163,9 @@ export default function CreatePostCompo({
                 width={100}
                 height={100}
                 className="rounded-full border object-cover"
-                src={user?.avatar ?? "/userDefault.webp"}
+                src={user?.avatar ?? defaultUserProfile}
               />
-              <AvatarFallback>{""}</AvatarFallback>
+              <AvatarFallback><DotsLoader size="w-2 h-2" /></AvatarFallback>
             </Avatar>
           </div>
           <div>

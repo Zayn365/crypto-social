@@ -5,6 +5,8 @@ import React from "react";
 import FollowBtn from "../FollowBtn";
 import toast from "react-hot-toast";
 import DotsLoader from "../DotsLoader";
+import { Avatar } from "@radix-ui/react-avatar";
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function WalletCard({ item, idx }: any) {
   async function handleCopy(text: string) {
@@ -35,13 +37,17 @@ export default function WalletCard({ item, idx }: any) {
         </div>
       </div>
       <div className="bg-[linear-gradient(177deg,rgba(29,28,52,1)80%,rgba(47,161,93,1)100%)]">
-        <Image
-          alt=""
-          src={item?.avatar || defaultUserProfile}
-          width={258}
-          height={143}
-          className="object-contain min-h-[143px] max-h-[143px]"
-        />
+        <Avatar className="size-36 w-full flex justify-center">
+          <AvatarImage
+            width={258}
+            height={144}
+            className="h-36 w-full object-contain"
+            src={item?.avatar || defaultUserProfile}
+          />
+          <AvatarFallback>
+            <DotsLoader size="w-2 h-2" />
+          </AvatarFallback>
+        </Avatar>
         <div className="flex justify-center py-1 px-2 font-bold text-[#44FF00] text-xl bg-transparent shadow-lg shadow-[#2FA15D]">
           {item?.assets ? (
             `$

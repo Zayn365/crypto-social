@@ -3,7 +3,6 @@ import { defaultUserProfile, sliceMethod } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import React, { useEffect, useState } from "react";
 import FollowBtn from "../FollowBtn";
-import Image from "next/image";
 import SpinLoader from "../SpinLoader";
 import { AnimatePresence, motion } from "framer-motion";
 import WalletCard from "./WalletCard";
@@ -12,6 +11,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 import { Navigation, Autoplay } from "swiper/modules";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import DotsLoader from "../DotsLoader";
 
 export default function LeaderboardPage() {
   const { allUsers } = useAuth();
@@ -71,13 +72,17 @@ export default function LeaderboardPage() {
                     #{idx + 1}
                   </div>
                   <div>
-                    <Image
-                      alt=""
-                      src={item?.avatar || defaultUserProfile}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover min-w-8 h-8"
-                    />
+                    <Avatar className="size-8">
+                      <AvatarImage
+                        width={100}
+                        height={100}
+                        className="w-8 h-8 object-cover"
+                        src={item?.avatar || defaultUserProfile}
+                      />
+                      <AvatarFallback>
+                        <DotsLoader size="w-1 h-1" />
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="text-[#000000] dark:text-[#FFFFFF] text-xl max-sm:text-xs max-md:text-base font-bold truncate w-[100px] max-sm:w-[50px]">

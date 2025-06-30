@@ -25,16 +25,12 @@ import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import CharacterCount from "@tiptap/extension-character-count";
 import Youtube from "@tiptap/extension-youtube";
-// import Emoji from "@tiptap/extension-emoji";
 import Mention from "@tiptap/extension-mention";
 import { useEffect, useRef, useState } from "react";
-// import { uploadFile } from "@/lib/upload"; // You'll need to implement this
-import { useMutation } from "@tanstack/react-query";
-import { SuggestionOptions } from "@tiptap/suggestion";
-// import { User } from "@/types";
 import EmojiPicker from "emoji-picker-react";
 import { RichTextToolbar } from "./RichTextToolbar";
 import toast from "react-hot-toast";
+import { defaultUserProfile } from "@/lib/utils";
 
 interface RichTextEditorProps {
   content?: string;
@@ -86,7 +82,7 @@ export function RichTextEditor({
               item.className = "mention-item";
 
               const avatar = document.createElement("img");
-              avatar.src = user.avatar || "/userDefault.webp";
+              avatar.src = user.avatar || defaultUserProfile;
               avatar.className = "mention-avatar";
 
               const username = document.createElement("span");
@@ -123,7 +119,7 @@ export function RichTextEditor({
                 item.className = "mention-item";
 
                 const avatar = document.createElement("img");
-                avatar.src = user.avatar || "/userDefault.webp";
+                avatar.src = user.avatar || defaultUserProfile;
                 avatar.className = "mention-avatar";
 
                 const username = document.createElement("span");

@@ -8,7 +8,7 @@ import {
   ThumbsUp,
   Trash2,
 } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import moment from "moment";
 import {
@@ -19,15 +19,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/providers/AuthProvider";
-import { usePostDelete } from "@/lib/utils";
+import { defaultUserProfile, usePostDelete } from "@/lib/utils";
 import toast from "react-hot-toast";
 import CreatePostModal from "../CreatePostModal";
 import FollowBtn from "../FollowBtn";
+import DotsLoader from "../DotsLoader";
 
 export default function PostHeader({ post }: any) {
   const { user } = useAuth();
-  const url = usePathname();
-  const { id } = useParams();
   const deletePost = usePostDelete();
   const router = useRouter();
 
@@ -57,9 +56,11 @@ export default function PostHeader({ post }: any) {
             width={100}
             height={100}
             className="w-14 h-14 object-cover"
-            src={post?.userInfo?.avatar ?? "/userDefault.webp"}
+            src={post?.userInfo?.avatar ?? defaultUserProfile}
           />
-          <AvatarFallback>{post?.userInfo?.name ?? "img"}</AvatarFallback>
+          <AvatarFallback>
+            <DotsLoader size="w-2 h-2" />
+          </AvatarFallback>
         </Avatar>
         {/* )}  */}
         <div className="flex flex-col gap-1">
