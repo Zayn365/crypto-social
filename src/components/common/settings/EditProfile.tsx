@@ -3,7 +3,6 @@ import Label from "../label";
 import Input from "../input";
 import { useAuth } from "@/providers/AuthProvider";
 import ProfileUpload from "../profile-upload-modal";
-import { useAppKitAccount } from "@reown/appkit/react";
 import { useMutation } from "@tanstack/react-query";
 import { updateUserInfo, uploadAvatar, uploadCover } from "@/services/user";
 import toast from "react-hot-toast";
@@ -26,11 +25,11 @@ interface UserData {
   email: string;
   username: string;
   created_date_time: string;
+  wallet_address: string;
 }
 
 export default function EditProfile() {
   const { user, setUser } = useAuth();
-  const { address } = useAppKitAccount();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [userData, setUserData] = useState<UserData>({
@@ -40,6 +39,7 @@ export default function EditProfile() {
     email: user?.email || "",
     username: user?.username || "",
     created_date_time: "",
+    wallet_address: user?.wallet_address || "",
   });
   const [previewUrl, setPreviewUrl] = useState<string>(
     user?.avatar || defaultUserProfile
@@ -56,6 +56,7 @@ export default function EditProfile() {
       email: user?.email || "",
       username: user?.username || "",
       created_date_time: user?.created_date_time || "",
+      wallet_address: user?.wallet_address || "",
     });
     setPreviewUrl(user?.avatar || defaultUserProfile);
     setCoverPreviewUrl(user?.cover || defaultUserCover);
@@ -161,7 +162,7 @@ export default function EditProfile() {
         name: userData?.name,
         email: userData?.email,
         // username: userData?.username,
-        wallet_address: address ?? user?.wallet_address,
+        wallet_address: userData?.wallet_address,
       });
     } catch (error) {
       console.log(error);
@@ -290,8 +291,11 @@ export default function EditProfile() {
             <Input
               placeholder="wallet"
               className=""
-              value={address ?? user?.wallet_address}
-              readOnly
+              value={userData?.wallet_address}
+              // readOnly
+              onChange={({ target }) =>
+                handleChange("wallet_address", target.value)
+              }
             />
           </Label>
         </div>

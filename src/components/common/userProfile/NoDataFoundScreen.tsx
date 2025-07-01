@@ -1,21 +1,31 @@
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
-import BuyTokenBtn from "../buy-token-btn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import DotsLoader from "../DotsLoader";
 
 export default function NoDataFoundScreen() {
   const { id, slug } = useParams();
   const router = useRouter();
   return (
     <div className="flex flex-col justify-center items-center w-full h-[50vh] p-4">
-      <Image
+      {/* <Image
         src={slug === "media" ? "/empty-32.webp" : "/empty-24.webp"}
         alt="Banner"
         objectFit="cover"
         className="max-w-[160px]"
         width={160}
         height={160}
-      />
+      /> */}
+      <Avatar className="size-40">
+        <AvatarImage
+          width={160}
+          height={160}
+          className="max-w-[160px]"
+          src={slug === "media" ? "/empty-32.webp" : "/empty-24.webp"}
+        />
+        <AvatarFallback>{<DotsLoader />}</AvatarFallback>
+      </Avatar>
       <div className="text-[#000000] dark:text-[#DDE5EE] text-xl font-medium mt-4">
         {slug === "media"
           ? "No images or videos found."
@@ -29,12 +39,13 @@ export default function NoDataFoundScreen() {
       {slug === "media" ? (
         ""
       ) : (
-        <BuyTokenBtn
-          onClick={() => router.replace(`/discover`)}
-          clasName="mt-4 h-10"
-        >
-          Find Active Users
-        </BuyTokenBtn>
+        <></>
+        // <BuyTokenBtn
+        //   onClick={() => router.replace(`/discover`)}
+        //   clasName="mt-4 h-10"
+        // >
+        //   Find Active Users
+        // </BuyTokenBtn>
       )}
     </div>
   );

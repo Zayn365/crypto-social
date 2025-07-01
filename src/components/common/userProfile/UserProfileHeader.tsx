@@ -6,6 +6,7 @@ import React from "react";
 import FollowersFollowing from "../discover/FollowersFollowing";
 import Stats from "../discover/Stats";
 import FollowBtn from "../FollowBtn";
+import DotsLoader from "../DotsLoader";
 
 export default function UserProfileHeader({ data }: any) {
   return (
@@ -28,7 +29,7 @@ export default function UserProfileHeader({ data }: any) {
               className="rounded-full border object-cover max-w-[112px]"
               src={data?.avatar ?? defaultUserProfile}
             />
-            <AvatarFallback>{data?.profile}</AvatarFallback>
+            <AvatarFallback>{<DotsLoader />}</AvatarFallback>
           </Avatar>
         </div>
         <div className="h-fit flex items-center gap-2">

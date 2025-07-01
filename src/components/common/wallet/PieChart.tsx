@@ -19,8 +19,8 @@ import { formatCurrencyShort } from "@/lib/utils";
 
 export function ChartPieLegend({ data }: any) {
   const staticData = [
-    { token: "usdc", balance: "0", valueUSD: "0" },
-    { token: "block", balance: "0", valueUSD: "0" },
+    { token: "Block", balance: "0", valueUSD: "0" },
+    { token: "USDC", balance: "0", valueUSD: "0" },
   ];
 
   const coinData = data?.assets?.coins || [];

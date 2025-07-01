@@ -3,7 +3,6 @@ import { defaultUserProfile, sliceMethod } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import React, { useEffect, useState } from "react";
 import FollowBtn from "../FollowBtn";
-import SpinLoader from "../SpinLoader";
 import { AnimatePresence, motion } from "framer-motion";
 import WalletCard from "./WalletCard";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -13,6 +12,7 @@ import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DotsLoader from "../DotsLoader";
+import MainLoader from "../MainLoader";
 
 export default function LeaderboardPage() {
   const { allUsers } = useAuth();
@@ -32,7 +32,7 @@ export default function LeaderboardPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen w-full">
-        <SpinLoader text="Please wait..." />
+        <MainLoader />
       </div>
     );
   }
@@ -106,7 +106,7 @@ export default function LeaderboardPage() {
                   ${item?.assets?.totalBalanceUSD?.toFixed(3)}
                 </div>
               ) : (
-                <SpinLoader />
+                <MainLoader />
               )}
             </motion.div>
           ))}

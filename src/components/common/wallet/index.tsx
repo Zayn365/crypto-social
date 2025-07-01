@@ -9,10 +9,12 @@ import useUrl from "@/hooks/useUrl";
 import WalletBalanceCard from "./WalletBalanceCard";
 import { ChartPieLegend } from "./PieChart";
 import CoreAssets from "./CoreAssets";
-import SpinLoader from "../SpinLoader";
+import MainLoader from "../MainLoader";
+import { useRouter } from "next/navigation";
 
 export default function WalletComp() {
   const { user, allUsers } = useAuth();
+  const router = useRouter();
   const { host, pathname } = useUrl();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
@@ -29,12 +31,12 @@ export default function WalletComp() {
   };
 
   const currentUser =
-  selectedUser ||
-  allUsers?.find(
-    (item: { wallet_address: string }) =>
-      String(item?.wallet_address) === String(user?.wallet_address)
-  );
-  
+    selectedUser ||
+    allUsers?.find(
+      (item: { wallet_address: string }) =>
+        String(item?.wallet_address) === String(user?.wallet_address)
+    );
+
   useEffect(() => {
     if (currentUser?.assets) {
       setIsLoading(false);
@@ -46,7 +48,7 @@ export default function WalletComp() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen w-full">
-        <SpinLoader text="Please wait..." />
+        <MainLoader />
       </div>
     );
   }
@@ -61,10 +63,13 @@ export default function WalletComp() {
         onUserSelect={handleUserSelect}
       />
       <div className="flex items-center gap-4 p-4 border-y overflow-x-scroll hide-scrollbar">
-        <BuyTokenBtn clasName="w-fit" onClick={() => setIsOpen(!isOpen)}>
+        <BuyTokenBtn clasName="w-fit">
           <Activity /> Activity
         </BuyTokenBtn>
-        <BuyTokenBtn clasName="w-fit" onClick={() => setIsOpen(!isOpen)}>
+        <BuyTokenBtn
+          clasName="w-fit"
+          onClick={() => router.push(`/${user?.id}`)}
+        >
           <User /> Profile
         </BuyTokenBtn>
         <BuyTokenBtn clasName="w-fit" onClick={() => setIsOpen(!isOpen)}>

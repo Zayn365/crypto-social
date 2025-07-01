@@ -13,7 +13,7 @@ import {
   ReactNode,
 } from "react";
 import { jwtDecode } from "jwt-decode";
-import SpinLoader from "@/components/common/SpinLoader";
+import MainLoader from "@/components/common/MainLoader";
 
 export interface Coin {
   id: string;
@@ -134,7 +134,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     (coin) => coin?.chain_identifier === balanceItem?.chainId
                   );
 
-                  if (!matchingCoin?.price || !balanceItem?.balance) return null;
+                  if (!matchingCoin?.price || !balanceItem?.balance)
+                    return null;
 
                   const tokenAmount = parseFloat(balanceItem?.balance);
                   const usdValue = tokenAmount * matchingCoin?.price;
@@ -348,7 +349,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="h-[100vh] w-full flex justify-center items-center">
-        <SpinLoader text="Please wait..." />
+        <MainLoader />
       </div>
     );
   }
