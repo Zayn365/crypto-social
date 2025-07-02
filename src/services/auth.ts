@@ -46,3 +46,28 @@ export const registerWithEmail = async (
 ): Promise<Response> => {
   return await postHandler(client, AUTH.registerWithEmail, payload);
 };
+
+export const forgotPassword = async (
+  payload: {
+    email: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  return await postHandler(client, AUTH.forgotPassword, payload);
+};
+
+export const resetPassword = async (
+  payload: {
+    password: string;
+    token: string;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const params = {
+    token: payload.token,
+  };
+  const bodyData = {
+    password: payload.password,
+  };
+  return await postHandler(client, AUTH.resetPassword, bodyData, params);
+};

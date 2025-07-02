@@ -6,11 +6,16 @@ import Input from "./input";
 import { useAuth } from "@/providers/AuthProvider";
 import { isAddress } from "ethers";
 import { useMutation } from "@tanstack/react-query";
-import { loginWithWallet, register } from "@/services/auth";
+import { forgotPassword, loginWithWallet, register } from "@/services/auth";
 import { setCookie } from "cookies-next";
 import toast from "react-hot-toast";
 import { updateUserInfo } from "@/services/user";
-import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
+import {
+  useAppKit,
+  useAppKitAccount,
+  useDisconnect,
+} from "@reown/appkit/react";
+import { ChevronLeft } from "lucide-react";
 
 interface AuthModalProps {
   openAuthWalletModal: boolean;
@@ -40,6 +45,7 @@ export default function LoginWithWalletModal({
   const { open: openWalletModal } = useAppKit();
   const { address } = useAppKitAccount();
   const { setUser } = useAuth();
+  const { disconnect } = useDisconnect();
 
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [loading, setLoading] = useState<boolean>(false);
@@ -58,6 +64,7 @@ export default function LoginWithWalletModal({
   const [touched, setTouched] = useState<Partial<Record<keyof Data, boolean>>>(
     {}
   );
+  const [forgot, setForgot] = useState<boolean>(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -201,6 +208,20 @@ export default function LoginWithWalletModal({
     },
   });
 
+  const forgotUserPassword = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: () => {
+      toast.success(`Please check your email`);
+      resetForm();
+      connectModal();
+      onClose();
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.message || "Something went wrong");
+      setLoading(false);
+    },
+  });
+
   const handleRegisterUser = () => {
     try {
       if (!isFormValid) {
@@ -243,6 +264,16 @@ export default function LoginWithWalletModal({
     openWalletModal({ view: "Connect" });
   };
 
+  const handleForgotUserPassword = () => {
+    try {
+      forgotUserPassword.mutateAsync({
+        email: data?.email,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Modal
       open={openAuthWalletModal}
@@ -253,75 +284,119 @@ export default function LoginWithWalletModal({
       className="dark:bg-[#1d1c34] w-full max-w-3xl"
     >
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="signin">Signin Wallet</TabsTrigger>
-          <TabsTrigger value="signup">Signup Wallet</TabsTrigger>
-        </TabsList>
+        {!forgot && (
+          <TabsList>
+            <TabsTrigger value="signin">Signin Wallet</TabsTrigger>
+            <TabsTrigger value="signup">Signup Wallet</TabsTrigger>
+          </TabsList>
+        )}
         <TabsContent value="signin">
-          {" "}
+          {forgot && (
+            <div className="bg-[#FFFFFF80] p-2 rounded-md w-fit mb-4">
+              <ChevronLeft
+                className="cursor-pointer"
+                onClick={() => setForgot(false)}
+              />
+            </div>
+          )}{" "}
           <div className="flex flex-col gap-4">
-            <Label className="flex-col items-start block">
-              Wallet Address
-              <div className="relative">
+            {!forgot && (
+              <>
+                <Label className="flex-col items-start block">
+                  Wallet Address
+                  <div className="relative">
+                    <Input
+                      placeholder="Connect your wallet"
+                      type={"text"}
+                      value={data?.walletAddress}
+                      //   onChange={({ target }) =>
+                      //     handleChange("password", target.value)
+                      //   }
+                      readOnly
+                      onBlur={() => handleBlur("walletAddress")}
+                      aria-describedby={
+                        errors.walletAddress ? "walletAddress-error" : undefined
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={handleConnectWallet}
+                      className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
+                    >
+                      Connect
+                    </button>
+                  </div>
+                  {errors.walletAddress && (
+                    <span
+                      id="walletAddress-error"
+                      className="text-red-500 text-xs mt-1"
+                    >
+                      {errors.walletAddress}
+                    </span>
+                  )}
+                </Label>
+                <Label className="flex-col items-start block">
+                  Password
+                  <div className="relative">
+                    <Input
+                      placeholder="Enter password"
+                      type={showPassword ? "text" : "password"}
+                      value={data?.password}
+                      onChange={({ target }) =>
+                        handleChange("password", target.value)
+                      }
+                      onBlur={() => handleBlur("password")}
+                      aria-describedby={
+                        errors.password ? "password-error" : undefined
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
+                    >
+                      {showPassword ? "Hide" : "Show"}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <span
+                      id="password-error"
+                      className="text-red-500 text-xs mt-1"
+                    >
+                      {errors.password}
+                    </span>
+                  )}
+                </Label>
+              </>
+            )}
+
+            {forgot && (
+              <Label className="flex-col items-start block">
+                Email
                 <Input
-                  placeholder="Connect your wallet"
-                  type={"text"}
-                  value={data?.walletAddress}
-                  //   onChange={({ target }) =>
-                  //     handleChange("password", target.value)
-                  //   }
-                  readOnly
-                  onBlur={() => handleBlur("walletAddress")}
-                  aria-describedby={
-                    errors.walletAddress ? "walletAddress-error" : undefined
-                  }
+                  placeholder="Enter email"
+                  type="email"
+                  value={data?.email}
+                  onChange={({ target }) => handleChange("email", target.value)}
+                  onBlur={() => handleBlur("email")}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
-                <button
-                  type="button"
-                  onClick={handleConnectWallet}
-                  className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
-                >
-                  Connect
-                </button>
+                {errors.email && (
+                  <span id="email-error" className="text-red-500 text-xs mt-1">
+                    {errors.email}
+                  </span>
+                )}
+              </Label>
+            )}
+
+            {!forgot && (
+              <div
+                className="flex justify-end cursor-pointer"
+                onClick={() => setForgot(true)}
+              >
+                Forgot Password?
               </div>
-              {errors.walletAddress && (
-                <span
-                  id="walletAddress-error"
-                  className="text-red-500 text-xs mt-1"
-                >
-                  {errors.walletAddress}
-                </span>
-              )}
-            </Label>
-            <Label className="flex-col items-start block">
-              Password
-              <div className="relative">
-                <Input
-                  placeholder="Enter password"
-                  type={showPassword ? "text" : "password"}
-                  value={data?.password}
-                  onChange={({ target }) =>
-                    handleChange("password", target.value)
-                  }
-                  onBlur={() => handleBlur("password")}
-                  aria-describedby={
-                    errors.password ? "password-error" : undefined
-                  }
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-              {errors.password && (
-                <span id="password-error" className="text-red-500 text-xs mt-1">
-                  {errors.password}
-                </span>
-              )}
-            </Label>
+            )}
           </div>
         </TabsContent>
         <TabsContent value="signup">
@@ -441,21 +516,33 @@ export default function LoginWithWalletModal({
           </div>
         </TabsContent>
       </Tabs>
-      <button
-        onClick={activeTab === "signin" ? handleLoginUser : handleRegisterUser}
-        disabled={loading || !isFormValid}
-        className={`text-white text-sm rounded-full px-4 py-2 font-bold capitalize cursor-pointer ${
-          loading || !isFormValid
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#5773ff]"
-        }`}
-      >
-        {loading
-          ? "Loading..."
-          : activeTab === "signin"
-          ? "Sign In"
-          : "Sign Up"}
-      </button>
+      {forgot && (
+        <button
+          onClick={handleForgotUserPassword}
+          className={`text-white text-sm rounded-full px-4 py-2 font-bold capitalize cursor-pointer bg-[#5773ff]`}
+        >
+          Forgot Password
+        </button>
+      )}
+      {!forgot && (
+        <button
+          onClick={
+            activeTab === "signin" ? handleLoginUser : handleRegisterUser
+          }
+          disabled={loading || !isFormValid}
+          className={`text-white text-sm rounded-full px-4 py-2 font-bold capitalize cursor-pointer ${
+            loading || !isFormValid
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#5773ff]"
+          }`}
+        >
+          {loading
+            ? "Loading..."
+            : activeTab === "signin"
+            ? "Sign In"
+            : "Sign Up"}
+        </button>
+      )}
     </Modal>
   );
 }

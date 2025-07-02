@@ -73,13 +73,13 @@ export default function CreateImportWalletModal({
             />
             <label className="font-medium text-left p-2 pr-4 w-full text-[#8c9fb7a0] hover:text-[#8c9fb7a0] text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
               I have read, understood, and agree to be bound by the{" "}
-              <a
+              {/* <a
                 target="_blank"
                 className="underline underline-offset-4 hover:underline"
                 href="https://docs.google.com/document/d/e/2PACX-1vTiZV1W5SbCQSAYr7Ve-yuhwVbGZj2LGf_ZaZsUDIhW-9ZFfIZqZfsfyFTwiLqZJgg4p9wYZMW0-RtQ/pub"
-              >
+              > */}
                 Terms of Service
-              </a>
+              {/* </a> */}
               .
             </label>
           </div>

@@ -4,12 +4,13 @@ import Label from "./label";
 import Input from "./input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { useMutation } from "@tanstack/react-query";
-import { login, registerWithEmail } from "@/services/auth";
+import { forgotPassword, login, registerWithEmail } from "@/services/auth";
 import toast from "react-hot-toast";
 import { useAuth } from "@/providers/AuthProvider";
 import { setCookie } from "cookies-next";
 import { isAddress } from "ethers";
 import { updateUserInfo } from "@/services/user";
+import { ChevronLeft } from "lucide-react";
 
 interface AuthModalProps {
   open: boolean;
@@ -54,6 +55,7 @@ export default function SignupLoginModal({
   const [touched, setTouched] = useState<Partial<Record<keyof Data, boolean>>>(
     {}
   );
+  const [forgot, setForgot] = useState<boolean>(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -190,6 +192,20 @@ export default function SignupLoginModal({
     },
   });
 
+  const forgotUserPassword = useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: () => {
+      toast.success(`Please check your email`);
+      resetForm();
+      connectModal();
+      onClose();
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.message || "Something went wrong");
+      setLoading(false);
+    },
+  });
+
   const handleRegisterUser = () => {
     try {
       if (!isFormValid) {
@@ -226,6 +242,16 @@ export default function SignupLoginModal({
     }
   };
 
+  const handleForgotUserPassword = () => {
+    try {
+      forgotUserPassword.mutateAsync({
+        email: data?.email,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -236,12 +262,21 @@ export default function SignupLoginModal({
       className="dark:bg-[#1d1c34] w-full max-w-3xl"
     >
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="signin">Signin</TabsTrigger>
-          <TabsTrigger value="signup">Signup</TabsTrigger>
-        </TabsList>
+        {!forgot && (
+          <TabsList>
+            <TabsTrigger value="signin">Signin</TabsTrigger>
+            <TabsTrigger value="signup">Signup</TabsTrigger>
+          </TabsList>
+        )}
         <TabsContent value="signin">
-          {" "}
+          {forgot && (
+            <div className="bg-[#FFFFFF80] p-2 rounded-md w-fit mb-4">
+              <ChevronLeft
+                className="cursor-pointer"
+                onClick={() => setForgot(false)}
+              />
+            </div>
+          )}{" "}
           <div className="flex flex-col gap-4">
             <Label className="flex-col items-start block">
               Email
@@ -259,35 +294,48 @@ export default function SignupLoginModal({
                 </span>
               )}
             </Label>
-            <Label className="flex-col items-start block">
-              Password
-              <div className="relative">
-                <Input
-                  placeholder="Enter password"
-                  type={showPassword ? "text" : "password"}
-                  value={data?.password}
-                  onChange={({ target }) =>
-                    handleChange("password", target.value)
-                  }
-                  onBlur={() => handleBlur("password")}
-                  aria-describedby={
-                    errors.password ? "password-error" : undefined
-                  }
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
+            {!forgot && (
+              <Label className="flex-col items-start block">
+                Password
+                <div className="relative">
+                  <Input
+                    placeholder="Enter password"
+                    type={showPassword ? "text" : "password"}
+                    value={data?.password}
+                    onChange={({ target }) =>
+                      handleChange("password", target.value)
+                    }
+                    onBlur={() => handleBlur("password")}
+                    aria-describedby={
+                      errors.password ? "password-error" : undefined
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+                {errors.password && (
+                  <span
+                    id="password-error"
+                    className="text-red-500 text-xs mt-1"
+                  >
+                    {errors.password}
+                  </span>
+                )}
+              </Label>
+            )}
+            {!forgot && (
+              <div
+                className="flex justify-end cursor-pointer"
+                onClick={() => setForgot(true)}
+              >
+                Forgot Password?
               </div>
-              {errors.password && (
-                <span id="password-error" className="text-red-500 text-xs mt-1">
-                  {errors.password}
-                </span>
-              )}
-            </Label>
+            )}
           </div>
         </TabsContent>
         <TabsContent value="signup">
@@ -397,21 +445,33 @@ export default function SignupLoginModal({
           </div>
         </TabsContent>
       </Tabs>
-      <button
-        onClick={activeTab === "signin" ? handleLoginUser : handleRegisterUser}
-        disabled={loading || !isFormValid}
-        className={`text-white text-sm rounded-full px-4 py-2 font-bold capitalize cursor-pointer ${
-          loading || !isFormValid
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#5773ff]"
-        }`}
-      >
-        {loading
-          ? "Loading..."
-          : activeTab === "signin"
-          ? "Sign In"
-          : "Sign Up"}
-      </button>
+      {forgot && (
+        <button
+          onClick={handleForgotUserPassword}
+          className={`text-white text-sm rounded-full px-4 py-2 font-bold capitalize cursor-pointer bg-[#5773ff]`}
+        >
+          Forgot Password
+        </button>
+      )}
+      {!forgot && (
+        <button
+          onClick={
+            activeTab === "signin" ? handleLoginUser : handleRegisterUser
+          }
+          disabled={loading || !isFormValid}
+          className={`text-white text-sm rounded-full px-4 py-2 font-bold capitalize cursor-pointer ${
+            loading || !isFormValid
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#5773ff]"
+          }`}
+        >
+          {loading
+            ? "Loading..."
+            : activeTab === "signin"
+            ? "Sign In"
+            : "Sign Up"}
+        </button>
+      )}
     </Modal>
   );
 }
