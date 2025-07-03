@@ -1,7 +1,16 @@
 "use client";
 import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
-import { mainnet, arbitrum } from "@reown/appkit/networks";
+import { SolanaAdapter } from "@reown/appkit-adapter-solana/react";
+import {
+  mainnet,
+  arbitrum,
+  solana,
+  solanaTestnet,
+  solanaDevnet,
+} from "@reown/appkit/networks";
+
+const solanaWeb3JsAdapter = new SolanaAdapter();
 
 // 1. Get projectId at https://cloud.reown.com
 const projectId = "ec706bff87fbe78233c1005b514158a2";
@@ -16,9 +25,9 @@ const metadata = {
 
 // 3. Create the AppKit instance
 createAppKit({
-  adapters: [new EthersAdapter()],
+  adapters: [new EthersAdapter(), solanaWeb3JsAdapter],
   metadata: metadata,
-  networks: [mainnet, arbitrum],
+  networks: [mainnet, arbitrum, solana, solanaTestnet, solanaDevnet],
   projectId,
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration
