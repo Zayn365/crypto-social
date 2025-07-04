@@ -46,9 +46,9 @@ export default function WalletHeader({
         </div>
         <div>
           <h1 className="text-xl dark:text-[#FFFFFF] text-[#000]">
-            {data?.name} Wallet
+            {data?.name}
           </h1>
-          <h2 className="text-sm">@{data?.username}</h2>
+          {data?.username && <h2 className="text-sm">@{data?.username}</h2>}
         </div>
       </div>
       <div className="p-4 relative">

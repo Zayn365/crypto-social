@@ -2,13 +2,7 @@
 import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import { SolanaAdapter } from "@reown/appkit-adapter-solana/react";
-import {
-  mainnet,
-  arbitrum,
-  solana,
-  solanaTestnet,
-  solanaDevnet,
-} from "@reown/appkit/networks";
+import { mainnet, arbitrum, solana } from "@reown/appkit/networks";
 
 const solanaWeb3JsAdapter = new SolanaAdapter();
 
@@ -27,7 +21,7 @@ const metadata = {
 createAppKit({
   adapters: [new EthersAdapter(), solanaWeb3JsAdapter],
   metadata: metadata,
-  networks: [mainnet, arbitrum, solana, solanaTestnet, solanaDevnet],
+  networks: [mainnet, arbitrum, solana],
   projectId,
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration

@@ -47,7 +47,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="w-full px-4 py-4">
-      <h1 className="text-2xl font-bold">Leaderboard</h1>
+      <h1 className="text-3xl font-bold">Leaderboard</h1>
       <div className="max-h-[50vh] overflow-y-auto border-b p-4 max-sm:p-1 hide-scrollbar">
         <AnimatePresence>
           {sortedUsers.map((item: any, idx: number) => (

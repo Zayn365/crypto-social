@@ -6,7 +6,7 @@ export default function CoreAssets({ data }: any) {
     {
       token: "Block",
       symbol: "block",
-      logo: "/coinImg/coin-deso.webp",
+      logo: "/main-logo.png",
       balance: "0.00",
       valueUSD: "0.0 USD",
     },

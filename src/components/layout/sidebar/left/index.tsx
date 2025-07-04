@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import useUrl from "@/hooks/useUrl";
-import { sliceMethod } from "@/lib/utils";
+import { cn, sliceMethod } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { Moon, Sun, Upload } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -61,6 +61,7 @@ export default function LeftSidebar() {
       title: "Communities (coming soon)",
       url: "#",
       icon: "/community-icon.svg",
+      type: "coming soon",
     },
     // {
     //   title: "Bounties (coming soon)",
@@ -160,7 +161,17 @@ export default function LeftSidebar() {
                   }`}
                 >
                   {renderIcon(item.icon)}
-                  <span className="text-[16px] font-[400]">{item.title}</span>
+                  <span
+                    className={cn(
+                      "text-[16px] font-[400]",
+                      `${
+                        item?.type === "coming soon" &&
+                        "dark:text-[#FFFFFF80] text-[#00000080]"
+                      }`
+                    )}
+                  >
+                    {item.title}
+                  </span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>

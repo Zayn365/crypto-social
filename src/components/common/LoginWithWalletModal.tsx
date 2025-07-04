@@ -325,6 +325,7 @@ export default function LoginWithWalletModal({
                     >
                       Connect
                     </button>
+                    {/* <appkit-button /> */}
                   </div>
                   {errors.walletAddress && (
                     <span
