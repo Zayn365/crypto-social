@@ -292,10 +292,10 @@ export default function EditProfile() {
               placeholder="wallet"
               className=""
               value={userData?.wallet_address}
-              // readOnly
-              onChange={({ target }) =>
-                handleChange("wallet_address", target.value)
-              }
+              readOnly
+              // onChange={({ target }) =>
+              //   handleChange("wallet_address", target.value)
+              // }
             />
           </Label>
         </div>
