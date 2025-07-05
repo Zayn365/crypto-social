@@ -8,7 +8,7 @@ export default function SocialHandle() {
   const socialData = [
     {
       img: theme === "dark" ? "/telegram-white.png" : "/telegram-black.png",
-      link: "#",
+      link: "https://t.me/Theblockfacegroup",
     },
     {
       img: theme === "dark" ? "/github-white.png" : "/github.png",
@@ -16,11 +16,11 @@ export default function SocialHandle() {
     },
     {
       img: theme === "dark" ? "/gitbook-white.png" : "/gitbook.svg",
-      link: "#",
+      link: "https://blockface.gitbook.io/blockface",
     },
     {
       img: theme === "dark" ? "/twitter-white.png" : "/twitter-black.png",
-      link: "#",
+      link: "https://x.com/Blockfacedotio?t=tIPeY6QBQgPj6rNRXlMArA&s=09",
     },
   ];
   return (

@@ -103,7 +103,11 @@ export default function LeaderboardPage() {
               {item?.assets?.totalBalanceUSD !== undefined &&
               typeof item?.assets?.totalBalanceUSD === "number" ? (
                 <div className="text-[#44FF00] text-xl max-sm:text-xs max-md:text-base font-black max-sm:self-end">
-                  ${item?.assets?.totalBalanceUSD?.toFixed(3)}
+                  $
+                  {item?.assets?.totalBalanceUSD?.toLocaleString("en-US", {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3,
+                  })}
                 </div>
               ) : (
                 <MainLoader />

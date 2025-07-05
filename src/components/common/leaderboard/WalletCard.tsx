@@ -19,7 +19,7 @@ export default function WalletCard({ item, idx }: any) {
   }
 
   return (
-    <div className="border border-[#d5d5d5b3] rounded-lg min-w-[258px] max-w-[258px] drop-shadow-xl/50">
+    <div className="border border-[#353450] rounded-lg min-w-[258px] max-w-[258px] drop-shadow-xl/50">
       <div className="flex items-center justify-between gap-4 px-2 pt-1 bg-[#1D1C34] rounded-t-lg">
         <div
           className={`text-lg ${
@@ -53,7 +53,10 @@ export default function WalletCard({ item, idx }: any) {
             `$
           ${
             item?.assets?.totalBalanceUSD
-              ? Number(item?.assets?.totalBalanceUSD).toFixed(2)
+              ? item?.assets?.totalBalanceUSD?.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
               : "0.00"
           }`
           ) : (
@@ -61,7 +64,7 @@ export default function WalletCard({ item, idx }: any) {
           )}
         </div>
       </div>
-      <div className="bg-[linear-gradient(177deg,rgba(72,49,157,1)0%,rgba(67,67,67,1)100%)] rounded-b-lg pt-6 pb-4 px-4">
+      <div className="bg-gradient-to-b from-[#251F46] to-[#242339] rounded-b-lg pt-6 pb-4 px-4">
         <div className="flex items-center gap-2 justify-between">
           <div className="flex items-center gap-2">
             <div>
@@ -89,8 +92,8 @@ export default function WalletCard({ item, idx }: any) {
           />
         </div>
         <div className="flex items-center justify-between mt-6 gap-4">
-          <div className="text-xs text-[#999999]">0 followers</div>
-          <div className="text-xs text-[#999999]">0 following</div>
+          <div className="text-xs text-[#747474]">0 followers</div>
+          <div className="text-xs text-[#747474]">0 following</div>
         </div>
       </div>
     </div>

@@ -30,7 +30,7 @@ export default function CreateImportWalletModal({
       className="dark:bg-[#1d1c34] w-full max-w-3xl"
     >
       <div className="flex flex-col items-center gap-4">
-        <div className="font-bold dark:text-[#DDE5EE] text-xl">Block</div>
+        <div className="font-bold dark:text-[#DDE5EE] text-xl">Blockface</div>
         <div className="font-bold dark:text-[#DDE5EE] text-xl">
           Create or Import Wallet
         </div>

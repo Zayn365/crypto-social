@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/providers/AuthProvider";
-import { defaultUserProfile, usePostDelete } from "@/lib/utils";
+import { defaultUserProfile, getShortTime, usePostDelete } from "@/lib/utils";
 import toast from "react-hot-toast";
 import CreatePostModal from "../CreatePostModal";
 import FollowBtn from "../FollowBtn";
@@ -98,7 +98,13 @@ export default function PostHeader({ post }: any) {
             <div className="text-sm text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00] font-normal">
               $
               {post?.userInfo?.assets?.totalBalanceUSD
-                ? Number(post?.userInfo?.assets?.totalBalanceUSD).toFixed(2)
+                ? post?.userInfo?.assets?.totalBalanceUSD?.toLocaleString(
+                    "en-US",
+                    {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }
+                  )
                 : 0}
             </div>
           </div>
@@ -106,7 +112,7 @@ export default function PostHeader({ post }: any) {
             @{post?.userInfo?.username} .{" "}
             <ToolTip content={moment(post?.createdAt).format("MMM-DD-YYYY")}>
               {" "}
-              {moment(post?.createdAt).fromNow()}
+              {getShortTime(post?.createdAt)}
             </ToolTip>
           </div>
         </div>

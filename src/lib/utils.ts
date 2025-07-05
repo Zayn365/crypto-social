@@ -179,3 +179,14 @@ export function formatCurrencyShort(value: number): string {
 
   return `$${formatted}`;
 }
+
+export function getShortTime(timestamp: string) {
+  const duration = moment.duration(moment().diff(moment(timestamp)));
+  if (duration.asSeconds() < 60) return `${Math.floor(duration.asSeconds())}s`;
+  if (duration.asMinutes() < 60)
+    return `${Math.floor(duration.asMinutes())}min`;
+  if (duration.asHours() < 24) return `${Math.floor(duration.asHours())}hr`;
+  if (duration.asDays() < 30) return `${Math.floor(duration.asDays())}d`;
+  if (duration.asMonths() < 12) return `${Math.floor(duration.asMonths())}mo`;
+  return `${Math.floor(duration.asYears())}y`;
+}

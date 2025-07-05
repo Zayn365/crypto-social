@@ -7,9 +7,7 @@ import FillButton from "@/components/common/FillButton";
 import ShareModal from "@/components/common/ShareModal";
 import SocialHandle from "@/components/common/SocialHandle";
 import UserInfoCard from "@/components/common/UserInfoCard";
-import WalletButton from "@/components/common/WalletButton";
 import { BuyTokenIcon } from "@/components/svg/buy-token";
-import { DiscoverIcon } from "@/components/svg/sidebar/discover";
 import { SettingsIcon } from "@/components/svg/sidebar/settings";
 import {
   Sidebar,
@@ -27,6 +25,7 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function LeftSidebar() {
   const { theme, setTheme } = useTheme();
@@ -47,11 +46,6 @@ export default function LeftSidebar() {
       url: "/",
       icon: "/home-icon.svg",
     },
-    // {
-    //   title: "Discover",
-    //   url: "/discover",
-    //   icon: DiscoverIcon,
-    // },
     {
       title: "Leaderboard",
       url: "/leaderboard",
@@ -63,26 +57,6 @@ export default function LeftSidebar() {
       icon: "/community-icon.svg",
       type: "coming soon",
     },
-    // {
-    //   title: "Bounties (coming soon)",
-    //   url: "#",
-    //   icon: BountiesIcon,
-    // },
-    // {
-    //   title: "Feed Store (coming soon)",
-    //   url: "#",
-    //   icon: FeedIcon,
-    // },
-    // {
-    //   title: "Trade (coming soon)",
-    //   url: "#",
-    //   icon: TradeIcon,
-    // },
-    // {
-    //   title: "Earnings",
-    //   url: "/earnings",
-    //   icon: EarningIcon,
-    // },
     ...(user
       ? [
           {
@@ -154,7 +128,7 @@ export default function LeftSidebar() {
         <SidebarMenu className="gap-1 mt-4">
           {items.map((item, index) => (
             <SidebarMenuItem key={index}>
-              <Link href={item?.url}>
+              {/* <Link href={item?.url}>
                 <SidebarMenuButton
                   className={`flex h-[40px] px-5 rounded-3xl cursor-pointer dark:hover:bg-[#13151a] ${
                     pathname === item.url ? "dark:bg-[#13151a]" : ""
@@ -173,7 +147,28 @@ export default function LeftSidebar() {
                     {item.title}
                   </span>
                 </SidebarMenuButton>
-              </Link>
+              </Link> */}
+              {item?.type === "coming soon" ? (
+                <div onClick={() => toast("Coming soon!")} className="w-full">
+                  <SidebarMenuButton className="flex h-[40px] px-5 rounded-3xl cursor-pointer dark:hover:bg-[#13151a]">
+                    {renderIcon(item.icon)}
+                    <span className="text-[16px] font-[400] dark:text-[#FFFFFF80] text-[#00000080]">
+                      {item.title}
+                    </span>
+                  </SidebarMenuButton>
+                </div>
+              ) : (
+                <Link href={item?.url}>
+                  <SidebarMenuButton
+                    className={`flex h-[40px] px-5 rounded-3xl cursor-pointer dark:hover:bg-[#13151a] ${
+                      pathname === item.url ? "dark:bg-[#13151a]" : ""
+                    }`}
+                  >
+                    {renderIcon(item.icon)}
+                    <span className="text-[16px] font-[400]">{item.title}</span>
+                  </SidebarMenuButton>
+                </Link>
+              )}{" "}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
