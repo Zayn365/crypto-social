@@ -16,7 +16,6 @@ import {
   useDisconnect,
 } from "@reown/appkit/react";
 import { ChevronLeft } from "lucide-react";
-
 interface AuthModalProps {
   openAuthWalletModal: boolean;
   onClose: () => void;
@@ -44,6 +43,7 @@ export default function LoginWithWalletModal({
 }: AuthModalProps) {
   const { open: openWalletModal } = useAppKit();
   const { address } = useAppKitAccount();
+  console.log("🚀 ~ address:", address)
   const { setUser } = useAuth();
   // const { disconnect } = useDisconnect();
 
@@ -419,7 +419,8 @@ export default function LoginWithWalletModal({
             <Label className="flex-col items-start block">
               Wallet Address
               <div className="relative">
-                <Input
+                <appkit-button balance="hide" />
+                {/* <Input
                   placeholder="Connect your wallet"
                   type={"text"}
                   value={data?.walletAddress}
@@ -438,7 +439,7 @@ export default function LoginWithWalletModal({
                   className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
                 >
                   Connect
-                </button>
+                </button> */}
               </div>
               {errors.walletAddress && (
                 <span

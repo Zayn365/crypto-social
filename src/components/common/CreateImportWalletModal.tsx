@@ -3,6 +3,7 @@ import { Modal } from "./modal";
 import WalletButton from "./WalletButton";
 import SignupLoginModal from "./SignupLoginModal";
 import LoginWithWalletModal from "./LoginWithWalletModal";
+import { useAppKit } from "@reown/appkit/react";
 
 interface CreateImportWalletModalProps {
   open: boolean;
@@ -13,6 +14,7 @@ export default function CreateImportWalletModal({
   open,
   onClose,
 }: CreateImportWalletModalProps) {
+  const { close } = useAppKit();
   const [agreed, setAgreed] = useState(false);
   const [authModal, setAuthModal] = useState<boolean>(false);
   const [authWalletModal, setAuthWalletModal] = useState<boolean>(false);
@@ -78,9 +80,8 @@ export default function CreateImportWalletModal({
                 className="underline underline-offset-4 hover:underline"
                 href="https://docs.google.com/document/d/e/2PACX-1vTiZV1W5SbCQSAYr7Ve-yuhwVbGZj2LGf_ZaZsUDIhW-9ZFfIZqZfsfyFTwiLqZJgg4p9wYZMW0-RtQ/pub"
               > */}
-                Terms of Service
-              {/* </a> */}
-              .
+              Terms of Service
+              {/* </a> */}.
             </label>
           </div>
         </div>
@@ -89,7 +90,10 @@ export default function CreateImportWalletModal({
           <div className="flex gap-4 items-center">
             {/* <WalletButton /> */}
             <button
-              onClick={() => setAuthWalletModal(true)}
+              onClick={() => {
+                close();
+                setAuthWalletModal(true);
+              }}
               className="text-white text-sm rounded-full bg-[#5773ff] px-4 py-2 font-bold cursor-pointer"
             >
               Connect Wallet
