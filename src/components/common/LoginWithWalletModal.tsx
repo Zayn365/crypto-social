@@ -45,7 +45,7 @@ export default function LoginWithWalletModal({
   const { open: openWalletModal } = useAppKit();
   const { address } = useAppKitAccount();
   const { setUser } = useAuth();
-  const { disconnect } = useDisconnect();
+  // const { disconnect } = useDisconnect();
 
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [loading, setLoading] = useState<boolean>(false);
@@ -261,7 +261,7 @@ export default function LoginWithWalletModal({
   };
 
   const handleConnectWallet = () => {
-    openWalletModal({ view: "Connect" });
+    openWalletModal();
   };
 
   const handleForgotUserPassword = () => {
@@ -305,13 +305,11 @@ export default function LoginWithWalletModal({
                 <Label className="flex-col items-start block">
                   Wallet Address
                   <div className="relative">
-                    <Input
+                    <appkit-button balance="hide" />
+                    {/* <Input
                       placeholder="Connect your wallet"
                       type={"text"}
                       value={data?.walletAddress}
-                      //   onChange={({ target }) =>
-                      //     handleChange("password", target.value)
-                      //   }
                       readOnly
                       onBlur={() => handleBlur("walletAddress")}
                       aria-describedby={
@@ -324,8 +322,7 @@ export default function LoginWithWalletModal({
                       className="absolute right-2 top-2 text-xs text-gray-500 cursor-pointer"
                     >
                       Connect
-                    </button>
-                    {/* <appkit-button /> */}
+                    </button> */}
                   </div>
                   {errors.walletAddress && (
                     <span
