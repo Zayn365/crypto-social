@@ -5,6 +5,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { commentPost, deletePost, likePost } from "@/services/posts";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { isAddress } from "ethers";
+import { PublicKey } from "@solana/web3.js";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -190,3 +192,23 @@ export function getShortTime(timestamp: string) {
   if (duration.asMonths() < 12) return `${Math.floor(duration.asMonths())}mo`;
   return `${Math.floor(duration.asYears())}y`;
 }
+
+export const validateWalletAddress = (walletAddress: string) => {
+  if (!walletAddress) return "Wallet address is required";
+
+  // Check for Ethereum address
+  if (isAddress(walletAddress)) {
+    return ""; // Valid Ethereum address
+  }
+
+  // Check for Solana address
+  try {
+    const publicKey = new PublicKey(walletAddress);
+    if (PublicKey.isOnCurve(publicKey.toBytes())) {
+      return ""; // Valid Solana address
+    }
+    return "Invalid Solana wallet address (must be a valid 44-character base58 address)";
+  } catch (err) {
+    return "Invalid Solana wallet address (must be a valid 44-character base58 address)";
+  }
+};

@@ -11,6 +11,7 @@ import { setCookie } from "cookies-next";
 import { isAddress } from "ethers";
 import { updateUserInfo } from "@/services/user";
 import { ChevronLeft } from "lucide-react";
+import { validateWalletAddress } from "@/lib/utils";
 
 interface AuthModalProps {
   open: boolean;
@@ -80,12 +81,12 @@ export default function SignupLoginModal({
     return "";
   };
 
-  const validateWalletAddress = (walletAddress: string) => {
-    if (!walletAddress) return "Wallet address is required";
-    if (!isAddress(walletAddress))
-      return "Invalid Ethereum wallet address (e.g., 0x1234...5678)";
-    return "";
-  };
+  // const validateWalletAddress = (walletAddress: string) => {
+  //   if (!walletAddress) return "Wallet address is required";
+  //   if (!isAddress(walletAddress))
+  //     return "Invalid Ethereum wallet address (e.g., 0x1234...5678)";
+  //   return "";
+  // };
 
   const validateForm = () => {
     const newErrors: Errors = {};

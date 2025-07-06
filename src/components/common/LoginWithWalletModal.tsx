@@ -16,6 +16,7 @@ import {
   useDisconnect,
 } from "@reown/appkit/react";
 import { ChevronLeft } from "lucide-react";
+import { validateWalletAddress } from "@/lib/utils";
 interface AuthModalProps {
   openAuthWalletModal: boolean;
   onClose: () => void;
@@ -43,7 +44,7 @@ export default function LoginWithWalletModal({
 }: AuthModalProps) {
   const { open: openWalletModal } = useAppKit();
   const { address } = useAppKitAccount();
-  console.log("🚀 ~ address:", address)
+  console.log("🚀 ~ address:", address);
   const { setUser } = useAuth();
   // const { disconnect } = useDisconnect();
 
@@ -89,12 +90,12 @@ export default function LoginWithWalletModal({
     return "";
   };
 
-  const validateWalletAddress = (walletAddress: string) => {
-    if (!walletAddress) return "Wallet address is required";
-    if (!isAddress(walletAddress))
-      return "Invalid Ethereum wallet address (e.g., 0x1234...5678)";
-    return "";
-  };
+  // const validateWalletAddress = (walletAddress: string) => {
+  //   if (!walletAddress) return "Wallet address is required";
+  //   if (!isAddress(walletAddress))
+  //     return "Invalid Ethereum wallet address (e.g., 0x1234...5678)";
+  //   return "";
+  // };
 
   const validateForm = () => {
     const newErrors: Errors = {};

@@ -14,6 +14,8 @@ import {
 } from "react";
 import { jwtDecode } from "jwt-decode";
 import MainLoader from "@/components/common/MainLoader";
+import { Connection, PublicKey } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 export interface Coin {
   id: string;
@@ -33,6 +35,9 @@ interface CoinData {
   token: string;
   balance: number;
   valueUSD: number;
+  symbol?: string;
+  logo?: string;
+  mint?: string;
 }
 
 interface WalletSummary {
@@ -85,6 +90,124 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ["getAllPosts"],
     queryFn: async () => await getAllPosts(),
   });
+
+  const fetchSolanaBalances = async (
+    walletAddress: string,
+    retries = 3,
+    delay = 1000
+  ) => {
+    try {
+      let publicKey: PublicKey;
+      try {
+        publicKey = new PublicKey(walletAddress);
+        if (!PublicKey.isOnCurve(publicKey.toBytes())) {
+          throw new Error("Invalid Solana wallet address: not on curve");
+        }
+      } catch (err) {
+        console.error(`Invalid Solana wallet address ${walletAddress}:`, err);
+        throw new Error(`Invalid Solana wallet address: ${walletAddress}`);
+      }
+
+      const connection = new Connection(
+        "https://solana-mainnet.api.syndica.io/api-key/4C4Jwqm5JjDEYF5oNsuft98UpFg89rQLGvyjivz42uwRVt6hLmZ8ajMyJAtkPoETznp2uCdnR5TyCSGsQZAKQkQXfbWbcAsztVQ",
+        "confirmed"
+      );
+
+      // Fetch SOL balance
+      const solBalance = await connection.getBalance(publicKey);
+      const solBalanceInSOL = solBalance / 1e9;
+
+      // Fetch token accounts
+      const tokenAccounts = await connection.getTokenAccountsByOwner(
+        publicKey,
+        {
+          programId: TOKEN_PROGRAM_ID,
+        }
+      );
+
+      const solanaCoinData: CoinData[] = [
+        {
+          token: "Solana",
+          symbol: "SOL",
+          balance: solBalanceInSOL,
+          valueUSD: 0,
+          mint: "So11111111111111111111111111111111111111112",
+        },
+      ];
+
+      for (const account of tokenAccounts.value) {
+        const accountInfo = await connection.getTokenAccountBalance(
+          account.pubkey
+        );
+        const parsedAccountInfo = await connection.getParsedAccountInfo(
+          account.pubkey
+        );
+        let mintAddress = "";
+        if (
+          parsedAccountInfo.value &&
+          "data" in parsedAccountInfo.value &&
+          (parsedAccountInfo.value.data as any).parsed &&
+          (parsedAccountInfo.value.data as any).parsed.info &&
+          (parsedAccountInfo.value.data as any).parsed.info.mint
+        ) {
+          mintAddress = (parsedAccountInfo.value.data as any).parsed.info.mint;
+        }
+        // const mintAddress = accountInfo.value.mint;
+        const balance = accountInfo.value.uiAmount || 0;
+
+        solanaCoinData.push({
+          token: mintAddress,
+          symbol: "",
+          balance,
+          valueUSD: 0,
+          mint: mintAddress,
+        });
+      }
+
+      // Fetch price data
+      const priceResponse = await fetch(`/api/getPrice`);
+      if (!priceResponse.ok) throw new Error("Failed to fetch price data");
+      const priceData = await priceResponse.json();
+      const fetchedCoins = priceData?.coins as Coin[];
+
+      const updatedSolanaCoinData = solanaCoinData.map((coinData) => {
+        const matchingCoin = fetchedCoins.find(
+          (coin) =>
+            coin.id.toLowerCase() === coinData.token.toLowerCase() ||
+            coin.shortname === coinData.symbol
+        );
+        if (matchingCoin) {
+          return {
+            ...coinData,
+            token: matchingCoin.name,
+            symbol: matchingCoin.shortname,
+            valueUSD: coinData.balance * (matchingCoin.price || 0),
+            logo: matchingCoin.image?.large,
+          };
+        }
+        return coinData;
+      });
+
+      const totalSolanaUSD = updatedSolanaCoinData.reduce(
+        (sum, coin) => sum + coin.valueUSD,
+        0
+      );
+      setTotalAssetsValues((prev) => prev + totalSolanaUSD);
+
+      return updatedSolanaCoinData;
+    } catch (err: any) {
+      if (err.response?.status === 403 && retries > 0) {
+        console.warn(`Retrying due to 403 error... Attempts left: ${retries}`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        return fetchSolanaBalances(walletAddress, retries - 1, delay * 2);
+      }
+      console.error(
+        `Error fetching Solana balances for ${walletAddress}:`,
+        err
+      );
+      return [];
+    }
+  };
 
   useEffect(() => {
     if (!allUsers || allUsers.length === 0) {
