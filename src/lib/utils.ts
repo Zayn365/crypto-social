@@ -212,3 +212,12 @@ export const validateWalletAddress = (walletAddress: string) => {
     return "Invalid Solana wallet address (must be a valid 44-character base58 address)";
   }
 };
+
+export const isSolanaAddress = (address: string): boolean => {
+  try {
+    const publicKey = new PublicKey(address);
+    return PublicKey.isOnCurve(publicKey.toBytes());
+  } catch {
+    return false;
+  }
+};

@@ -16,6 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import MainLoader from "@/components/common/MainLoader";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { isSolanaAddress, validateWalletAddress } from "@/lib/utils";
 
 export interface Coin {
   id: string;
@@ -38,6 +39,7 @@ interface CoinData {
   symbol?: string;
   logo?: string;
   mint?: string;
+  price?: number;
 }
 
 interface WalletSummary {
@@ -91,27 +93,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: async () => await getAllPosts(),
   });
 
+  const SOLANA_RPC_URL =
+    "https://solana-mainnet.api.syndica.io/api-key/4C4Jwqm5JjDEYF5oNsuft98UpFg89rQLGvyjivz42uwRVt6hLmZ8ajMyJAtkPoETznp2uCdnR5TyCSGsQZAKQkQXfbWbcAsztVQ";
+
   const fetchSolanaBalances = async (
     walletAddress: string,
+    fetchedCoins: Coin[],
     retries = 3,
     delay = 1000
-  ) => {
+  ): Promise<CoinData[]> => {
     try {
-      let publicKey: PublicKey;
-      try {
-        publicKey = new PublicKey(walletAddress);
-        if (!PublicKey.isOnCurve(publicKey.toBytes())) {
-          throw new Error("Invalid Solana wallet address: not on curve");
-        }
-      } catch (err) {
-        console.error(`Invalid Solana wallet address ${walletAddress}:`, err);
-        throw new Error(`Invalid Solana wallet address: ${walletAddress}`);
-      }
-
-      const connection = new Connection(
-        "https://solana-mainnet.api.syndica.io/api-key/4C4Jwqm5JjDEYF5oNsuft98UpFg89rQLGvyjivz42uwRVt6hLmZ8ajMyJAtkPoETznp2uCdnR5TyCSGsQZAKQkQXfbWbcAsztVQ",
-        "confirmed"
-      );
+      const connection = new Connection(SOLANA_RPC_URL, "confirmed");
+      const publicKey = new PublicKey(walletAddress);
 
       // Fetch SOL balance
       const solBalance = await connection.getBalance(publicKey);
@@ -120,9 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Fetch token accounts
       const tokenAccounts = await connection.getTokenAccountsByOwner(
         publicKey,
-        {
-          programId: TOKEN_PROGRAM_ID,
-        }
+        { programId: TOKEN_PROGRAM_ID }
       );
 
       const solanaCoinData: CoinData[] = [
@@ -143,63 +134,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           account.pubkey
         );
         let mintAddress = "";
+        const data = parsedAccountInfo.value?.data;
         if (
-          parsedAccountInfo.value &&
-          "data" in parsedAccountInfo.value &&
-          (parsedAccountInfo.value.data as any).parsed &&
-          (parsedAccountInfo.value.data as any).parsed.info &&
-          (parsedAccountInfo.value.data as any).parsed.info.mint
+          data &&
+          typeof data === "object" &&
+          "parsed" in data &&
+          (data as any).parsed?.info?.mint
         ) {
-          mintAddress = (parsedAccountInfo.value.data as any).parsed.info.mint;
+          mintAddress = (data as any).parsed.info.mint;
         }
-        // const mintAddress = accountInfo.value.mint;
         const balance = accountInfo.value.uiAmount || 0;
 
-        solanaCoinData.push({
-          token: mintAddress,
-          symbol: "",
-          balance,
-          valueUSD: 0,
-          mint: mintAddress,
-        });
+        if (mintAddress && balance > 0) {
+          solanaCoinData.push({
+            token: mintAddress,
+            symbol: "",
+            balance,
+            valueUSD: 0,
+            mint: mintAddress,
+          });
+        }
       }
 
-      // Fetch price data
-      const priceResponse = await fetch(`/api/getPrice`);
-      if (!priceResponse.ok) throw new Error("Failed to fetch price data");
-      const priceData = await priceResponse.json();
-      const fetchedCoins = priceData?.coins as Coin[];
-
-      const updatedSolanaCoinData = solanaCoinData.map((coinData) => {
+      return solanaCoinData.map((coinData) => {
         const matchingCoin = fetchedCoins.find(
           (coin) =>
             coin.id.toLowerCase() === coinData.token.toLowerCase() ||
-            coin.shortname === coinData.symbol
+            coin.shortname === coinData.symbol ||
+            coin.id === coinData.mint
         );
-        if (matchingCoin) {
-          return {
-            ...coinData,
-            token: matchingCoin.name,
-            symbol: matchingCoin.shortname,
-            valueUSD: coinData.balance * (matchingCoin.price || 0),
-            logo: matchingCoin.image?.large,
-          };
-        }
-        return coinData;
+        return {
+          ...coinData,
+          token: matchingCoin?.name || coinData.token,
+          symbol: matchingCoin?.shortname || coinData.symbol || "",
+          valueUSD: coinData.balance * (matchingCoin?.price || 0),
+          logo: matchingCoin?.image?.large,
+          price: matchingCoin?.price || 0,
+        };
       });
-
-      const totalSolanaUSD = updatedSolanaCoinData.reduce(
-        (sum, coin) => sum + coin.valueUSD,
-        0
-      );
-      setTotalAssetsValues((prev) => prev + totalSolanaUSD);
-
-      return updatedSolanaCoinData;
     } catch (err: any) {
       if (err.response?.status === 403 && retries > 0) {
-        console.warn(`Retrying due to 403 error... Attempts left: ${retries}`);
         await new Promise((resolve) => setTimeout(resolve, delay));
-        return fetchSolanaBalances(walletAddress, retries - 1, delay * 2);
+        return fetchSolanaBalances(
+          walletAddress,
+          fetchedCoins,
+          retries - 1,
+          delay * 2
+        );
       }
       console.error(
         `Error fetching Solana balances for ${walletAddress}:`,
@@ -209,154 +190,163 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const fetchEvmBalances = async (
+    walletAddress: string,
+    fetchedCoins: Coin[]
+  ): Promise<CoinData[]> => {
+    try {
+      const balanceResponse = await fetch(
+        `/api/wallet-balances?address=${walletAddress}`
+      );
+      if (!balanceResponse.ok) {
+        throw new Error(`Failed to fetch EVM balance for ${walletAddress}`);
+      }
+      const balances = (await balanceResponse.json()) as any[];
+
+      return balances
+        .map((balanceItem) => {
+          const matchingCoin = fetchedCoins.find(
+            (coin) => coin.chain_identifier === balanceItem.chainId
+          );
+          if (!matchingCoin?.price || !balanceItem.balance) return null;
+
+          const tokenAmount = parseFloat(balanceItem.balance);
+          return {
+            token: matchingCoin.name,
+            symbol: matchingCoin.shortname ?? "",
+            balance: tokenAmount,
+            valueUSD: tokenAmount * matchingCoin.price,
+            price: matchingCoin.price,
+            logo: matchingCoin.image?.large,
+          };
+        })
+        .filter((item): item is any => !!item);
+    } catch (err) {
+      console.error(`Error fetching EVM balances for ${walletAddress}:`, err);
+      return [];
+    }
+  };
+
+  const fetchCoins = async (walletAddresses: string[]) => {
+    if (!walletAddresses.length) {
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+
+      // Fetch price data once
+      const priceResponse = await fetch(`/api/getPrice`);
+      if (!priceResponse.ok) throw new Error("Failed to fetch price data");
+      const priceData = await priceResponse.json();
+      const fetchedCoins = priceData?.coins as Coin[];
+      setCoins(fetchedCoins);
+
+      // Process all wallet addresses
+      const walletSummaries = await Promise.all(
+        walletAddresses.map(async (address) => {
+          const isSolana = isSolanaAddress(address);
+          const coinsData = isSolana
+            ? await fetchSolanaBalances(address, fetchedCoins)
+            : await fetchEvmBalances(address, fetchedCoins);
+
+          const totalBalanceUSD = coinsData.reduce(
+            (sum, coin) => sum + coin.valueUSD,
+            0
+          );
+          const totalTokenValue = coinsData.reduce(
+            (sum, coin) => sum + coin.balance,
+            0
+          );
+
+          return {
+            walletAddress: address,
+            coins: coinsData,
+            totalValues: totalTokenValue,
+            totalBalanceUSD,
+          };
+        })
+      );
+
+      // Filter valid summaries and update total assets
+      const validSummaries = walletSummaries.filter(
+        (summary): summary is WalletSummary =>
+          !!summary && summary.coins.length > 0
+      );
+
+      const totalAssetsUSD = validSummaries.reduce(
+        (sum, summary) => sum + summary.totalBalanceUSD,
+        0
+      );
+      setTotalAssetsValues(totalAssetsUSD);
+
+      // Update allUsers with assets
+      setAllUsers((prevUsers: any) =>
+        prevUsers.map((user: any) => ({
+          ...user,
+          assets: validSummaries.find(
+            (summary) =>
+              summary.walletAddress.toLowerCase() ===
+              user?.wallet_address?.toLowerCase()
+          ),
+        }))
+      );
+
+      // Update allPost with assets
+      setAllPost((prevData: any) =>
+        prevData.map((post: any) => {
+          const updatedUserInfo = {
+            ...post?.userInfo,
+            assets: validSummaries.find(
+              (summary) =>
+                summary.walletAddress.toLowerCase() ===
+                post?.userInfo?.wallet_address?.toLowerCase()
+            ),
+          };
+
+          const updatedPostInfo = Array.isArray(post?.postInfo)
+            ? post.postInfo.map((info: any) => {
+                const matchingSummary = validSummaries.find(
+                  (summary) =>
+                    summary.walletAddress.toLowerCase() ===
+                    info?.userInfo?.wallet_address?.toLowerCase()
+                );
+                return {
+                  ...info,
+                  userInfo: info?.userInfo
+                    ? { ...info.userInfo, assets: matchingSummary }
+                    : null,
+                };
+              })
+            : [];
+
+          return {
+            ...post,
+            userInfo: updatedUserInfo,
+            postInfo: updatedPostInfo,
+          };
+        })
+      );
+
+      setAllUsersAssets(validSummaries);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (!allUsers || allUsers.length === 0) {
+    if (!allUsers?.length) {
       setLoading(false);
       return;
     }
 
-    // Extract wallet addresses, filtering out falsy values
     const walletAddresses = allUsers
       .map((user: any) => user?.wallet_address)
       .filter((address: any): address is string => !!address);
 
-    if (walletAddresses.length === 0) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchCoins = async () => {
-      try {
-        setLoading(true);
-
-        // Fetch price data
-        const priceResponse = await fetch(`/api/getPrice`);
-        if (!priceResponse.ok) throw new Error("Failed to fetch price data");
-        const priceData = await priceResponse.json();
-        const fetchedCoins = priceData?.coins as Coin[];
-        setCoins(fetchedCoins);
-
-        // Fetch balances and calculate per wallet address, handling individual errors
-        const walletSummaries = await Promise.all(
-          walletAddresses.map(async (address: any) => {
-            try {
-              const balanceResponse = await fetch(
-                `/api/wallet-balances?address=${address}`
-              );
-              if (!balanceResponse.ok) {
-                console.error(`Failed to fetch balance for ${address}`);
-              }
-              const balances = (await balanceResponse.json()) as any[];
-
-              let totalTokenValue = 0;
-              let totalValueUSD = 0;
-
-              const coinsData = balances
-                .map((balanceItem) => {
-                  const matchingCoin = fetchedCoins?.find(
-                    (coin) => coin?.chain_identifier === balanceItem?.chainId
-                  );
-
-                  if (!matchingCoin?.price || !balanceItem?.balance)
-                    return null;
-
-                  const tokenAmount = parseFloat(balanceItem?.balance);
-                  const usdValue = tokenAmount * matchingCoin?.price;
-
-                  totalTokenValue += tokenAmount;
-                  totalValueUSD += usdValue;
-
-                  return {
-                    token: matchingCoin?.name,
-                    balance: tokenAmount,
-                    valueUSD: usdValue,
-                    price: matchingCoin?.price,
-                    symbol: matchingCoin?.shortname,
-                    logo: matchingCoin?.image?.large,
-                  };
-                })
-                .filter((item): item is any => !!item);
-
-              return {
-                walletAddress: address,
-                coins: coinsData,
-                totalValues: totalTokenValue,
-                totalBalanceUSD: totalValueUSD,
-              };
-            } catch (err) {
-              console.error(`Error fetching balance for ${address}:`, err);
-              return null; // Return null for failed addresses
-            }
-          })
-        );
-
-        // Filter out null results (failed fetches)
-        const validSummaries = walletSummaries.filter(
-          (summary): summary is WalletSummary => !!summary
-        );
-
-        // Update allUsers with assets for successful fetches
-        setAllUsers((prevUsers: any) =>
-          prevUsers.map((user: any) => ({
-            ...user,
-            assets: validSummaries?.find(
-              (summary) =>
-                summary.walletAddress?.toLowerCase() ===
-                user?.wallet_address?.toLowerCase()
-            ),
-          }))
-        );
-
-        setAllPost((prevData: any) =>
-          prevData.map((post: any) => {
-            const updatedUserInfo = {
-              ...post?.userInfo,
-              assets: validSummaries?.find(
-                (summary) =>
-                  summary?.walletAddress?.toLowerCase() ===
-                  post?.userInfo?.wallet_address?.toLowerCase()
-              ),
-            };
-
-            const updatedPostInfo = Array.isArray(post?.postInfo)
-              ? post.postInfo.map((info: any) => {
-                  const userWallet = info?.userInfo?.wallet_address;
-                  const matchingSummary = validSummaries?.find(
-                    (summary) =>
-                      summary?.walletAddress?.toLowerCase() ===
-                      userWallet?.toLowerCase()
-                  );
-
-                  return {
-                    ...info,
-                    userInfo: info?.userInfo
-                      ? {
-                          ...info?.userInfo,
-                          assets: matchingSummary,
-                        }
-                      : null,
-                  };
-                })
-              : [];
-
-            return {
-              ...post,
-              userInfo: updatedUserInfo,
-              postInfo: updatedPostInfo,
-            };
-          })
-        );
-
-        // Update allUsersAssets with successful summaries
-        setAllUsersAssets(validSummaries);
-      } catch (err) {
-        console.error("Error fetching price data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCoins();
+    fetchCoins(walletAddresses);
   }, [allUsers, allPost]);
 
   useEffect(() => {
