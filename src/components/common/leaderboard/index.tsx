@@ -16,7 +16,6 @@ import MainLoader from "../MainLoader";
 
 export default function LeaderboardPage() {
   const { allUsers } = useAuth();
-  console.log("🚀 ~ LeaderboardPage ~ allUsers:", allUsers)
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

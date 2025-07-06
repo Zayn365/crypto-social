@@ -26,9 +26,12 @@ export default function WalletBalanceCard({ data }: any) {
             Spendable Balance
           </div>
           <div className="text-lg text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00]">
-            ~{" "}
+            ~$
             {data?.assets?.totalBalanceUSD
-              ? Number(data?.assets?.totalBalanceUSD).toFixed(2)
+              ? Number(data?.assets?.totalBalanceUSD).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
               : 0}{" "}
             USD
           </div>

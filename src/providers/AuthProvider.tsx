@@ -1,7 +1,7 @@
 "use client";
 import { getAllPosts } from "@/services/posts";
 import { getAllUsers, getUserById } from "@/services/user";
-import { useAppKitAccount, useDisconnect } from "@reown/appkit/react";
+import { useDisconnect } from "@reown/appkit/react";
 import { useQuery } from "@tanstack/react-query";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
@@ -67,7 +67,6 @@ const AuthContext = createContext<any>({
 // Auth provider component
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { disconnect } = useDisconnect();
-  const { address } = useAppKitAccount();
   const router = useRouter();
 
   const [user, setUser] = useState<any | null>(null);
@@ -93,8 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: async () => await getAllPosts(),
   });
 
-  const SOLANA_RPC_URL =
-    "https://solana-mainnet.api.syndica.io/api-key/4C4Jwqm5JjDEYF5oNsuft98UpFg89rQLGvyjivz42uwRVt6hLmZ8ajMyJAtkPoETznp2uCdnR5TyCSGsQZAKQkQXfbWbcAsztVQ";
+  const SOLANA_RPC_URL = "https://go.getblock.io/4136d34f90a6488b84214ae26f0ed5f4";
 
   const fetchSolanaBalances = async (
     walletAddress: string,
@@ -347,7 +345,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .filter((address: any): address is string => !!address);
 
     fetchCoins(walletAddresses);
-  }, [allUsers, allPost]);
+  }, [allUsers]);
 
   useEffect(() => {
     if (allPostData) {

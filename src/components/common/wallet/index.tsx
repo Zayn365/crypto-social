@@ -97,7 +97,13 @@ export default function WalletComp() {
               <div className="text-2xl text-[#000000] dark:text-[#DDE5EE]">
                 $
                 {currentUser?.assets
-                  ? Number(currentUser?.assets?.totalBalanceUSD).toFixed(2)
+                  ? Number(currentUser?.assets?.totalBalanceUSD).toLocaleString(
+                      "en-US",
+                      {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }
+                    )
                   : 0}
               </div>
             </div>

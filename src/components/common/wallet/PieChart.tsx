@@ -121,10 +121,10 @@ export function ChartPieLegend({ data }: any) {
                   return null;
                 }}
               />
-              <ChartLegend
+              {/* <ChartLegend
                 content={<ChartLegendContent nameKey="browser" />}
                 className="flex flex-wrap gap-2"
-              />
+              /> */}
             </RadialBarChart>
           </ResponsiveContainer>
         </ChartContainer>

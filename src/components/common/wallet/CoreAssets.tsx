@@ -65,7 +65,12 @@ export default function CoreAssets({ data }: any) {
             Total Spendable Balance
           </div>
           <div className="text-sm text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00]">
-            ~{Number(totalBalanceUSD).toFixed(2)} USD
+            ~$
+            {Number(totalBalanceUSD).toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            USD
           </div>
         </div>
       </div>
