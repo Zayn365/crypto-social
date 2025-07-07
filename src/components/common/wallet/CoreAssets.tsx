@@ -62,7 +62,7 @@ export default function CoreAssets({ data }: any) {
         ))}
         <div className="flex items-center justify-between p-2 gap-2">
           <div className="text-[#999999] dark:text-[#8c9fb7a0] text-sm">
-            Total Spendable Balance
+            Total
           </div>
           <div className="text-sm text-shadow-[#17a34a] dark:text-[#00ff00] text-[#00ff00]">
             ~$

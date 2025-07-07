@@ -52,7 +52,7 @@ export default function LeftSidebar() {
       icon: "/leaderboard-icon.svg",
     },
     {
-      title: "Communities (coming soon)",
+      title: "Communities",
       url: "#",
       icon: "/community-icon.svg",
       type: "coming soon",

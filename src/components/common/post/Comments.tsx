@@ -4,6 +4,7 @@ import {
   ChartNoAxesColumn,
   Ellipsis,
   Gem,
+  MessageSquareMore,
   MessagesSquare,
   Repeat2,
   Smile,
@@ -14,8 +15,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   defaultUserProfile,
+  emojis,
+  getShortTime,
   getTotalMainComments,
   sliceMethod,
+  usePostLike,
+  usePostUnLike,
 } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import toast from "react-hot-toast";
@@ -36,6 +41,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import FillButton from "../FillButton";
 import moment from "moment";
+import ReactionStats from "./ReactionStats";
 
 export default function Comments({ post }: any) {
   const queryClient = useQueryClient();
@@ -43,6 +49,9 @@ export default function Comments({ post }: any) {
 
   const [showCommentBox, setShowCommentBox] = useState<boolean>(false);
   const [commentValue, setCommentValue] = useState<string>("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const { mutate } = usePostLike();
+  const unLike = usePostUnLike();
 
   const commentsData =
     post?.postInfo
@@ -53,9 +62,10 @@ export default function Comments({ post }: any) {
           id: mainComment.id,
           username: user?.username || user?.name || "Unknown",
           handle: user?.wallet_address ? sliceMethod(user?.wallet_address) : "",
-          time: moment(mainComment?.createdAt).fromNow() ?? "",
+          time: getShortTime(mainComment?.createdAt) ?? "",
           content: mainComment.comment,
           avatarSrc: user?.avatar || defaultUserProfile,
+          emoji: "",
           likes: 0,
           replies: mainComment.reply?.length || 0, // No nested replies in provided data
           shares: 0,
@@ -71,9 +81,10 @@ export default function Comments({ post }: any) {
               handle: reply.userInfo?.wallet_address
                 ? sliceMethod(reply.userInfo?.wallet_address)
                 : "",
-              time: moment(reply?.createdAt).fromNow() ?? "",
+              time: getShortTime(reply?.createdAt) ?? "",
               content: reply.comment,
               avatarSrc: reply.userInfo?.avatar || defaultUserProfile,
+              emoji: "",
               likes: 0, // No like data for replies
               replies: 0, // No nested replies in data
               shares: 0,
@@ -130,6 +141,53 @@ export default function Comments({ post }: any) {
       toast.error(message);
     },
   });
+
+  const selectedEmoji = commentsData?.emoji || null;
+
+  const handlelike = (selectedEmoji: string) => {
+    try {
+      if (user.id) {
+        mutate({
+          id: post?.id,
+          like: true,
+          userId: user.id,
+          emoji: String(selectedEmoji),
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
+
+  const handleDislike = () => {
+    try {
+      if (user?.id) {
+        unLike.mutate({
+          id: post?.id,
+          like: false,
+          userId: user.id,
+          emoji: "",
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Please Login");
+    }
+  };
+
+  const handleEmojiClick = (emoji: string) => {
+    if (selectedEmoji === emoji) {
+      handleDislike();
+    } else {
+      handlelike(emoji);
+    }
+    setShowEmojiPicker(false);
+  };
 
   const handleMainEditComment = (commentId: string) => {
     try {
@@ -291,10 +349,6 @@ export default function Comments({ post }: any) {
                 <p className="text-sm mt-1">{comment?.content}</p>
                 {/* Interaction Icons */}
                 <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
-                  <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
-                    <ThumbsUp size={14} />
-                    <span className="text-xs">{comment?.likes}</span>
-                  </div>
                   <div
                     className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer"
                     onClick={() =>
@@ -303,16 +357,51 @@ export default function Comments({ post }: any) {
                       )
                     }
                   >
-                    <MessagesSquare size={14} />
-                    <span className="text-xs">Reply</span>
+                    <MessageSquareMore size={14} />
                     <span className="text-xs">{comment?.replies}</span>
                   </div>
-                  <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                  {/* <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Smile size={14} />
-                    <span className="text-xs">{comment?.shares}</span>
+                    <span className="text-xs">{comment?.likes}</span>
+                  </div> */}
+                  <div className="relative">
+                    {selectedEmoji ? (
+                      <span
+                        className="text-lg text-[#000] dark:text-[#DDE5EE] cursor-pointer max-w-[18px] max-h-[18px]"
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                      >
+                        {selectedEmoji}
+                      </span>
+                    ) : (
+                      <Smile
+                        size={18}
+                        className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000] cursor-pointer"
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                      />
+                    )}
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-7 left-0 bg-white dark:bg-[#1a1c22] border border-gray-200 dark:border-gray-700 rounded-lg p-2 shadow-lg z-10">
+                        <div className="flex gap-2">
+                          {emojis.map((emoji, idx) => (
+                            <button
+                              key={idx}
+                              className={`text-lg hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-1 cursor-pointer ${
+                                selectedEmoji === emoji
+                                  ? "bg-gray-200 dark:bg-gray-600"
+                                  : ""
+                              }`}
+                              onClick={() => handleEmojiClick(emoji)}
+                            >
+                              {emoji}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Repeat2 size={14} />
+                    <span className="text-xs">{comment?.repost ?? 0}</span>
                   </div>
                   {/* <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Gem size={14} />

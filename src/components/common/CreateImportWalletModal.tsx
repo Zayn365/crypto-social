@@ -37,20 +37,16 @@ export default function CreateImportWalletModal({
           Create or Import Wallet
         </div>
         <div className="text-base dark:text-[#A3ADB9] text-center">
-          The first step is to create a{" "}
-          <span className="dark:text-[#59B4FF] text-[#59B4FF]">
-            Decentralized Social wallet.
-          </span>
+          Welcome to Blockface (Testnet)
         </div>
         <div className="text-base dark:text-[#A3ADB9] text-center">
-          Your wallet can{" "}
-          <span className="dark:text-[#59B4FF] text-[#59B4FF]">
-            send and receive money instantly
-          </span>{" "}
-          and it{" "}
-          <span className="dark:text-[#59B4FF] text-[#59B4FF]">
-            controls your content.
-          </span>
+          Ready to explore what’s next?
+        </div>
+        <div className="text-base dark:text-[#A3ADB9] text-center">
+          Start by connecting your Decentralized Social wallet.
+        </div>
+        <div className="text-base dark:text-[#A3ADB9] text-center">
+          This is your key to unlocking the Blockface experience.
         </div>
 
         <div className="relative w-full">
