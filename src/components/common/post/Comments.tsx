@@ -144,11 +144,11 @@ export default function Comments({ post }: any) {
 
   const selectedEmoji = commentsData?.emoji || null;
 
-  const handlelike = (selectedEmoji: string) => {
+  const handlelike = (selectedEmoji: string, id: number) => {
     try {
       if (user.id) {
         mutate({
-          id: post?.id,
+          id,
           like: true,
           userId: user.id,
           emoji: String(selectedEmoji),
@@ -162,11 +162,11 @@ export default function Comments({ post }: any) {
     }
   };
 
-  const handleDislike = () => {
+  const handleDislike = (id: number) => {
     try {
       if (user?.id) {
         unLike.mutate({
-          id: post?.id,
+          id,
           like: false,
           userId: user.id,
           emoji: "",
@@ -180,11 +180,11 @@ export default function Comments({ post }: any) {
     }
   };
 
-  const handleEmojiClick = (emoji: string) => {
+  const handleEmojiClick = (emoji: string, id: number) => {
     if (selectedEmoji === emoji) {
-      handleDislike();
+      handleDislike(id);
     } else {
-      handlelike(emoji);
+      handlelike(emoji, id);
     }
     setShowEmojiPicker(false);
   };
@@ -390,7 +390,9 @@ export default function Comments({ post }: any) {
                                   ? "bg-gray-200 dark:bg-gray-600"
                                   : ""
                               }`}
-                              onClick={() => handleEmojiClick(emoji)}
+                              onClick={() =>
+                                handleEmojiClick(emoji, Number(comment.id))
+                              }
                             >
                               {emoji}
                             </button>

@@ -22,19 +22,17 @@ export default function NoDataFoundScreen() {
           width={160}
           height={160}
           className="max-w-[160px]"
-          src={slug === "media" ? "/empty-32.webp" : "/empty-24.webp"}
+          src={slug === "media" ? "/main-logo.png" : "/main-logo.png"}
         />
         <AvatarFallback>{<DotsLoader />}</AvatarFallback>
       </Avatar>
       <div className="text-[#000000] dark:text-[#DDE5EE] text-xl font-medium mt-4">
-        {slug === "media"
-          ? "No images or videos found."
-          : `No posts from @${id}`}
+        {slug === "media" ? "No images or videos found." : `No posts`}
       </div>
       <div className="text-[#999999] dark:text-[#8C9FB7A0]">
         {slug === "media"
           ? "Check back later for more content."
-          : `@${id} has not posted any content yet.`}
+          : `not posted any content yet.`}
       </div>
       {slug === "media" ? (
         ""

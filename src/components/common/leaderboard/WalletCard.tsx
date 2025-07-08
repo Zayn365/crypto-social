@@ -41,7 +41,7 @@ export default function WalletCard({ item, idx }: any) {
           <AvatarImage
             width={258}
             height={144}
-            className="h-36 w-full object-contain"
+            className="h-36 w-full object-fill"
             src={item?.avatar || defaultUserProfile}
           />
           <AvatarFallback>
@@ -92,8 +92,12 @@ export default function WalletCard({ item, idx }: any) {
           />
         </div>
         <div className="flex items-center justify-between mt-6 gap-4">
-          <div className="text-xs text-[#747474]">0 followers</div>
-          <div className="text-xs text-[#747474]">0 following</div>
+          <div className="text-xs text-[#747474]">
+            {item?.follower ?? "0"} followers
+          </div>
+          <div className="text-xs text-[#747474]">
+            {item?.following ?? "0"} following
+          </div>
         </div>
       </div>
     </div>
