@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import PostHeader from "../home/PostHeader";
@@ -9,6 +9,7 @@ import ReactionStats from "./ReactionStats";
 import Comments from "./Comments";
 import { useAuth } from "@/providers/AuthProvider";
 import LinkCard from "../home/LinkCard";
+import MainLoader from "../MainLoader";
 
 export default function PostDetails() {
   const router = useRouter();
@@ -18,13 +19,7 @@ export default function PostDetails() {
   if (!allPost || allPost.length === 0) {
     return (
       <div className="p-4 flex gap-2 items-center justify-center min-h-[100vh]">
-        <Loader2
-          className="animate-spin text-[#999999] dark:text-[#8C9FB7A0]"
-          size={32}
-        />
-        <p className="text-[#999999] dark:text-[#8C9FB7A0] mt-2">
-          Loading post...
-        </p>
+        <MainLoader />
       </div>
     );
   }

@@ -1,4 +1,9 @@
-import { defaultUserProfile, sliceMethod } from "@/lib/utils";
+import {
+  defaultUserProfile,
+  sliceMethod,
+  useAddFollower,
+  useRemoveFollower,
+} from "@/lib/utils";
 import { CopyIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -7,8 +12,12 @@ import toast from "react-hot-toast";
 import DotsLoader from "../DotsLoader";
 import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function WalletCard({ item, idx }: any) {
+  const { user } = useAuth();
+  const followUser = useAddFollower();
+  const unFollowUser = useRemoveFollower();
   async function handleCopy(text: string) {
     try {
       await navigator.clipboard.writeText(text);
@@ -17,6 +26,36 @@ export default function WalletCard({ item, idx }: any) {
       console.error("Failed to copy: ", err);
     }
   }
+
+  const handleFollow = (id: number) => {
+    try {
+      if (user.id) {
+        followUser.mutate({
+          id: id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnfollow = (id: number) => {
+    try {
+      if (user.id) {
+        unFollowUser.mutate({
+          id: id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="border border-[#353450] rounded-lg min-w-[258px] max-w-[258px] drop-shadow-xl/50">
@@ -85,18 +124,14 @@ export default function WalletCard({ item, idx }: any) {
               </div>
             </div>
           </div>
-          <FollowBtn
-            handleSubmit={() => {
-              console.log("first");
-            }}
-          />
+          <FollowBtn handleSubmit={() => handleFollow(item?.id)} />
         </div>
         <div className="flex items-center justify-between mt-6 gap-4">
           <div className="text-xs text-[#747474]">
-            {item?.follower ?? "0"} followers
+            {item?.followers?.length ?? "0"} followers
           </div>
           <div className="text-xs text-[#747474]">
-            {item?.following ?? "0"} following
+            {item?.followings?.length ?? "0"} following
           </div>
         </div>
       </div>

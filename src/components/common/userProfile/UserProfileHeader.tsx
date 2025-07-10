@@ -1,5 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn, defaultUserCover, defaultUserProfile } from "@/lib/utils";
+import {
+  cn,
+  defaultUserCover,
+  defaultUserProfile,
+  useAddFollower,
+  useRemoveFollower,
+} from "@/lib/utils";
 import { Ellipsis, Gem, ListTodo, Mail } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -7,8 +13,44 @@ import FollowersFollowing from "../discover/FollowersFollowing";
 import Stats from "../discover/Stats";
 import FollowBtn from "../FollowBtn";
 import DotsLoader from "../DotsLoader";
+import toast from "react-hot-toast";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function UserProfileHeader({ data }: any) {
+  const { user } = useAuth();
+  const followUser = useAddFollower();
+  const unFollowUser = useRemoveFollower();
+
+  const handleFollow = () => {
+    try {
+      if (user.id) {
+        followUser.mutate({
+          id: data?.id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnfollow = () => {
+    try {
+      if (user.id) {
+        unFollowUser.mutate({
+          id: data?.id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="pb-4">
       <div className="relative w-full">
@@ -54,11 +96,7 @@ export default function UserProfileHeader({ data }: any) {
               Follow
             </span>
           </div> */}
-          <FollowBtn
-            handleSubmit={() => {
-              console.log("follow");
-            }}
-          />
+          <FollowBtn handleSubmit={handleFollow} />
         </div>
       </div>
 

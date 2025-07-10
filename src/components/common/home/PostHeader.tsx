@@ -19,7 +19,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/providers/AuthProvider";
-import { defaultUserProfile, getShortTime, usePostDelete } from "@/lib/utils";
+import {
+  defaultUserProfile,
+  getShortTime,
+  useAddFollower,
+  usePostDelete,
+  useRemoveFollower,
+} from "@/lib/utils";
 import toast from "react-hot-toast";
 import CreatePostModal from "../CreatePostModal";
 import FollowBtn from "../FollowBtn";
@@ -28,6 +34,8 @@ import DotsLoader from "../DotsLoader";
 export default function PostHeader({ post }: any) {
   const { user } = useAuth();
   const deletePost = usePostDelete();
+  const followUser = useAddFollower();
+  const unFollowUser = useRemoveFollower();
   const router = useRouter();
 
   const [postModal, setPostModal] = useState<boolean>(false);
@@ -44,6 +52,36 @@ export default function PostHeader({ post }: any) {
     } catch (error) {
       console.log(error);
       toast.error("Please Login");
+    }
+  };
+
+  const handleFollow = () => {
+    try {
+      if (user.id) {
+        followUser.mutate({
+          id: post?.userInfo?.id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnfollow = () => {
+    try {
+      if (user.id) {
+        unFollowUser.mutate({
+          id: post?.userInfo?.id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -118,11 +156,7 @@ export default function PostHeader({ post }: any) {
         </div>
       </div>
       <div className="flex items-center gap-2 justify-between">
-        <FollowBtn
-          handleSubmit={() => {
-            console.log("follow");
-          }}
-        />
+        <FollowBtn handleSubmit={handleFollow} />
         {/* <ListTodo
           className={`text-xs dark:hover:text-[#59B4FF] hover:text-[#59B4FF] dark:text-[#8C9FB7A0] text-[#999999] cursor-pointer`}
           size={20}

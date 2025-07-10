@@ -4,4 +4,6 @@ export const USER = {
   getAllUsers: `/users`,
   getUserById: "/users/find",
   uploadCover: "/users/upload-cover",
+  addFollowers: "/users/addFollowers",
+  removeFollowers: "/users/removeFollowers",
 };

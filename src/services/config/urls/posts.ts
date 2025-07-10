@@ -10,4 +10,5 @@ export const POSTS = {
   commentReply: "/posts/commentReply",
   commentReplyDelete: "/posts/commentReply",
   commentUpdate: "/posts/commentUpdate",
+  commentLike: "posts/commentLike",
 };

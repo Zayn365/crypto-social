@@ -179,3 +179,27 @@ export const commentUpdate = async (
   };
   return await patchHandler(client, POSTS.commentUpdate, bodyData, queryParams);
 };
+
+export const commentLike = async (
+  payload: {
+    id: number;
+    commentId: string;
+    replyId?: string;
+    userId: number;
+    emoji: string;
+    like: boolean;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const bodyData = {
+    userId: payload.userId,
+    commentId: payload.commentId,
+    replyId: payload.replyId,
+    emoji: payload.emoji,
+    like: payload.like,
+  };
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, POSTS.commentLike, bodyData, queryParams);
+};

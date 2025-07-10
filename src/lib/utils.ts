@@ -2,11 +2,17 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import moment from "moment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { commentPost, deletePost, likePost } from "@/services/posts";
+import {
+  commentLike,
+  commentPost,
+  deletePost,
+  likePost,
+} from "@/services/posts";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { isAddress } from "ethers";
 import { PublicKey } from "@solana/web3.js";
+import { addFollowers, removeFollowers } from "@/services/user";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -220,4 +226,64 @@ export const isSolanaAddress = (address: string): boolean => {
   } catch {
     return false;
   }
+};
+
+export const useAddFollower = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: addFollowers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
+      toast.success(`Successfully followed the user!`);
+    },
+    onError: ({ message }) => {
+      toast.error(message || "Failed to follow the user.");
+    },
+  });
+};
+
+export const useRemoveFollower = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: removeFollowers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllUsers"] });
+      toast.success(`Successfully unfollowed the user!`);
+    },
+    onError: ({ message }) => {
+      toast.error(message || "Failed to follow the user.");
+    },
+  });
+};
+
+export const useCommentLike = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: commentLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success(`Liked successful`);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
+};
+
+export const useCommentUnLike = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: commentLike,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllPosts"] });
+      toast.success("Like removed");
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+  });
 };

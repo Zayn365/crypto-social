@@ -1,5 +1,10 @@
 "use client";
-import { defaultUserProfile, sliceMethod } from "@/lib/utils";
+import {
+  defaultUserProfile,
+  sliceMethod,
+  useAddFollower,
+  useRemoveFollower,
+} from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import React, { useEffect, useState } from "react";
 import FollowBtn from "../FollowBtn";
@@ -13,9 +18,12 @@ import { Navigation, Autoplay } from "swiper/modules";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DotsLoader from "../DotsLoader";
 import MainLoader from "../MainLoader";
+import toast from "react-hot-toast";
 
 export default function LeaderboardPage() {
-  const { allUsers } = useAuth();
+  const { allUsers, user } = useAuth();
+  const followUser = useAddFollower();
+  const unFollowUser = useRemoveFollower();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -44,6 +52,36 @@ export default function LeaderboardPage() {
       const balanceB = Number(b?.assets?.totalBalanceUSD || 0);
       return balanceB - balanceA;
     });
+
+  const handleFollow = (id: number) => {
+    try {
+      if (user.id) {
+        followUser.mutate({
+          id: id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnfollow = (id: number) => {
+    try {
+      if (user.id) {
+        unFollowUser.mutate({
+          id: id,
+          followerId: user?.id,
+        });
+      } else {
+        toast.error("Please Login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="w-full px-4 py-4">
@@ -94,9 +132,7 @@ export default function LeaderboardPage() {
                   </div>
                 </div>
                 <FollowBtn
-                  handleSubmit={() => {
-                    console.log("first");
-                  }}
+                  handleSubmit={() => handleFollow(item?.id)}
                   className="max-sm:px-2"
                 />
               </div>

@@ -85,3 +85,37 @@ export const getUserById = async (
 ): Promise<any> => {
   return await getHandler(client, USER.getUserById, payload);
 };
+
+export const addFollowers = async (
+  payload: {
+    id?: number;
+    followerId?: number;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const queryParams = {
+    id: payload.id,
+  };
+
+  const bodyData = {
+    followerId: payload.followerId,
+  };
+
+  return await postHandler(client, USER.addFollowers, bodyData, queryParams);
+};
+
+export const removeFollowers = async (
+  payload: {
+    id: number;
+    followerId: number;
+  },
+  client: AxiosInstance = apiClient
+): Promise<Response> => {
+  const bodyData = {
+    followerId: payload.followerId,
+  };
+  const queryParams = {
+    id: payload.id,
+  };
+  return await postHandler(client, USER.removeFollowers, bodyData, queryParams);
+};
