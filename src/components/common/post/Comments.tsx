@@ -54,20 +54,17 @@ export default function Comments({ post }: any) {
     post?.postInfo
       ?.filter((item: any) => item?.comments?.length > 0)
       ?.flatMap((item: any) => {
-        const user = item.userInfo || {};
-        return item.comments.map((mainComment: any) => ({
+        const user = item?.userInfo || {};
+        return item?.comments?.map((mainComment: any) => ({
           id: mainComment.id,
           username: user?.username || user?.name || "Unknown",
           handle: user?.wallet_address ? sliceMethod(user?.wallet_address) : "",
           time: getShortTime(mainComment?.createdAt) ?? "",
-          content: mainComment.comment,
+          content: mainComment?.comment,
           avatarSrc: user?.avatar || defaultUserProfile,
-          emoji: "",
-          likes: 0,
+          likes: mainComment?.like ? 1 : 0,
           userLike:
-            mainComment?.reply.like && mainComment?.reply.emoji
-              ? mainComment?.reply.emoji
-              : null,
+            mainComment?.like && mainComment?.emoji ? mainComment?.emoji : null,
           replies: mainComment.reply?.length || 0, // No nested replies in provided data
           shares: 0,
           diamonds: 0,
@@ -76,18 +73,17 @@ export default function Comments({ post }: any) {
           userInfo: user, // Store userInfo for delete permission check
           subComments:
             mainComment.reply?.map((reply: any) => ({
-              id: reply.id,
+              id: reply?.id,
               username:
                 reply.userInfo?.username || reply.userInfo?.name || "Unknown",
               handle: reply.userInfo?.wallet_address
                 ? sliceMethod(reply.userInfo?.wallet_address)
                 : "",
               time: getShortTime(reply?.createdAt) ?? "",
-              content: reply.comment,
-              avatarSrc: reply.userInfo?.avatar || defaultUserProfile,
-              emoji: "",
-              likes: reply.like ? 1 : 0, // No like data for replies
-              userLike: reply.like && reply.emoji ? reply.emoji : null,
+              content: reply?.comment,
+              avatarSrc: reply?.userInfo?.avatar || defaultUserProfile,
+              likes: reply?.like ? 1 : 0, // No like data for replies
+              userLike: reply?.like && reply?.emoji ? reply?.emoji : null,
               replies: 0, // No nested replies in data
               shares: 0,
               diamonds: 0,
@@ -143,8 +139,6 @@ export default function Comments({ post }: any) {
       toast.error(message);
     },
   });
-
-  const selectedEmoji = commentsData?.emoji || null;
 
   const handleLike = (emoji: string, commentId: string, replyId?: string) => {
     if (!user?.id) {
@@ -253,6 +247,7 @@ export default function Comments({ post }: any) {
       toast.error("Please Login");
     }
   };
+
   const handleReplyComment = (commentId: string) => {
     try {
       if (user.id) {
@@ -382,9 +377,9 @@ export default function Comments({ post }: any) {
                 {/* Comment Content */}
                 <p className="text-sm mt-1">{comment?.content}</p>
                 {/* Interaction Icons */}
-                <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
+                <div className="flex items-center space-x-4 mt-2 max-md:flex-wrap">
                   <div
-                    className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer"
+                    className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer"
                     onClick={() =>
                       setShowCommentBox(
                         showCommentBox === comment.id ? null : comment.id
@@ -406,7 +401,6 @@ export default function Comments({ post }: any) {
                           handleEmojiClick(
                             comment?.userLike,
                             comment?.id
-                            // comment?.id
                           )
                         }
                       >
@@ -419,7 +413,7 @@ export default function Comments({ post }: any) {
                         onClick={() => toggleEmojiPicker(comment?.id)}
                       />
                     )}
-                    <span className="text-xs ml-1">{comment?.likes}</span>
+                    <span className="text-xs ml-1 text-[#999999] dark:text-[#8c9fb7a0]">{comment?.likes}</span>
                     {emojiPickerState[`${comment?.id}`] && (
                       <div className="absolute bottom-7 left-0 bg-white dark:bg-[#1a1c22] border border-gray-200 dark:border-gray-700 rounded-lg p-2 shadow-lg z-10">
                         <div className="flex gap-2">
@@ -427,7 +421,7 @@ export default function Comments({ post }: any) {
                             <button
                               key={idx}
                               className={`text-lg hover:bg-gray-100 dark:hover:bg-gray-700 rounded p-1 cursor-pointer ${
-                                comment.userLike === emoji
+                                comment?.userLike === emoji
                                   ? "bg-gray-200 dark:bg-gray-600"
                                   : ""
                               }`}
@@ -435,7 +429,6 @@ export default function Comments({ post }: any) {
                                 handleEmojiClick(
                                   emoji,
                                   comment?.id
-                                  // comment?.id
                                 )
                               }
                             >
@@ -483,7 +476,7 @@ export default function Comments({ post }: any) {
                       </div>
                     )}
                   </div> */}
-                  <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                  <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Repeat2 size={14} />
                     <span className="text-xs">{comment?.repost ?? 0}</span>
                   </div>
@@ -584,8 +577,8 @@ export default function Comments({ post }: any) {
                             )}
                           </div>
                           <p className="text-sm mt-1">{subComment?.content}</p>
-                          <div className="flex items-center space-x-4 mt-2 text-[#999999] dark:text-[#8c9fb7a0] max-md:flex-wrap">
-                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                          <div className="flex items-center space-x-4 mt-2 max-md:flex-wrap">
+                            <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                               <MessageSquareMore size={14} />
                               <span className="text-xs">
                                 {subComment?.replies}
@@ -617,7 +610,7 @@ export default function Comments({ post }: any) {
                                   }
                                 />
                               )}
-                              <span className="text-xs ml-1">
+                              <span className="text-xs ml-1 text-[#999999] dark:text-[#8c9fb7a0]">
                                 {subComment?.likes}
                               </span>
                               {emojiPickerState[
@@ -648,7 +641,7 @@ export default function Comments({ post }: any) {
                                 </div>
                               )}
                             </div>
-                            <div className="flex items-center space-x-1 hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                            <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                               <Repeat2 size={14} />
                               <span className="text-xs">
                                 {subComment?.repost ?? 0}
