@@ -372,8 +372,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
+      const updatedUsers = usersData?.users?.rows.map((user: any) => ({
+        ...user,
+        followerCount: Math.floor(Math.random() * 1000),
+        followingCount: Math.floor(Math.random() * 1000)
+      }));
+
       setLoading(false);
-      setAllUsers(usersData?.users?.rows);
+      setAllUsers(updatedUsers);
     } catch (error) {
       setLoading(false);
       console.log(error);

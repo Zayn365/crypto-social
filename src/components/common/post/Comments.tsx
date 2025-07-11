@@ -398,10 +398,7 @@ export default function Comments({ post }: any) {
                       <span
                         className="text-lg text-[#000] dark:text-[#DDE5EE] cursor-pointer max-w-[18px]"
                         onClick={() =>
-                          handleEmojiClick(
-                            comment?.userLike,
-                            comment?.id
-                          )
+                          handleEmojiClick(comment?.userLike, comment?.id)
                         }
                       >
                         {comment?.userLike}
@@ -413,7 +410,9 @@ export default function Comments({ post }: any) {
                         onClick={() => toggleEmojiPicker(comment?.id)}
                       />
                     )}
-                    <span className="text-xs ml-1 text-[#999999] dark:text-[#8c9fb7a0]">{comment?.likes}</span>
+                    <span className="text-xs ml-1 text-[#999999] dark:text-[#8c9fb7a0]">
+                      {comment?.likes}
+                    </span>
                     {emojiPickerState[`${comment?.id}`] && (
                       <div className="absolute bottom-7 left-0 bg-white dark:bg-[#1a1c22] border border-gray-200 dark:border-gray-700 rounded-lg p-2 shadow-lg z-10">
                         <div className="flex gap-2">
@@ -426,10 +425,7 @@ export default function Comments({ post }: any) {
                                   : ""
                               }`}
                               onClick={() =>
-                                handleEmojiClick(
-                                  emoji,
-                                  comment?.id
-                                )
+                                handleEmojiClick(emoji, comment?.id)
                               }
                             >
                               {emoji}
@@ -476,10 +472,10 @@ export default function Comments({ post }: any) {
                       </div>
                     )}
                   </div> */}
-                  <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                  {/* <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                     <Repeat2 size={14} />
                     <span className="text-xs">{comment?.repost ?? 0}</span>
-                  </div>
+                  </div> */}
                 </div>
                 <AnimatePresence>
                   {showCommentBox === comment.id && (
@@ -641,12 +637,12 @@ export default function Comments({ post }: any) {
                                 </div>
                               )}
                             </div>
-                            <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
+                            {/* <div className="flex items-center space-x-1 text-[#999999] dark:text-[#8c9fb7a0] hover:text-[#59B4FF] dark:hover:text-[#59B4FF] cursor-pointer">
                               <Repeat2 size={14} />
                               <span className="text-xs">
                                 {subComment?.repost ?? 0}
                               </span>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
