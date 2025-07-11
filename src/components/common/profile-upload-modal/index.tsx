@@ -74,7 +74,11 @@ const ProfileUpload = ({
       <Avatar
         className={cn("border-2 border-[#a3a3a3] size-[85px]", avatarClassName)}
       >
-        <AvatarImage src={image || defaultUserProfile} alt="Profile picture" />
+        <AvatarImage
+          src={image || defaultUserProfile}
+          alt="Profile picture"
+          className="object-cover"
+        />
         <AvatarFallback className="text-2xl bg-[#64748b] text-white">
           <DotsLoader size="w-2 h-2" />
         </AvatarFallback>
