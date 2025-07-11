@@ -17,6 +17,7 @@ import {
 } from "@/lib/utils";
 import { UploadIcon } from "lucide-react";
 import Image from "next/image";
+import ChangePasswordModal from "../ChangePasswordModal";
 
 interface UserData {
   avatar: string | File | null;
@@ -47,6 +48,7 @@ export default function EditProfile() {
   const [coverPreviewUrl, setCoverPreviewUrl] = useState<string>(
     user?.avatar || defaultUserCover
   );
+  const [passChangeModal, setPassChangeModal] = useState<boolean>(false);
 
   useEffect(() => {
     setUserData({
@@ -299,10 +301,20 @@ export default function EditProfile() {
             />
           </Label>
         </div>
+        <FillButton
+          className="w-full mt-4"
+          onClick={() => setPassChangeModal(true)}
+        >
+          Change Password
+        </FillButton>
         <FillButton onClick={handleProfileUpdate} className="w-full mt-4">
           Update
         </FillButton>
       </div>
+      <ChangePasswordModal
+        open={passChangeModal}
+        onClose={() => setPassChangeModal(false)}
+      />
     </div>
   );
 }
