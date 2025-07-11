@@ -7,14 +7,14 @@ export default function FollowersFollowing({ data }: any) {
       <div className="hover:text-[#2F2F2F] dark:hover:text-[#A3ADB9] cursor-pointer flex items-center gap-2 max-md:text-xs">
         <Users size={20} />
         <span className="text-[#A3ADB9] font-semibold">
-          {data?.followers?.length ?? "0"}
+          {data?.followerCount ?? "0"}
         </span>
         Followers
       </div>
       <div className="hover:text-[#2F2F2F] dark:hover:text-[#A3ADB9] cursor-pointer flex items-center gap-2 max-md:text-xs">
         <User size={20} />
         <span className="text-[#A3ADB9] font-semibold">
-          {data?.following?.length ?? "0"}
+          {data?.followingCount ?? "0"}
         </span>
         Following
       </div>
