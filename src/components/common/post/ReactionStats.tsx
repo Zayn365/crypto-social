@@ -197,17 +197,17 @@ export default function ReactionStats({ post }: any) {
       count: getTotalLikes(post?.postInfo),
       action: "open",
     },
-    {
-      icon: (
-        <Repeat2
-          size={18}
-          className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
-          onClick={handleRepost}
-        />
-      ),
-      count: 0,
-      action: "open",
-    },
+    // {
+    //   icon: (
+    //     <Repeat2
+    //       size={18}
+    //       className="text-[#a3adb9] dark:hover:text-[#a3adb9] hover:text-[#000]"
+    //       onClick={handleRepost}
+    //     />
+    //   ),
+    //   count: 0,
+    //   action: "open",
+    // },
     // {
     //   icon: (
     //     <Quote
