@@ -12,6 +12,8 @@ import { isAddress } from "ethers";
 import { updateUserInfo } from "@/services/user";
 import { ChevronLeft } from "lucide-react";
 import { validateWalletAddress } from "@/lib/utils";
+import WalletInsertModal from "./WalletInsertModal";
+import { useAppKit } from "@reown/appkit/react";
 
 interface AuthModalProps {
   open: boolean;
@@ -39,6 +41,7 @@ export default function SignupLoginModal({
   connectModal,
 }: AuthModalProps) {
   const { setUser } = useAuth();
+  const { close } = useAppKit();
 
   const [activeTab, setActiveTab] = useState<string>("signin");
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,6 +60,7 @@ export default function SignupLoginModal({
     {}
   );
   const [forgot, setForgot] = useState<boolean>(false);
+  const [walletInsert, setWalletInsert] = useState<boolean>(false);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -184,6 +188,11 @@ export default function SignupLoginModal({
       toast.success(`Login successful`);
       setLoading(false);
       resetForm();
+      if (!user.wallet_address) {
+        close();
+        setWalletInsert(true);
+        return;
+      }
       connectModal();
       onClose();
     },
@@ -223,6 +232,7 @@ export default function SignupLoginModal({
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -234,12 +244,13 @@ export default function SignupLoginModal({
         return;
       }
       setLoading(true);
-      loginUser.mutateAsync({
+      loginUser.mutate({
         email: data?.email,
         password: data?.password,
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -265,8 +276,12 @@ export default function SignupLoginModal({
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         {!forgot && (
           <TabsList>
-            <TabsTrigger value="signin">Signin</TabsTrigger>
-            <TabsTrigger value="signup">Signup</TabsTrigger>
+            <TabsTrigger value="signin" className="cursor-pointer">
+              Signin
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="cursor-pointer">
+              Signup
+            </TabsTrigger>
           </TabsList>
         )}
         <TabsContent value="signin">
@@ -456,6 +471,7 @@ export default function SignupLoginModal({
       )}
       {!forgot && (
         <button
+          type="button"
           onClick={
             activeTab === "signin" ? handleLoginUser : handleRegisterUser
           }
@@ -473,6 +489,14 @@ export default function SignupLoginModal({
             : "Sign Up"}
         </button>
       )}
+      <WalletInsertModal
+        open={walletInsert}
+        onClose={() => {
+          onClose();
+          connectModal();
+          setWalletInsert(!walletInsert);
+        }}
+      />
     </Modal>
   );
 }

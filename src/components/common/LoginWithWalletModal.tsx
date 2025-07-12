@@ -44,7 +44,6 @@ export default function LoginWithWalletModal({
 }: AuthModalProps) {
   const { open: openWalletModal } = useAppKit();
   const { address } = useAppKitAccount();
-  console.log("🚀 ~ address:", address);
   const { setUser } = useAuth();
   // const { disconnect } = useDisconnect();
 
@@ -287,8 +286,12 @@ export default function LoginWithWalletModal({
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         {!forgot && (
           <TabsList>
-            <TabsTrigger value="signin">Signin Wallet</TabsTrigger>
-            <TabsTrigger value="signup">Signup Wallet</TabsTrigger>
+            <TabsTrigger value="signin" className="cursor-pointer">
+              Signin Wallet
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="cursor-pointer">
+              Signup Wallet
+            </TabsTrigger>
           </TabsList>
         )}
         <TabsContent value="signin">
